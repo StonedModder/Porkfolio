@@ -24,7 +24,6 @@
   <img alt="Electron" src="https://img.shields.io/badge/Electron-desktop-47848F?style=for-the-badge&logo=electron&logoColor=white">
   <img alt="PS5" src="https://img.shields.io/badge/PS5-homebrew%20companion-003791?style=for-the-badge&logo=playstation&logoColor=white">
   <img alt="FTP" src="https://img.shields.io/badge/FTP-transfer%20manager-0B7FAB?style=for-the-badge">
-  <img alt="No telemetry" src="https://img.shields.io/badge/telemetry-none-brightgreen?style=for-the-badge">
 </p>
 
 <p align="center">
