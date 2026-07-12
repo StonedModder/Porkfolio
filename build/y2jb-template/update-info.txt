@@ -1,0 +1,15 @@
+aioshellcode.js|3805
+autoload.js|12466
+elfldr-ps5-v0.23.1-148b71c.elf|397000
+global.js|3919
+icon0.png|15236
+icon_update.js|5238
+kernel.js|8858
+kexp-v0.5.1-2cc1a71.bin|18832
+lapse.js|73120
+main.js|49531
+misc.js|15865
+ps5_autoloader/autoload.txt|864
+ps5_autoloader/pldmgr-v0.1.1.elf|2033936
+splash.html|568
+update.js|62872

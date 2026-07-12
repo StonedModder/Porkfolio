@@ -14,6 +14,7 @@ This note documents every primary Porkfolio navigation page. It describes what e
 | Library | [[Backups]] | Local game backup inventory and verification. |
 | Library | [[Database]] | Local data explorer, SQL queries, and exports. |
 | Console tools | [[Manage Jailbreak]] | Payload/download/update helpers and autoloader management. |
+| Console tools | [[Y2JB Update Generator]] | Builds validated local `y2jb_update.zip` archives from the bundled template and selected payloads. |
 | Console tools | [[PS Notify]] | PS5 notification debugging and delivery tests. |
 | Console tools | [[xAvatar Management]] | `.xavatar` creation, preview, extraction, and FTP upload. |
 | Console tools | [[System View]] | Capture-card display, recording, fullscreen, and popout. |

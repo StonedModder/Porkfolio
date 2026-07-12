@@ -232,6 +232,8 @@
     // Y2JB Updater
     y2jbCheck: () => invoke('y2jb:check'),
     y2jbApply: () => invoke('y2jb:apply'),
+    y2jbGenSelectPayloads: () => invoke('y2jbgen:select-payloads'),
+    y2jbGenBuild: (o) => invoke('y2jbgen:build', o),
 
     // Transfer Manager
     transferState:         ()   => invoke('transfer:state'),

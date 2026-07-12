@@ -1,4 +1,4 @@
-﻿<!-- PROJECT BANNER -->
+<!-- PROJECT BANNER -->
 <p align="center">
   <img src="assets/banner.svg" alt="Porkfolio — All-in-One PS5 Utility" width="820">
 </p>
@@ -15,6 +15,7 @@
   <a href="#-quick-start">Quick Start</a> ·
   <a href="#-features">Features</a> ·
   <a href="#-first-time-setup">Setup</a> ·
+  <a href="#-y2jb-update-generator">Y2JB Generator</a> ·
   <a href="#-platforms--builds">Builds</a> ·
   <a href="#-building-from-source">Build from Source</a> ·
   <a href="#-faq">FAQ</a>
@@ -55,7 +56,7 @@
 | 🃏 **Cheats** | Browse and install compatible cheat collections to a configured PS5 path. |
 | 😀 **xAvatar** | Convert images to `.xavatar`, preview them, save locally, or upload through FTP. |
 | 💿 **Save tools** | Local save-management and GarlicSaves worker workflows for supported payloads. |
-| 🚀 **Payload tools** | Payload downloads, autoloader snapshots, YTJB update helpers, and PS Notify. |
+| 🚀 **Payload tools** | Payload downloads, autoloader snapshots, YTJB update helpers, PS Notify, and a local Y2JB update ZIP generator. |
 | 🖥️ **System View** | Capture-card preview, recording, GIF export, popout, fullscreen, and hotkeys. |
 | 🗃️ **Database** | Local game/backup data with SQL explorer plus CSV and SQL export. |
 | 🌐 **Web bridge** | Optional local web UI for supported app actions. |
@@ -77,6 +78,7 @@ Porkfolio is organized around a shared local library, a single transfer queue, a
 | [**Cheats**](docs/obsidian/Porkfolio/Cheats.md) | Finds compatible cheat files, downloads them locally, and installs selected files through FTP. |
 | [**Database**](docs/obsidian/Porkfolio/Database.md) | Browses local library data, runs SQL queries, and exports CSV/SQL data. |
 | [**Manage Jailbreak**](docs/obsidian/Porkfolio/Manage%20Jailbreak.md) | Manages configured payload sources, autoloader snapshots, and related update/deployment helpers. |
+| [**Y2JB Update Generator**](docs/obsidian/Porkfolio/Y2JB%20Update%20Generator.md) | Builds validated local `y2jb_update.zip` archives from the bundled Y2JB template, payload order, delays, and messages. |
 | [**PS Notify**](docs/obsidian/Porkfolio/PS%20Notify.md) | Tests a compatible notification endpoint and displays notification delivery history. |
 | [**xAvatar Management**](docs/obsidian/Porkfolio/xAvatar%20Management.md) | Converts images to `.xavatar`, previews/extracts avatars, and uploads them through FTP. |
 | [**System View**](docs/obsidian/Porkfolio/System%20View.md) | Uses a local capture card for preview, recording, GIF export, popout, fullscreen, and hotkeys. |
@@ -134,6 +136,20 @@ If FUSE is not installed on your distribution:
 | 5 | **Settings → Media** | Local media destination and optional Discord webhook. |
 | 6 | **Dashboard → Connect** | Establish the FTP connection. |
 | 7 | **Dashboard → Scan PS5** | Discover installed games and request metadata. |
+
+<br>
+
+## 🧰 Y2JB Update Generator
+
+Porkfolio includes the local Y2JB archive-generation workflow from [Y2JB-Genny](https://github.com/StonedModder/Y2JB-Genny) directly in **Manage Jailbreak → Y2JB Update Generator**.
+
+1. Add `.elf`, `.bin`, `.js`, or `.jar` payload files.
+2. Arrange payload rows and add optional message or millisecond-delay rows.
+3. Select **Build Update ZIP**, choose an output location, and copy the resulting `y2jb_update.zip` to the USB layout required by your Y2JB environment.
+
+The generator stages the bundled Y2JB template, writes `ps5_autoloader/autoload.txt`, copies every referenced payload, generates `update-info.txt`, and creates a validated classic ZIP with PS5-safe forward-slash paths. It builds the archive **locally only**—it does not deploy or modify a console.
+
+Read the full [Y2JB Update Generator guide](docs/obsidian/Porkfolio/Y2JB%20Update%20Generator.md) for entry syntax, validation rules, test-drive evidence, compatibility notes, and its relationship to [PS Notify](docs/obsidian/Porkfolio/PS%20Notify.md).
 
 <br>
 

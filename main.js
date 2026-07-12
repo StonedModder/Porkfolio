@@ -56,6 +56,7 @@ const _registerGarlic     = require('./src/ipc/garlic-saves');
 const _registerBpgen      = require('./src/ipc/backpork-gen');
 const _registerElfArsenal = require('./src/ipc/elf-arsenal');
 const _registerPfsRipper  = require('./src/ipc/pfs-ripper');
+const _registerY2jbGen     = require('./src/ipc/y2jb-generator');
 
 // ── Web UI server ─────────────────────────────────────────────────────────────
 const WebUIServer = require('./src/web-server');
@@ -489,6 +490,7 @@ app.whenReady().then(async () => {
     _registerBpgen(ipcMain,      { win, db, log, path, fs, dialog, app, store });
     _registerElfArsenal(ipcMain, { win, store, log, path, fs, dialog, nodeFetch, ps5Notify });
     _registerPfsRipper(ipcMain,  { win, store, log, path, fs, dialog, shell, ftp, transferMgr });
+    _registerY2jbGen(ipcMain,    { app, dialog, log });
 
     // ── Web UI server — start if enabled in settings ──────────────────────────
     webServer = new WebUIServer({

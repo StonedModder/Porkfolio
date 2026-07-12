@@ -25,6 +25,7 @@ Open `docs/obsidian` as an Obsidian vault. This documentation lives with the sou
 ### Console, media, and save pages
 
 - [[Manage Jailbreak]]
+- [[Y2JB Update Generator]]
 - [[PS Notify]]
 - [[xAvatar Management]]
 - [[System View]]

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y2JB // Sonic-ISO PROTOCOL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00f0ff;
+            --neon-green: #00ff9d;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0f;
+            color: var(--neon-green);
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,0,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.04) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridmove 25s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes gridmove { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+
+        canvas#digital-rain {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 85px;
+            background: rgba(15, 5, 25, 0.95);
+            border-bottom: 4px solid var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            box-shadow: 0 0 40px var(--neon-pink);
+        }
+
+        .header-title {
+            font-size: 38px;
+            letter-spacing: 8px;
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-cyan);
+            animation: glitch 1.8s infinite;
+        }
+
+        @keyframes glitch {
+            0%,100% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(3px, -2px); }
+            60% { transform: translate(-2px, 2px); }
+        }
+
+        /* Side Bubbles */
+        .side-bubble {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 140px;
+            height: 140px;
+            border: 6px solid var(--neon-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 62px;
+            background: rgba(10, 10, 20, 0.85);
+            box-shadow: 0 0 40px var(--neon-cyan),
+                        inset 0 0 30px rgba(0, 240, 255, 0.3);
+            z-index: 90;
+            transition: all 0.4s ease;
+        }
+
+        .side-bubble:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 60px var(--neon-pink);
+        }
+
+        .left-bubble  { left: 40px; border-color: var(--neon-pink); }
+        .right-bubble { right: 40px; }
+
+        .bubble-label {
+            position: absolute;
+            color: var(--neon-cyan);
+            font-size: 22px;
+            letter-spacing: 6px;
+            text-shadow: 0 0 15px currentColor;
+        }
+
+        .left-label  { bottom: 20px; left: 55px; }
+        .right-label { bottom: 20px; right: 55px; }
+
+        /* Terminal */
+        .terminal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 820px;
+            background: #0c0c14;
+            border: 6px solid var(--neon-pink);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 50px var(--neon-pink),
+                        0 0 80px rgba(157, 0, 255, 0.4);
+            z-index: 200;
+        }
+
+        .terminal-header {
+            background: #1f0033;
+            padding: 18px;
+            text-align: center;
+            font-size: 26px;
+            color: var(--neon-pink);
+            letter-spacing: 6px;
+            border-bottom: 4px solid var(--neon-cyan);
+        }
+
+        .terminal-body {
+            padding: 30px 35px;
+            height: 420px;
+            overflow-y: auto;
+            font-size: 18px;
+            line-height: 1.7;
+            background: #0a0a0f;
+            color: var(--neon-green);
+        }
+
+        .terminal-line {
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .highlight { color: #ffff00; text-shadow: 0 0 12px #ffff00; }
+        .success   { color: #00ff9d; text-shadow: 0 0 12px #00ff9d; }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 68px;
+            background: linear-gradient(to right, #220022, #002222);
+            border-top: 5px solid var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--neon-pink);
+            letter-spacing: 6px;
+            text-shadow: 0 0 20px var(--neon-pink);
+            z-index: 300;
+        }
+
+        .cursor {
+            display: inline-block;
+            animation: blink 0.7s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <canvas id="digital-rain"></canvas>
+
+    <!-- Left Bubble -->
+    <div class="side-bubble left-bubble">
+        💀
+    </div>
+    <div class="bubble-label left-label">EXPLOIT</div>
+
+    <!-- Right Bubble -->
+    <div class="side-bubble right-bubble">
+        ♻️
+    </div>
+    <div class="bubble-label right-label">REBOOT</div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">AUTOLOADER PROTOCOL // Y2JB</div>
+    </div>
+
+    <!-- Terminal -->
+    <div class="terminal">
+        <div class="terminal-header">Y2JB NETRUNNER v0.6.3-e655073</div>
+        <div class="terminal-body" id="terminal-log">
+            <div class="terminal-line">Autoloader v0.6.3-e655073 by PLK</div>
+            <div class="terminal-line highlight">Running userland exploit...</div>
+            <div class="terminal-line">Y2JB by Gezine • FW: 7.61</div>
+            <div class="terminal-line highlight">Executing kernel exploit...</div>
+            <div class="terminal-line success">Kernel exploit finished.</div>
+            <div class="terminal-line">Found autoload config at: /mnt/sandbox/PPSA01650_000/download0/cache/...</div>
+            <div class="terminal-line">Loading ELF from: pldmgr-v0.1.1.elf</div>
+            <div class="terminal-line highlight">Starting ELF Loader...</div>
+            <div class="terminal-line">Successfully sent 2050320 bytes to loader</div>
+            <div class="terminal-line success">Loaded pldmgr-v0.1.1.elf</div>
+            <div class="terminal-line success">Autoload finished.</div>
+            <div class="terminal-line">Closing YouTube application...</div>
+            <div class="terminal-line highlight" style="margin-top: 20px;">► SYSTEM COMPROMISED. PAYLOAD READY<span class="cursor">_</span></div>
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="bottom-bar">
+        AUTOLOAD COMPLETE • PRESS × TO DISCONNECT
+    </div>
+
+    <script>
+        // Digital Rain
+        const canvas = document.getElementById('digital-rain');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        const chars = "01アイウエオカキクケコ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$@#%&";
+        let fontSize = 14;
+        let columns, drops;
+
+        function initRain() {
+            resizeCanvas();
+            columns = Math.floor(canvas.width / fontSize);
+            drops = Array(columns).fill(1);
+        }
+
+        function drawRain() {
+            ctx.fillStyle = 'rgba(10, 10, 15, 0.12)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00ff9d';
+            ctx.font = `${fontSize}px VT323`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        // Time & Init
+        function updateTime() {
+            const timeEl = document.createElement('div');
+            timeEl.style.position = 'fixed';
+            timeEl.style.top = '20px';
+            timeEl.style.right = '40px';
+            timeEl.style.color = '#00f0ff';
+            timeEl.style.fontSize = '22px';
+            timeEl.style.zIndex = '110';
+            document.body.appendChild(timeEl);
+
+            setInterval(() => {
+                const now = new Date();
+                timeEl.textContent = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        window.onload = () => {
+            initRain();
+            setInterval(drawRain, 35);
+            window.addEventListener('resize', initRain);
+            updateTime();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+#
+# ps5_autoloader
+# autoload config file
+# -----------------------------------------------------------------------------------------
+# The loader looks for ps5_autoloader/autoload.txt in this order (highest priority first):
+# 1) USB drives
+# 2) /data directory
+# 3) savedata directory
+# Only the first autoload.txt found will be used.
+#
+# Usage:
+# - Put one filename per line (e.g., payload.elf or script.js).
+# - Supported payload types: .elf, .bin, .js
+# - Lines starting with '!' are sleep commands (example: !1000 sleeps for 1000 ms).
+#
+# Notes:
+# - The kernel exploit will start automatically - do NOT include it here!
+# - You can use custom elf loader by putting it here and adding
+#   elfldr.elf (must be that filename!) line before other ELFs.
+# -----------------------------------------------------------------------------------------
+
+pldmgr-v0.1.1.elf

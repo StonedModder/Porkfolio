@@ -810,6 +810,28 @@
           </div>
         </div>
 
+        <!-- Y2JB Generator -->
+        <div class="card jb-card" id="y2jb-generator-card">
+          <div class="card-header">
+            <h3>Y2JB Update Generator</h3>
+            <button class="btn-pin" data-pin-id="y2jb-generator" title="Pin to Dashboard">&#128204;</button>
+          </div>
+          <p class="hint">Create a PS5-safe <code>y2jb_update.zip</code> from the bundled Y2JB template. Add payloads, arrange their autoload order, then build a ZIP for USB transfer. This creates the archive locally; it does not install anything to your PS5.</p>
+          <div class="form-row" style="margin-top:12px;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn" id="btn-y2jbgen-add-payloads">&#43; Add Payload Files</button>
+            <button class="btn btn-teal" id="btn-y2jbgen-build">&#128230; Build Update ZIP</button>
+            <span id="y2jbgen-status" class="hint"></span>
+          </div>
+          <div id="y2jbgen-list" class="autoloader-sequence" style="margin-top:12px">
+            <p class="hint autoloader-empty-hint">No entries yet. Add payload files, then order payloads, delays, and messages.</p>
+          </div>
+          <div class="form-row" style="margin-top:8px;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-sm" id="btn-y2jbgen-add-delay">&#43; Delay</button>
+            <button class="btn btn-sm" id="btn-y2jbgen-add-message">&#43; Message</button>
+          </div>
+          <p class="hint" style="margin-top:10px">Payload names are case-sensitive. Delays are milliseconds. The build validates the template, payload references, forward-slash ZIP paths, and archive structure before saving.</p>
+        </div>
+
         <!-- System View mini-card -->
         <div class="sv-mini-card" id="sv-mini-jailbreak">
           <div class="sv-mini-header" id="sv-mini-jailbreak-hdr">
@@ -2415,6 +2437,7 @@
   <script src="modules/modal.js"></script>
   <script src="modules/hotkeys.js"></script>
   <script src="modules/payload.js"></script>
+  <script src="modules/y2jb-generator.js"></script>
   <script src="modules/autoloader.js"></script>
   <script src="modules/media.js"></script>
   <script src="modules/cheats.js"></script>
