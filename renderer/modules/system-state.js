@@ -37,7 +37,10 @@ document.querySelectorAll('.system-state-action').forEach((button) => button.add
   pendingSystemAction = button.dataset.systemAction;
   const command = pendingSystemAction === 'restmode' ? 'RESTMODE' : pendingSystemAction.toUpperCase();
   $('system-state-confirm-title').textContent = `Confirm: ${systemStateLabels[pendingSystemAction]}`;
-  $('system-state-confirm-copy').textContent = `This sends ${command} to SystemStateManager on your PS5. Type "CONFIRM ${command}" exactly to enable the action.`;
+  const shutdownWarning = pendingSystemAction === 'shutdown'
+    ? ' The upstream SystemStateManager project still marks shutdown as in testing; use it only if you accept that risk.'
+    : '';
+  $('system-state-confirm-copy').textContent = `This sends ${command} to SystemStateManager on your PS5. Type "CONFIRM ${command}" exactly to enable the action.${shutdownWarning}`;
   $('system-state-confirm-input').value = '';
   $('system-state-confirm').hidden = false;
   $('system-state-confirm-input').focus();

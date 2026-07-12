@@ -28,6 +28,6 @@ No power-state or eject command is sent by opening the panel or by a single butt
 
 ## Important warnings
 
-These actions have immediate physical or power consequences. Save work and stop active game, storage, transfer, and homebrew operations before confirming a command. The payload's upstream documentation notes that shutdown may show a rest-mode style message and rest mode may not display the usual system screen even when the state transition succeeds.
+These actions have immediate physical or power consequences. Save work and stop active game, storage, transfer, and homebrew operations before confirming a command. The payload's upstream documentation notes that shutdown remains marked as **in testing**; use it conservatively. It can show a rest-mode style message even when it powers down. Rest mode may not display the usual system screen even when the state transition succeeds.
 
 Do not use the controls for systems you do not own or are not authorized to administer. Confirm loader and firmware compatibility before deployment.
