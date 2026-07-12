@@ -1,6 +1,6 @@
 {
   "name": "porkfolio",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "All-in-one PS5 utility for FTP, backups, media, payloads, save tools, xAvatar, and conversion workflows.",
   "author": "StonedModder",
   "main": "main.js",
