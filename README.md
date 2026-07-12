@@ -63,6 +63,32 @@
 
 <br>
 
+## 🧩 Pages & Workflows
+
+Porkfolio is organized around a shared local library, a single transfer queue, and specialist pages for console-connected workflows. Detailed app-page documentation lives in the included [Porkfolio Obsidian vault](docs/obsidian/Porkfolio/Home.md).
+
+| Page | What it does |
+|---|---|
+| **Dashboard** | Shows database/connection status, quick FTP connect, recent activity, and pinned tools. |
+| **Games** | Scans configured PS5 game locations, enriches metadata, and opens per-game management for updates, DLC, backups, paths, hashes, and transfers. |
+| **Backups** | Scans and associates local game backups, calculates size, and supports hash verification. |
+| **Backporks** | Indexes firmware-labelled patch folders and queues a selected match for FTP deployment. |
+| **Transfers** | Monitors the global upload/download/deployment queue with pause, resume, cancel, progress, and error details. |
+| **Media** | Browses remote screenshots/clips, generates thumbnails, downloads media, and optionally shares to Discord. |
+| **Cheats** | Finds compatible cheat files, downloads them locally, and installs selected files through FTP. |
+| **Database** | Browses local library data, runs SQL queries, and exports CSV/SQL data. |
+| **Manage Jailbreak** | Manages configured payload sources, autoloader snapshots, and related update/deployment helpers. |
+| **PS Notify** | Tests a compatible notification endpoint and displays notification delivery history. |
+| **xAvatar Management** | Converts images to `.xavatar`, previews/extracts avatars, and uploads them through FTP. |
+| **System View** | Uses a local capture card for preview, recording, GIF export, popout, fullscreen, and hotkeys. |
+| **GarlicSaves / Local Save Manager** | Provides optional payload-backed save workflows; preserve originals and keep keys private. |
+| **ELF Arsenal / PFS Ripper** | Provides ELF catalog management plus local PFS image discovery/extraction workflows. |
+| **Settings** | Configures connections, local/remote paths, media/webhooks, notifications, conversion behavior, capture preferences, and appearance. |
+
+> Every page, prerequisite, safety boundary, and cross-page workflow is documented in [`docs/obsidian/Porkfolio/`](docs/obsidian/Porkfolio/Home.md). Open `docs/obsidian` directly as an Obsidian vault.
+
+<br>
+
 ## 🚀 Quick Start
 
 ### Use a release build
@@ -207,7 +233,7 @@ Porkfolio stores its local settings and database in Electron's per-user app-data
 
 ## 📚 Documentation
 
-Open `docs/obsidian/` as an Obsidian vault for linked user and developer notes, including the Linux build/test record and feature matrix.
+This repository includes a detailed, versioned **Porkfolio Obsidian vault** at [`docs/obsidian/`](docs/obsidian/Porkfolio/Home.md). Open `docs/obsidian` as a vault to browse linked notes for every page, setup workflow, platform constraint, and development procedure.
 
 <br>
 
