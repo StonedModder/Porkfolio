@@ -1,0 +1,895 @@
+﻿
+/* ── PSNotify log ─────────────────────────────────────────────────────────── */
+.psn-history { display: flex; flex-direction: column; gap: 4px; }
+.psn-entry {
+  display: flex; align-items: baseline; gap: 10px;
+  padding: 6px 10px; border-radius: 5px; font-size: 12px;
+  background: rgba(255,255,255,.03);
+}
+.psn-entry.psn-ok   { border-left: 2px solid var(--teal); }
+.psn-entry.psn-fail { border-left: 2px solid var(--red); }
+.psn-entry-ts   { color: var(--text-dim); white-space: nowrap; flex-shrink: 0; font-family: monospace; }
+.psn-entry-msg  { font-weight: 600; }
+.psn-entry-sub  { color: var(--text-dim); }
+
+.jb-placeholder-notice {
+  font-size: 12px; color: var(--text-dim);
+  padding: 8px 12px; border-radius: 4px;
+  background: rgba(255,255,255,.03);
+  border: 1px dashed var(--border);
+  text-align: center;
+}
+
+/* ── Transfer Manager ────────────────────────────────────────────────────────── */
+
+/* Nav badge — shows active+queued count beside the Transfers nav item */
+.nav-badge {
+  margin-left: auto;
+  background: var(--teal); color: #000;
+  border-radius: 10px; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; line-height: 1.6;
+}
+
+/* Stats bar */
+.transfer-stats-bar {
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  padding: 10px 16px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.tstat-group { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.tstat-label { color: var(--text-dim); }
+.tstat-value { font-weight: 700; color: var(--teal); min-width: 24px; }
+.tstat-concurrent { margin-left: auto; }
+.concurrent-slider {
+  -webkit-appearance: none; height: 4px; width: 90px;
+  border-radius: 2px; background: var(--surface3);
+  accent-color: var(--teal); cursor: pointer;
+}
+.concurrent-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--teal); cursor: pointer;
+}
+
+/* Transfer list */
+#transfers-list { display: flex; flex-direction: column; gap: 8px; }
+
+/* Transfer item card */
+.transfer-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: border-color .15s;
+}
+.transfer-item-active  { border-color: var(--teal); }
+.transfer-item-error   { border-color: var(--red); }
+.transfer-item-done    { opacity: .5; }
+.transfer-item-cancelled { opacity: .4; }
+
+/* Header row */
+.transfer-item-header {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+}
+.transfer-label {
+  flex: 1; font-weight: 600; font-size: 13px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.transfer-type-badge {
+  flex-shrink: 0;
+  font-size: 10px; font-weight: 700; padding: 2px 7px;
+  border-radius: 8px; letter-spacing: .06em; text-transform: uppercase;
+  background: rgba(3,218,198,.15); color: var(--teal);
+}
+.transfer-type-badge.type-download { background: rgba(var(--accent-rgb),.15); color: var(--accent); }
+.transfer-type-badge.type-pork     { background: rgba(240,192,64,.15);        color: var(--yellow); }
+.transfer-status-text { flex-shrink: 0; font-size: 12px; color: var(--text-dim); }
+
+/* Progress bar */
+.transfer-progress-wrap {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.transfer-progress-bar {
+  flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden;
+}
+.transfer-progress-fill {
+  height: 100%; background: var(--teal); transition: width .3s linear;
+}
+.transfer-item-error .transfer-progress-fill { background: var(--red); }
+.transfer-pct-label {
+  flex-shrink: 0; min-width: 36px; text-align: right;
+  font-size: 11px; font-weight: 600; color: var(--teal); font-variant-numeric: tabular-nums;
+}
+
+/* Meta row */
+.transfer-meta {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  font-size: 12px; color: var(--text-dim);
+}
+.transfer-speed { color: var(--teal); font-weight: 600; flex-shrink: 0; }
+.transfer-file  {
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: monospace; font-size: 11px;
+}
+.transfer-sizes { flex-shrink: 0; }
+.transfer-error { color: var(--red); font-size: 12px; }
+
+/* Cancel / action button inside card */
+.btn-cancel-transfer {
+  background: none; border: none; color: var(--text-dim);
+  cursor: pointer; font-size: 16px; line-height: 1; padding: 0 4px;
+  transition: color .15s; flex-shrink: 0;
+}
+.btn-cancel-transfer:hover { color: var(--red); }
+
+/* ── Payload Manager ──────────────────────────────────────────────────────── */
+
+/* Settings: source list rows */
+.payload-settings-source-row {
+  display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.payload-settings-source-row:last-child { border-bottom: none; }
+.payload-settings-source-name { font-weight: 600; min-width: 100px; flex-shrink: 0; }
+.payload-settings-source-url {
+  flex: 1; color: var(--text-dim); font-size: 11px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Jailbreak: update checker source block */
+.payload-source-check-list { margin-top: 8px; }
+.payload-check-source { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.payload-check-source:last-child { border-bottom: none; }
+.payload-check-source-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.payload-check-source-name { font-weight: 700; font-size: 13px; }
+.payload-tag-chip {
+  font-size: 10px; padding: 2px 7px; border-radius: 8px;
+  background: rgba(3,218,198,.12); color: var(--teal); font-weight: 600;
+}
+
+/* Asset table inside update checker */
+.payload-asset-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.payload-asset-table td { padding: 5px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.payload-asset-table tr:last-child td { border-bottom: none; }
+.payload-asset-name { font-family: monospace; }
+.payload-hash-snippet { font-family: monospace; font-size: 10px; color: var(--text-dim); }
+
+/* Extra badge variants */
+.badge-yellow { background: rgba(240,192,64,.2); color: var(--yellow); }
+.badge-dim    { background: rgba(255,255,255,.06); color: var(--text-dim); }
+
+/* Local payload list */
+.payload-local-list, .payload-ps5-list { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.payload-local-row, .payload-ps5-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; background: var(--surface2);
+  border-radius: 6px; font-size: 12px;
+}
+.payload-row-name {
+  flex: 1; font-family: monospace;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.payload-row-size { color: var(--text-dim); min-width: 56px; text-align: right; flex-shrink: 0; }
+.payload-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* Local payload list — card style (reuses al-file-card items inside a bordered scroll box) */
+.payload-card-list {
+  display: flex; flex-direction: column;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  max-height: 300px; overflow-y: auto; margin-top: 6px;
+}
+.payload-card-list:empty { display: none; }
+
+/* Extra elements inside payload al-file-cards */
+.payload-card-size {
+  flex-shrink: 0; font-size: 11px; color: var(--text-dim);
+  min-width: 52px; text-align: right;
+}
+.payload-card-actions {
+  display: flex; gap: 5px; flex-shrink: 0; margin-left: 4px;
+}
+/* The push/delete buttons are very compact inside the card */
+.payload-local-card .btn,
+.payload-sender-card .btn { font-size: 11px; padding: 3px 8px; }
+
+/* PS5 Payload Sender bar — port input + status */
+.payload-sender-bar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.payload-sender-port-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text-dim); white-space: nowrap;
+}
+.payload-sender-port-input {
+  width: 72px; padding: 4px 8px; border-radius: 4px;
+  border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+  font-size: 13px; text-align: center;
+}
+.payload-sender-status {
+  flex: 1; font-size: 12px; transition: color .2s;
+}
+
+/* Save-to-local button on autoloader file cards */
+.btn-al-save-local {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text-dim); cursor: pointer; font-size: 13px; line-height: 1;
+  padding: 2px 5px; flex-shrink: 0; transition: background .12s, color .12s, border-color .12s;
+}
+.btn-al-save-local:hover { background: var(--surface3); color: var(--teal); border-color: var(--teal); }
+
+/* ── System View ──────────────────────────────────────────────────────────── */
+.sv-bar-label { font-size:12px; color:var(--text-dim); white-space:nowrap; flex-shrink:0; }
+
+.sv-device-bar {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:12px 16px; margin-bottom:16px;
+}
+
+.sv-viewer-wrap {
+  position:relative; flex:1; min-height:300px;
+  background:#000; border-radius:var(--radius) var(--radius) 0 0;
+  overflow:hidden; display:flex; align-items:center; justify-content:center;
+}
+
+#page-system-view.active { display:flex; flex-direction:column; gap:0; }
+#page-system-view .page-header { margin-bottom:12px; }
+
+/* ── Voidshell / Save Manager embed pages ────────────────────────────────────── */
+/* JS adds .embed-page-active to #content; absolute positioning avoids flex % height quirks */
+#content.embed-page-active { overflow:hidden !important; padding:0 !important; gap:0 !important; position:relative; }
+#page-voidshell.active,
+#page-savemgr.active  { position:absolute; inset:0; display:flex; flex-direction:column; gap:0; overflow:hidden; }
+.voidshell-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; flex-shrink:0; padding:8px 16px; border-bottom:1px solid var(--border); background:var(--surface); }
+.voidshell-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.embed-page-title { font-size:14px; font-weight:600; color:var(--text); flex-shrink:0; margin-right:4px; }
+.voidshell-frame-wrap { flex:1; overflow:hidden; background:#000; min-height:0; display:flex; flex-direction:column; }
+.voidshell-frame { width:100%; flex:1; border:none; display:block; min-height:0; }
+.voidshell-placeholder { display:flex; align-items:center; justify-content:center; flex:1; min-height:200px; color:var(--text-dim); font-size:14px; text-align:center; padding:30px; }
+/* Install accordion — sits between toolbar and iframe, collapsed by default */
+.install-accordion { flex-shrink:0; border-bottom:1px solid var(--border); background:var(--surface); }
+.install-accordion > summary { list-style:none; display:flex; align-items:center; gap:6px; padding:6px 16px; cursor:pointer; font-size:12px; color:var(--text-dim); user-select:none; }
+.install-accordion > summary::-webkit-details-marker { display:none; }
+.install-accordion > summary::before { content:'▶'; font-size:9px; transition:transform .15s; }
+.install-accordion[open] > summary::before { transform:rotate(90deg); }
+.install-accordion > summary:hover { color:var(--text); }
+.install-accordion-body { padding:12px 16px 14px; display:flex; flex-direction:column; gap:8px; }
+.install-accordion-body p { font-size:12px; color:var(--text-dim); margin:0; line-height:1.5; }
+
+#sv-video { width:100%; height:100%; max-height:70vh; object-fit:contain; display:block; }
+
+/* In-app fullscreen — CSS-based, works in Electron's frameless window */
+.sv-viewer-wrap--fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9000 !important;
+  border-radius: 0 !important;
+  min-height: 0 !important;
+}
+.sv-viewer-wrap--fullscreen #sv-video { max-height: 100vh !important; }
+.sv-viewer-wrap--fullscreen .sv-overlay-controls { opacity: 1 !important; pointer-events: auto !important; }
+
+/* Overlay controls — bottom-right, fade in on hover */
+.sv-overlay-controls {
+  position:absolute; bottom:12px; right:12px; display:flex; gap:8px;
+  opacity:0; transition:opacity .2s; pointer-events:none;
+}
+.sv-viewer-wrap:hover .sv-overlay-controls { opacity:1; pointer-events:auto; }
+
+.sv-overlay-btn {
+  background:rgba(18,18,18,.85); border:1px solid #555; border-radius:6px;
+  padding:6px 10px; font-size:15px; cursor:pointer; color:var(--text);
+  transition:background .15s;
+}
+.sv-overlay-btn:hover { background:rgba(50,50,50,.95); }
+
+/* No-signal placeholder */
+.sv-no-signal {
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:14px;
+  color:var(--text-dim); font-size:13px; pointer-events:none;
+}
+.sv-no-signal.hidden { display:none; }
+
+/* ── System View — Recording indicator ─────────────────────────────────────── */
+.sv-rec-status {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; color:#ff5252; font-weight:500; flex-shrink:0;
+}
+.sv-rec-dot {
+  width:8px; height:8px; border-radius:50%; background:#ff5252;
+  animation: sv-pulse 1s ease-in-out infinite; flex-shrink:0;
+}
+@keyframes sv-pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
+
+/* ── System View — toolbar separator ───────────────────────────────────────── */
+.sv-tool-sep { width:1px; height:18px; background:var(--border); flex-shrink:0; margin:0 4px; }
+
+/* ── System View — video recording buttons ──────────────────────────────────── */
+.btn-sv-vid-idle       { border-color:#ff5252; color:#ff5252; }
+.btn-sv-vid-idle:hover:not(:disabled) { background:rgba(255,82,82,.12); }
+.btn-sv-vid-pause-btn  { border-color:#ffb300; color:#ffb300; }
+.btn-sv-vid-pause-btn:hover:not(:disabled) { background:rgba(255,179,0,.12); }
+.btn-sv-vid-stop-btn   { border-color:#4caf50; color:#4caf50; }
+.btn-sv-vid-stop-btn:hover:not(:disabled) { background:rgba(76,175,80,.12); }
+
+/* ── System View — video rec indicator ──────────────────────────────────────── */
+.sv-vid-rec-status {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; color:#ff5252; font-weight:500; flex-shrink:0;
+}
+.sv-vid-rec-status .sv-rec-dot { background:#ff5252; }
+.sv-vid-rec-status.paused { color:#ffb300; }
+.sv-vid-rec-status.paused .sv-rec-dot { background:#ffb300; animation-play-state:paused; }
+.sv-vid-rec-size { font-size:11px; opacity:.75; }
+
+/* ── System View — status bar ───────────────────────────────────────────────── */
+.sv-status-bar {
+  display:flex; align-items:center; gap:8px; padding:4px 10px;
+  background:var(--surface); border:1px solid var(--border);
+  border-top:none; border-radius:0 0 var(--radius) var(--radius);
+  font-size:11px; color:var(--text-dim); flex-shrink:0;
+}
+.sv-status-dot { width:7px; height:7px; border-radius:50%; background:#444; flex-shrink:0; }
+.sv-status-dot.live   { background:#4caf50; animation:sv-pulse 1.5s ease-in-out infinite; }
+.sv-status-dot.saving { background:#ffb300; animation:sv-pulse .6s  ease-in-out infinite; }
+.sv-status-codec { margin-left:auto; font-family:monospace; font-size:10px; opacity:.55; }
+
+/* ── System View — right-click context menu ─────────────────────────────────── */
+.sv-ctx-menu {
+  position:fixed; z-index:9000;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); box-shadow:0 4px 24px rgba(0,0,0,.7);
+  padding:3px 0; min-width:150px;
+}
+.sv-ctx-menu[hidden] { display:none; }
+.sv-ctx-item {
+  display:flex; align-items:center; gap:8px; width:100%;
+  padding:7px 13px; font-size:12px; color:var(--text);
+  background:none; border:none; cursor:pointer; text-align:left; white-space:nowrap;
+}
+.sv-ctx-item:hover:not(:disabled) { background:rgba(187,134,252,.12); color:var(--accent); }
+.sv-ctx-item:disabled { opacity:.35; cursor:default; }
+.sv-ctx-sep { height:1px; background:var(--border); margin:3px 0; }
+
+/* ── Destination picker ─────────────────────────────────────────────────────── */
+#dest-picker-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.72);
+  display: flex; align-items: center; justify-content: center; z-index: 8500;
+}
+#dest-picker-overlay[hidden] { display: none; }
+
+#dest-picker {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 440px; max-width: 92vw;
+  box-shadow: 0 8px 40px rgba(0,0,0,.7);
+  display: flex; flex-direction: column;
+}
+
+.dest-picker-title {
+  padding: 18px 18px 10px; font-size: 14px; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.dest-picker-hint {
+  padding: 10px 18px 12px; font-size: 12px; color: var(--text-dim); line-height: 1.5;
+}
+
+.dest-picker-option {
+  display: flex; flex-direction: column; gap: 3px; text-align: left;
+  padding: 12px 18px; background: none; border: none; border-top: 1px solid var(--border);
+  cursor: pointer; transition: background .15s; width: 100%;
+}
+.dest-picker-option:hover { background: rgba(var(--accent-rgb), .1); }
+.dest-opt-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.dest-opt-path  { font-size: 11px; font-family: monospace; color: var(--text-dim); }
+
+.dest-picker-footer {
+  padding: 12px 18px; display: flex; justify-content: flex-end;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Manage: install location display ───────────────────────────────────────── */
+.manage-install-loc {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 10px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px;
+}
+.manage-loc-label   { font-size: 11px; color: var(--text-dim); flex-shrink: 0; }
+.manage-loc-path-wrap { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.manage-loc-path {
+  font-size: 11px; font-family: monospace; color: var(--teal);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Remote Game Locations (Settings) ──────────────────────────────────────── */
+.remote-path-row {
+  display: flex; align-items: center; gap: 10px; padding: 7px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.remote-path-row:last-child { border-bottom: none; }
+.remote-path-label {
+  font-weight: 600; min-width: 120px; flex-shrink: 0; color: var(--text);
+}
+.remote-path-value {
+  flex: 1; color: var(--text-dim); font-size: 12px; font-family: monospace;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── FTP Browser modal ──────────────────────────────────────────────────────── */
+#ftp-browser-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.72);
+  display: flex; align-items: center; justify-content: center; z-index: 8000;
+}
+#ftp-browser-overlay[hidden] { display: none; }
+
+#ftp-browser {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 520px; max-width: 92vw;
+  display: flex; flex-direction: column; max-height: 70vh;
+  box-shadow: 0 8px 40px rgba(0,0,0,.7);
+}
+
+.ftp-browser-titlebar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 12px; border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text);
+}
+
+.btn-icon-sm {
+  background: none; border: none; color: var(--text-dim);
+  font-size: 14px; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+  transition: background .15s, color .15s;
+}
+.btn-icon-sm:hover { background: rgba(255,255,255,.1); color: var(--text); }
+
+.ftp-browser-pathbar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.ftp-browser-cwd {
+  flex: 1; font-family: monospace; font-size: 12px;
+  color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.ftp-browser-body {
+  flex: 1; overflow-y: auto; padding: 4px 0; min-height: 200px;
+}
+
+.ftp-browser-loading {
+  padding: 24px 16px; text-align: center; color: var(--text-dim); font-size: 13px;
+}
+
+.ftp-browser-entry {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 14px; font-size: 13px; cursor: default;
+  transition: background .1s;
+}
+.ftp-entry-dir { cursor: pointer; }
+.ftp-entry-dir:hover { background: rgba(255,255,255,.06); }
+.ftp-entry-file { color: var(--text-dim); }
+
+.ftp-entry-icon { font-size: 15px; flex-shrink: 0; }
+.ftp-entry-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ftp-browser-footer {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  padding: 12px 14px; border-top: 1px solid var(--border);
+}
+
+/* ── Y2JB / Payload Manager settings modals ─────────────────────────────────── */
+.jb-settings-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.72);
+  display: flex; align-items: center; justify-content: center; z-index: 6000;
+}
+.jb-settings-modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); width: 480px; max-width: 92vw;
+  display: flex; flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0,0,0,.7);
+}
+.jb-settings-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+}
+.jb-settings-header h3 { font-size: 14px; font-weight: 600; }
+.jb-settings-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+.jb-settings-footer {
+  display: flex; gap: 10px; padding: 12px 18px;
+  border-top: 1px solid var(--border); justify-content: flex-end;
+}
+
+/* ── System View mini-card (collapsible, embedded in Transfers / Jailbreak) ─── */
+.sv-mini-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-top: 16px; overflow: hidden;
+}
+.sv-mini-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; cursor: pointer; user-select: none; transition: background .15s;
+}
+.sv-mini-header:hover { background: rgba(255,255,255,.04); }
+.sv-mini-title {
+  font-size: 13px; font-weight: 600; color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.sv-mini-chevron { font-size: 10px; color: var(--text-dim); transition: transform .2s; }
+.sv-mini-card.open .sv-mini-chevron { transform: rotate(180deg); }
+.sv-mini-body {
+  display: none; padding: 12px 16px 14px; border-top: 1px solid var(--border);
+  flex-direction: column; gap: 10px;
+}
+.sv-mini-card.open .sv-mini-body { display: flex; }
+
+/* ── Media page ──────────────────────────────────────────────────────────── */
+#page-media.active { display: flex; flex-direction: column; gap: 0; }
+
+.media-save-bar {
+  display: flex; align-items: center; gap: 10px; padding: 6px 0 14px;
+}
+.media-save-label { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+
+.media-scan-status {
+  font-size: 12px; color: var(--text-dim); padding: 4px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.media-scan-status::before {
+  content: ''; display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; border: 2px solid var(--accent);
+  border-top-color: transparent; animation: spin .7s linear infinite; flex-shrink: 0;
+}
+
+/* Thumbnail batch progress bar */
+.media-thumb-status {
+  font-size: 11px; color: var(--text-dim); padding: 2px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.media-thumb-status::before {
+  content: ''; display: inline-block; width: 7px; height: 7px;
+  border-radius: 50%; border: 2px solid var(--accent);
+  border-top-color: transparent; animation: spin .7s linear infinite; flex-shrink: 0;
+}
+
+/* Per-card label shown during download/decode */
+.thumb-label {
+  position: absolute; bottom: 6px; left: 0; right: 0;
+  text-align: center; font-size: 9px; color: rgba(255,255,255,.55);
+  pointer-events: none; z-index: 2; letter-spacing: .3px;
+}
+
+/* Retry button on failed cards */
+.btn-thumb-retry {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  background: rgba(207,102,121,.18); border: 1px solid var(--red);
+  color: var(--red); cursor: pointer; margin-bottom: 4px;
+  width: 100%;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.media-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  display: flex; flex-direction: column; transition: border-color .15s;
+  cursor: pointer;
+}
+.media-card:hover { border-color: var(--accent); }
+.media-card[data-type="clip"] { cursor: default; }
+.media-card[data-type="clip"]:hover { border-color: var(--border); }
+
+/* ── Thumbnail area ── */
+.media-card-thumb {
+  height: 120px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.media-card-thumb.type-screenshot { background: #0a0a0a; }
+.media-card-thumb.type-clip       { background: rgba(187, 134, 252, .06); }
+
+.media-thumb-wrap { padding: 0; }
+
+/* Actual screenshot image */
+.media-thumb-img {
+  width: 100%; height: 100%; object-fit: cover;
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity .25s;
+}
+.media-thumb-img.thumb-loaded { opacity: 1; }
+
+/* Spinner shown while thumb is loading */
+.thumb-spin {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--accent); border-top-color: transparent;
+  animation: spin .7s linear infinite; flex-shrink: 0; z-index: 1;
+}
+
+/* Error state */
+.media-card-thumb.thumb-error::after {
+  content: '!'; font-size: 22px; color: var(--red); opacity: .6;
+}
+
+/* Video clip — play icon overlay on top of the thumbnail */
+.clip-play-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; /* let card click-through */
+  opacity: 0; transition: opacity .15s;
+}
+.media-card:hover .clip-play-overlay { opacity: 1; }
+/* Always visible on clip cards (static WEBM badge, no thumbnail) */
+.type-clip .clip-play-overlay { opacity: 1; }
+/* WEBM type badge in top-right corner of clip cards */
+.clip-type-badge {
+  position: absolute; top: 6px; right: 6px;
+  font-size: 9px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+  background: rgba(0,0,0,.5); color: rgba(255,255,255,.7);
+  padding: 2px 6px; border-radius: 4px; pointer-events: none; z-index: 3;
+}
+
+/* ── Card body ── */
+.media-card-body {
+  padding: 9px 11px; display: flex; flex-direction: column; gap: 5px; flex: 1;
+}
+.media-card-game { display: flex; align-items: center; gap: 6px; }
+.media-card-game-icon {
+  width: 22px; height: 22px; border-radius: 4px; object-fit: cover; flex-shrink: 0;
+}
+.media-card-game-icon-empty {
+  width: 22px; height: 22px; border-radius: 4px; flex-shrink: 0;
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.media-card-game-id   { font-size: 11px; font-weight: 700; color: var(--accent); }
+.media-card-filename  { font-size: 11px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.media-card-meta      { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.media-card-size      { font-size: 10px; color: var(--text-dim); }
+.media-card-date      { font-size: 10px; color: var(--text-dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.media-card-actions   { padding-top: 6px; display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── Media Lightbox ── */
+.media-lightbox {
+  position: fixed; inset: 0; z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+}
+.media-lightbox[hidden] { display: none; }
+
+.media-lightbox-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.88); cursor: pointer;
+}
+
+.media-lightbox-frame {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  max-width: calc(100vw - 60px); max-height: calc(100vh - 60px);
+  padding: 16px;
+}
+
+.media-lightbox-close {
+  position: absolute; top: -8px; right: -8px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.media-lightbox-close:hover { background: var(--red); color: #fff; }
+
+.media-lightbox-meta {
+  font-size: 12px; color: var(--text-dim); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 600px;
+}
+
+.media-lightbox-img {
+  max-width: 100%; max-height: calc(100vh - 140px);
+  border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  object-fit: contain;
+}
+
+.media-lightbox-spinner {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  color: var(--text-dim); font-size: 13px; padding: 40px;
+}
+.lightbox-spin-ring {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid var(--accent); border-top-color: transparent;
+  animation: spin .7s linear infinite;
+}
+.media-lightbox-footer { display: flex; gap: 8px; }
+
+body.lightbox-open { overflow: hidden; }
+
+/* Discord share button on media cards */
+.btn-media-share {
+  background: #4f56c7;
+  border: none; color: #fff;
+  font-size: 11px; padding: 4px 9px; border-radius: var(--radius);
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s, opacity .15s;
+}
+.btn-media-share:hover    { background: #5865F2; }
+.btn-media-share:disabled { opacity: .55; cursor: default; }
+
+/* Catbox upload progress fill — slides a translucent bar across the button */
+.btn-media-share.uploading {
+  position: relative; overflow: hidden; transition: none;
+}
+.btn-media-share.uploading::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: var(--upload-pct, 0%);
+  background: rgba(255,255,255,.22);
+  transition: width .35s linear;
+  pointer-events: none; border-radius: inherit;
+}
+
+/* Integrations card sections */
+.integration-section { padding: 4px 0; }
+.integration-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+
+/* ── Cheats page ─────────────────────────────────────────────────────────── */
+#page-cheats.active { display: flex; flex-direction: column; gap: 0; }
+
+.cheats-stats-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 2px; font-size: 12px; color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* Download progress panel */
+.cheats-progress-bar-wrap {
+  height: 6px; background: #1a1a1a; border-radius: 3px;
+  overflow: hidden; margin: 10px 0 8px;
+}
+.cheats-progress-bar {
+  height: 100%; background: var(--accent);
+  border-radius: 3px; transition: width .3s ease;
+}
+.cheats-dl-stats {
+  display: flex; gap: 18px; font-size: 12px;
+  color: var(--text-dim); flex-wrap: wrap;
+}
+.cheats-dl-stats span { white-space: nowrap; }
+#cheats-dl-pct   { color: var(--accent); font-weight: 600; }
+#cheats-dl-saved { color: var(--green); }
+#cheats-dl-failed { color: var(--red); }
+#cheats-dl-eta   { color: var(--text); }
+.cheats-dl-current {
+  margin-top: 6px; font-size: 11px; color: #555;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Cheat cards grid */
+.cheats-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+.cheat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  cursor: pointer; transition: border-color .15s;
+}
+.cheat-card:hover { border-color: var(--accent); }
+.cheat-card-header { display: flex; align-items: center; gap: 10px; }
+.cheat-card-icon {
+  width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+}
+.cheat-card-icon-empty {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: var(--surface2); border: 1px solid var(--border);
+}
+.cheat-card-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.cheat-card-title-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cheat-card-id {
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  background: rgba(var(--accent-rgb),.1); border-radius: 4px;
+  padding: 2px 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+}
+.cheat-card-title {
+  font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.3;
+}
+.cheat-card-meta {
+  font-size: 11px; color: var(--text-dim);
+  display: flex; gap: 10px;
+}
+.cheat-card-files { color: var(--text-dim); }
+.cheat-card-body {
+  display: none; margin-top: 10px; border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.cheat-card.open .cheat-card-body { display: block; }
+
+/* Individual cheat file block inside a card */
+.cheat-file-block { margin-bottom: 10px; }
+.cheat-file-block:last-child { margin-bottom: 0; }
+.cheat-file-ver {
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.cheat-file-ver code {
+  font-size: 10px; background: #1a1a1a;
+  border-radius: 3px; padding: 1px 5px; color: var(--text);
+}
+.cheat-mod-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text); padding: 3px 0;
+  border-bottom: 1px solid #1e1e1e;
+}
+.cheat-mod-row:last-child { border-bottom: none; }
+.cheat-mod-name { flex: 1; }
+.cheat-mod-type {
+  font-size: 10px; color: var(--text-dim);
+  background: #1e1e1e; border-radius: 3px; padding: 1px 5px;
+}
+
+/* Modal cheats panel */
+#mpanel-cheats { padding: 4px 0; }
+.modal-cheat-fetch {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px; color: var(--text-dim); font-size: 13px;
+}
+.cheat-mod-list { list-style: none; padding: 0; margin: 0; }
+.cheat-mod-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--text);
+}
+.cheat-mod-list li:last-child { border-bottom: none; }
+
+/* Cheat count badge in games table */
+.cheat-count-badge {
+  display: inline-block; background: rgba(var(--accent-rgb),.15);
+  color: var(--accent); border-radius: 4px;
+  font-size: 11px; font-weight: 600; padding: 1px 7px;
+}
+
+/* Unmatched cheats section */
+#cheats-unmatched-section { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.cheats-unmatched-summary {
+  padding: 10px 14px; cursor: pointer; font-size: 13px; font-weight: 600;
+  color: var(--text); list-style: none; display: flex; align-items: center; gap: 6px;
+  user-select: none;
+}
+.cheats-unmatched-summary::-webkit-details-marker { display: none; }
+.cheats-unmatched-summary::before {
+  content: '▶'; font-size: 10px; color: var(--text-dim);
+  transition: transform .15s; display: inline-block;
+}
+#cheats-unmatched-section[open] .cheats-unmatched-summary::before { transform: rotate(90deg); }
+.cheats-unmatched-list {
+  padding: 4px 10px 10px; display: flex; flex-direction: column; gap: 6px;
+  border-top: 1px solid var(--border);
+}
+.cheat-unmatched-row {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center;
+  padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);
+}
+.cheat-unmatched-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cheat-unmatched-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cheat-unmatched-file  { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cheat-unmatched-assign { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.cheat-unmatched-assign input {
+  width: 110px; padding: 4px 8px; font-size: 12px; font-family: var(--mono);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text); text-transform: uppercase;
+}
+.cheat-unmatched-assign input:focus { outline: none; border-color: var(--accent); }
+.cheat-unmatched-assign input.input-error { border-color: var(--red); animation: shake .2s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+/* FTP install panel */
+.cheats-ftp-instructions { padding: 4px 0 6px; }
+.cheats-ftp-instructions ol { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+.cheats-ftp-instructions code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 12px; color: var(--accent); }
+
+/* ── Dashboard pinned cards ────────────────────────────────────────────────── */

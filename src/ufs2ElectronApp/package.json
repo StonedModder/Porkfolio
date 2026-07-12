@@ -1,0 +1,63 @@
+{
+  "name": "shadowbatch-stonedmodder",
+  "version": "1.0.0",
+  "description": "Standalone Electron GUI for combining backpork patches with game folders and converting to UFS2/exFAT format",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build:dir": "electron-builder --win dir"
+  },
+  "keywords": [
+    "ps5",
+    "ufs2",
+    "backpork",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.stonedmodder.shadowbatch",
+    "productName": "Shadowbatch - StonedModder",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "UFS2imageexfatTools",
+        "to": "UFS2imageexfatTools",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../UFS2Tool",
+        "to": "UFS2Tool",
+        "filter": ["**/*"]
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "portable": {
+      "splashImage": null
+    }
+  }
+}

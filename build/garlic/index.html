@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VoidShell V1.00 - Pre-Beta</title>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        void: { 900: '#050507', 800: '#0a0e17', 700: '#151926', card: 'rgba(20, 24, 39, 0.7)' },
+                        light: { bg: '#f3f4f6', card: 'rgba(255, 255, 255, 0.8)', text: '#111827' },
+                        neon: { purple: '#8b5cf6', blue: '#3b82f6', pink: '#ec4899', green: '#10b981', red: '#ef4444', yellow: '#f59e0b', orange: '#f97316' }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slideIn': 'slideIn 0.3s ease-out forwards',
+                        'slideUp': 'slideUp 0.3s ease-out forwards',
+                        'fadeIn': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideIn: { '0%': { transform: 'translateX(100%)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+                        slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { -webkit-tap-highlight-color: transparent; transition: background-color 0.3s ease, color 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        .dark ::-webkit-scrollbar-track { background: #0a0e17; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; }
+        ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 3px; }
+        
+        .glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .dark .glass { background: rgba(20, 24, 39, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass { background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        
+        .bg-mesh { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; transition: opacity 0.5s ease; }
+        .dark .bg-mesh { background: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #050507 50%); }
+        .bg-mesh { background: radial-gradient(circle at 50% -20%, #e0e7ff 0%, #f3f4f6 50%); }
+
+        .grid-overlay { position: fixed; inset: 0; z-index: -1; background-size: 40px 40px; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); transition: opacity 0.5s ease; }
+        .dark .grid-overlay { background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); }
+        .grid-overlay { background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px); }
+    </style>
+</head>
+<body class="h-screen overflow-hidden bg-light-bg dark:bg-void-900 text-gray-900 dark:text-white selection:bg-neon-purple selection:text-white font-sans">
+
+    <div class="bg-mesh"></div>
+    <div class="grid-overlay"></div>
+    <div id="root" class="h-full w-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext } = React;
+
+        const ThemeContext = createContext();
+        const ThemeProvider = ({ children }) => {
+            const [isDark, setIsDark] = useState(true);
+            useEffect(() => {
+                const saved = localStorage.getItem('voidshell_theme');
+                if (saved) setIsDark(saved === 'dark');
+                else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) setIsDark(false);
+            }, []);
+            useEffect(() => {
+                const root = window.document.documentElement;
+                if (isDark) root.classList.add('dark'); else root.classList.remove('dark');
+                localStorage.setItem('voidshell_theme', isDark ? 'dark' : 'light');
+            }, [isDark]);
+            const toggle = () => { if (navigator.vibrate) navigator.vibrate(10); setIsDark(p => !p); };
+            return (<ThemeContext.Provider value={{ isDark, toggle }}>{children}</ThemeContext.Provider>);
+        };
+
+        const haptic = () => { if (navigator.vibrate) navigator.vibrate(5); };
+        const parseINI = (text) => {
+            const result = {}; let section = 'root'; if (!text) return result; 
+            text.split('\n').forEach(line => {
+                line = line.trim(); if (!line || line.startsWith('#') || line.startsWith(';')) return;
+                if (line.startsWith('[') && line.endsWith(']')) { section = line.slice(1, -1); result[section] = result[section] || {}; } 
+                else if (line.includes('=')) { const [key, ...rest] = line.split('='); const val = rest.join('='); if (section === 'root') result[key.trim()] = val.trim(); else result[section][key.trim()] = val.trim(); } 
+                else { if (section !== 'root' && line) result[section][line] = ""; }
+            }); return result;
+        };
+        const stringifyINI = (data) => {
+            let text = '# VoidShell Config\n\n';
+            Object.keys(data).forEach(section => {
+                if (section !== 'root') { text += `[${section}]\n`; Object.keys(data[section]).forEach(key => { const val = data[section][key]; if (val === "" || val === null || val === undefined) text += `${key}\n`; else text += `${key}=${val}\n`; }); text += '\n'; }
+            }); return text;
+        };
+        const formatBytes = (bytes, decimals = 2) => { if (!+bytes) return '0 Bytes'; const k = 1024; const dm = decimals < 0 ? 0 : decimals; const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`; };
+
+        const Skeleton = ({ className }) => (<div className={`animate-pulse bg-gray-300 dark:bg-white/10 rounded ${className}`}></div>);
+        
+        const ConnectionBadge = ({ online }) => (
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border transition-colors ${online ? 'bg-neon-green/10 text-neon-green border-neon-green/20' : 'bg-neon-red/10 text-neon-red border-neon-red/20'}`}>
+                <div className={`w-1.5 h-1.5 rounded-full ${online ? 'bg-neon-green animate-pulse' : 'bg-neon-red'}`}></div>{online ? 'Online' : 'Offline'}
+            </div>
+        );
+
+        const TempWidget = ({ label, temp, icon, isManual }) => {
+            const safeTemp = temp || 0; const radius = 30; const circumference = 2 * Math.PI * radius; const offset = circumference - ((Math.min(safeTemp, 100) / 100) * circumference);
+            let colorClass = "text-neon-green"; if (safeTemp > 70) colorClass = "text-neon-red"; else if (safeTemp > 55) colorClass = "text-neon-orange";
+            return (
+                <div className="glass p-4 rounded-2xl relative overflow-hidden flex items-center justify-between border-l-4 border-transparent hover:border-black/5 dark:hover:border-white/10 transition-all group">
+                    <div className="relative z-10"><div className="flex items-center gap-2 mb-1"><i data-lucide={icon} className={`w-4 h-4 ${colorClass}`}></i><span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">{label}</span></div><div className="text-3xl font-black font-mono leading-none text-gray-900 dark:text-white">{safeTemp}°</div>{isManual && <div className="text-[8px] text-neon-orange font-bold mt-1 animate-pulse">MANUAL OVERRIDE</div>}</div>
+                    <div className="relative w-20 h-20 flex items-center justify-center"><div className={`absolute inset-0 bg-${colorClass.replace('text-', '')}/20 blur-xl rounded-full`}></div><svg className="w-full h-full -rotate-90 transform" viewBox="0 0 80 80"><circle cx="40" cy="40" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent" className="text-black/5 dark:text-white/5" /><circle cx="40" cy="40" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className={`${colorClass} transition-all duration-1000 ease-out`} /></svg></div>
+                </div>
+            );
+        };
+
+        const UptimeWidget = ({ uptime }) => (
+            <div className="glass p-4 rounded-2xl relative overflow-hidden flex flex-col justify-center border-l-4 border-neon-green/50">
+                <div className="relative z-10"><div className="flex items-center gap-2 mb-2"><i data-lucide="activity" className="w-4 h-4 text-neon-green animate-pulse"></i><span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">System Uptime</span></div><div className="text-2xl font-black font-mono tracking-widest text-gray-900 dark:text-white">{uptime || "00:00"}</div><div className="text-[10px] text-neon-green/70 mt-1">Systems Nominal</div></div>
+            </div>
+        );
+
+        const LibraryWidget = ({ total, ps5, ps4 }) => {
+            const totalCount = total || 1; 
+            return (
+                <div className="glass p-4 rounded-2xl relative overflow-hidden flex flex-col justify-between border-t border-black/5 dark:border-white/5">
+                    <div className="flex justify-between items-end mb-2"><div><div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Total Library</div><div className="text-3xl font-black text-gray-900 dark:text-white leading-none">{total || 0} <span className="text-sm font-normal text-gray-500">Games</span></div></div><i data-lucide="library" className="w-6 h-6 text-black/10 dark:text-white/20"></i></div>
+                    <div className="space-y-2"><div className="h-2 w-full bg-gray-200 dark:bg-void-900 rounded-full overflow-hidden flex"><div style={{ width: `${((ps5 || 0) / totalCount) * 100}%` }} className="bg-neon-blue shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div><div style={{ width: `${((ps4 || 0) / totalCount) * 100}%` }} className="bg-purple-600 shadow-[0_0_10px_rgba(147,51,234,0.5)]"></div></div><div className="flex justify-between text-[10px] font-bold"><div className="flex items-center gap-1.5 text-neon-blue"><div className="w-2 h-2 rounded-full bg-neon-blue"></div>PS5: {ps5 || 0}</div><div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400">PS4: {ps4 || 0}<div className="w-2 h-2 rounded-full bg-purple-500"></div></div></div></div>
+                </div>
+            );
+        };
+
+        const Carousel = ({ games, onLaunch, isGameRunning }) => {
+            const [index, setIndex] = useState(0);
+            const [touchStart, setTouchStart] = useState(null);
+            
+            const featuredGames = useMemo(() => {
+                if (!games || !Array.isArray(games)) return []; 
+                return games.filter(g => g.exists !== false && g.exists !== "false").sort(() => Math.random() - 0.5).slice(0, 10);
+            }, [games]);
+
+            useEffect(() => {
+                if (featuredGames.length === 0) return;
+                const interval = setInterval(() => { setIndex(i => (i + 1) % featuredGames.length); }, 8000);
+                return () => clearInterval(interval);
+            }, [featuredGames]);
+
+            const handleTouchStart = (e) => setTouchStart(e.targetTouches[0].clientX);
+            const handleTouchEnd = (e) => {
+                if (!touchStart) return;
+                const diff = touchStart - e.changedTouches[0].clientX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) setIndex(i => (i + 1) % featuredGames.length);
+                    else setIndex(i => (i - 1 + featuredGames.length) % featuredGames.length);
+                }
+                setTouchStart(null);
+            };
+
+            if (isGameRunning || featuredGames.length === 0) return null;
+            const game = featuredGames[index];
+            if (!game) return null; 
+
+            return (
+                <div className="md:hidden relative w-full aspect-video rounded-2xl overflow-hidden mb-6 shadow-2xl border border-black/10 dark:border-white/10" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                    <img key={game.id} src={`/assets/pic?id=${game.id}`} onError={(e) => e.target.src=`/assets/icon?id=${game.id}`} className="absolute inset-0 w-full h-full object-cover animate-[fadeIn_0.5s_ease-out] brightness-90" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                        <div className="animate-[slideUp_0.3s_ease-out]">
+                            <h2 className="text-2xl font-black text-white leading-tight drop-shadow-md truncate">{game.name}</h2>
+                            <div className="flex gap-2 text-xs text-gray-300 mb-3 font-mono mt-1"><span className="bg-white/10 px-1.5 rounded">{game.id}</span></div>
+                            <div className="flex gap-2"><button onClick={() => onLaunch(game.id)} className="flex-1 bg-neon-purple text-white py-2.5 rounded-xl font-bold text-sm shadow-lg">Launch</button></div>
+                        </div>
+                    </div>
+                    <div className="absolute top-3 right-3 flex gap-1.5">
+                        {featuredGames.map((_, i) => (<div key={i} className={`h-1.5 rounded-full shadow-sm transition-all duration-300 ${i===index ? 'bg-neon-purple w-6' : 'bg-white/40 w-1.5'}`}></div>))}
+                    </div>
+                </div>
+            );
+        };
+
+        const Hero = ({ activeGame, library, onLaunch }) => {
+            const [slideIndex, setSlideIndex] = useState(0);
+            const validGames = useMemo(() => { 
+                if (!library) return []; 
+                return library.filter(g => g.exists !== false && g.exists !== "false").sort((a,b) => a.name.localeCompare(b.name)); 
+            }, [library]);
+            const isGameRunning = activeGame && activeGame !== 'MENU' && activeGame !== '';
+
+            useEffect(() => {
+                if (isGameRunning || validGames.length === 0) return;
+                const interval = setInterval(() => {
+                    setSlideIndex(p => (p + 1) % validGames.length);
+                }, 8000);
+                return () => clearInterval(interval);
+            }, [activeGame, validGames.length, isGameRunning]);
+            
+            const gameData = isGameRunning ? (library.find(g => g.id === activeGame) || { name: "Unknown Application", id: activeGame }) : (validGames[slideIndex] || { name: "System Ready", id: "" });
+            const visibilityClass = isGameRunning ? 'block' : 'hidden md:block';
+
+            if (!gameData.id) return ( <div className={`${visibilityClass} h-64 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/5 items-center justify-center bg-gray-100 dark:bg-void-800 flex mb-6`}><div className="text-center"><div className="bg-neon-purple/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 animate-float"><i data-lucide="gamepad-2" className="w-8 h-8 text-neon-purple"></i></div><h2 className="text-xl font-bold text-gray-500 dark:text-gray-300">System Ready</h2></div></div> );
+
+            return (
+                <div className={`${visibilityClass} md:h-80 rounded-3xl relative overflow-hidden border border-black/5 dark:border-white/10 group shadow-xl dark:shadow-black/50 transition-all mb-6 flex flex-col md:block`}>
+                    <div key={gameData.id} className="absolute inset-0 animate-[fadeIn_1s_ease-out] z-0">
+                        <img src={`/assets/pic?id=${gameData.id}`} onError={(e) => e.target.style.display='none'} className="absolute inset-0 w-full h-full object-cover opacity-100 brightness-90" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    </div>
+                    
+                    <div className="relative z-10 p-6 md:p-10 w-full h-full flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+                        <div className="w-full md:max-w-3xl order-2 md:order-1">
+                            <div className="flex items-center gap-2 mb-2">
+                                {isGameRunning ? (<span className="px-2 py-1 bg-neon-green text-black text-[10px] font-black rounded uppercase shadow-lg shadow-neon-green/50 animate-pulse">Running</span>) : (<span className="px-2 py-1 bg-white/20 text-white text-[10px] font-bold rounded uppercase border border-white/20 backdrop-blur">Featured</span>)}
+                                <span className="text-gray-300 text-xs font-mono bg-black/40 px-2 py-1 rounded">{gameData.id}</span>
+                            </div>
+                            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-md line-clamp-2 mb-4 md:mb-6" style={{textShadow: "2px 2px 4px black"}}>{gameData.name}</h1>
+                            <div className="flex gap-3 w-full md:w-auto"><button onClick={() => { haptic(); onLaunch(gameData.id); }} className="flex-1 md:flex-none justify-center bg-neon-purple hover:bg-neon-purple/80 text-white px-8 py-3 md:py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 shadow-lg shadow-neon-purple/20"><i data-lucide="play" className="w-4 h-4 fill-current"></i> {isGameRunning ? 'Game Active' : 'Launch Game'}</button></div>
+                        </div>
+                        <img src={`/assets/icon?id=${gameData.id}`} className="w-20 h-20 md:w-28 md:h-28 rounded-2xl shadow-2xl border border-white/20 order-1 md:order-2 md:rotate-3 md:group-hover:rotate-0 transition-transform duration-500 self-end md:self-auto bg-gray-200 dark:bg-void-800" />
+                    </div>
+                </div>
+            );
+        };
+
+        const LibraryGrid = ({ games, onLaunch, showToast }) => {
+            const [search, setSearch] = useState('');
+            const [sort, setSort] = useState('name');
+            const [limit, setLimit] = useState(24);
+            const loadMoreRef = useRef(null);
+
+            const filteredGames = useMemo(() => {
+                if (!games) return [];
+                let res = [...games];
+                if (search) { const q = search.toLowerCase(); res = res.filter(g => (g.name && g.name.toLowerCase().includes(q)) || (g.id && g.id.toLowerCase().includes(q))); }
+                res.sort((a, b) => { if (sort === 'name') return (a.name || '').localeCompare(b.name || ''); if (sort === 'id') return (a.id || '').localeCompare(b.id || ''); return 0; });
+                return res;
+            }, [games, search, sort]);
+
+            const displayedGames = filteredGames.slice(0, limit);
+            
+            useEffect(() => {
+                const observer = new IntersectionObserver((entries) => { if (entries[0].isIntersecting) setLimit(l => l + 24); }, { threshold: 0.5 });
+                if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+                return () => observer.disconnect();
+            }, [filteredGames]);
+
+            const LoadingSkeleton = () => (
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">{[...Array(6)].map((_, i) => (<div key={i} className="space-y-2"><Skeleton className="aspect-square rounded-xl" /><Skeleton className="h-4 w-3/4 rounded" /><Skeleton className="h-3 w-1/2 rounded" /></div>))}</div>
+            );
+
+            if (!games) return <LoadingSkeleton />;
+            if (games.length === 0) return <div className="p-10 text-center text-gray-500">Library is empty.</div>;
+
+            return (
+                <div className="space-y-6 pb-24">
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white/50 dark:bg-void-800/50 p-4 rounded-2xl backdrop-blur-md border border-black/5 dark:border-white/5">
+                        <div className="relative w-full md:w-96 group">
+                            <i data-lucide="search" className="absolute left-3 top-2.5 w-5 h-5 text-gray-400 group-focus-within:text-neon-purple transition-colors"></i>
+                            <input type="text" placeholder="Search library..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full bg-white dark:bg-void-900 border border-gray-200 dark:border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:border-neon-purple focus:ring-1 focus:ring-neon-purple outline-none transition-all text-gray-900 dark:text-white" />
+                        </div>
+                        <div className="flex gap-2 w-full md:w-auto"><select value={sort} onChange={(e) => setSort(e.target.value)} className="bg-white dark:bg-void-900 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-neon-purple cursor-pointer"><option value="name">Name (A-Z)</option><option value="id">ID (A-Z)</option></select></div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                        {displayedGames.map(game => {
+                            const isGhost = game.exists === false || game.exists === "false";
+                            return (
+                                <button key={game.id} onClick={() => { haptic(); if(isGhost) { if(showToast) showToast("⚠️ Error: Game data not found on disk"); else alert("Game data not found"); } else { onLaunch(game.id); } }} className={`group relative text-left bg-white dark:bg-void-800 rounded-2xl p-3 border transition-all ${isGhost ? 'border-red-500/50 border-dashed opacity-60 cursor-not-allowed' : 'border-gray-100 dark:border-white/5 hover:border-neon-purple/50 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-neon-purple/10 dark:hover:shadow-black/50'}`}>
+                                    <div className="aspect-square rounded-xl overflow-hidden bg-gray-200 dark:bg-void-900 relative mb-3">
+                                        <img loading="lazy" src={`/assets/icon?id=${game.id}`} className={`w-full h-full object-cover transition-transform duration-500 ${isGhost ? 'grayscale' : 'group-hover:scale-110'}`} onError={(e) => e.target.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='} />
+                                        {isGhost && (<div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-[2px]"><div className="bg-red-500/90 text-white px-3 py-1 rounded-lg text-xs font-bold border border-red-400 shadow-xl flex items-center gap-1"><i data-lucide="alert-triangle" className="w-3 h-3"></i> Missing</div></div>)}
+                                        {!isGhost && (<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]"><i data-lucide="play-circle" className="w-10 h-10 text-white opacity-90 scale-50 group-hover:scale-100 transition-transform"></i></div>)}
+                                    </div>
+                                    <div className="space-y-1"><h3 className={`text-sm font-bold leading-tight line-clamp-2 h-10 transition-colors ${isGhost ? 'text-gray-500' : 'text-gray-700 dark:text-gray-200 group-hover:text-neon-purple'}`} title={game.name}>{game.name}</h3><div className="flex items-center justify-between text-[10px] text-gray-500 dark:text-gray-500 font-mono border-t border-black/5 dark:border-white/5 pt-2 mt-1"><span className="truncate pr-1">{game.id}</span><span className="bg-black/5 dark:bg-white/5 px-1.5 rounded text-gray-500 dark:text-gray-400 shrink-0">v{game.version || '1.00'}</span></div></div>
+                                </button>
+                            );
+                        })}
+                    </div>
+                    {filteredGames.length > displayedGames.length && <div ref={loadMoreRef} className="h-20 flex items-center justify-center"><i data-lucide="loader" className="w-6 h-6 animate-spin text-neon-purple"></i></div>}
+                </div>
+            );
+        };
+
+        const ListEditor = ({ label, section, data, onChange, library, type = 'list', placeholder }) => {
+            const [isAdding, setIsAdding] = useState(false);
+            const [search, setSearch] = useState('');
+            const [delayVal, setDelayVal] = useState(10000);
+
+            const filteredLibrary = useMemo(() => {
+                if (!library || !search) return [];
+                return library.filter(g => g.name.toLowerCase().includes(search.toLowerCase()) || g.id.toLowerCase().includes(search.toLowerCase())).slice(0, 5); 
+            }, [library, search]);
+
+            const removeItem = (key) => { const newData = { ...data }; delete newData[key]; onChange(section, newData); };
+            const addItem = (game) => { const newData = { ...data }; if (type === 'map') newData[game.id] = delayVal.toString(); else newData[game.id] = ""; onChange(section, newData); setIsAdding(false); setSearch(''); };
+            const addManual = () => { if(!search) return; const newData = { ...data }; if (type === 'map') newData[search] = delayVal.toString(); else newData[search] = ""; onChange(section, newData); setIsAdding(false); setSearch(''); };
+            const getName = (id) => { const found = library && library.find(g => g.id === id); return found ? found.name : id; };
+
+            return (
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center"><span className="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase ml-1">{label}</span><button onClick={() => setIsAdding(!isAdding)} className="text-neon-blue hover:text-black dark:hover:text-white text-xs font-bold flex items-center gap-1 transition-colors"><i data-lucide={isAdding ? "x" : "plus"} className="w-3 h-3"></i> {isAdding ? "Cancel" : "Add"}</button></div>
+                    <div className="glass rounded-xl p-2 min-h-[100px] max-h-[300px] overflow-y-auto space-y-2">
+                        {isAdding && (
+                            <div className="bg-gray-100 dark:bg-void-900 p-3 rounded-lg border border-neon-blue/50 mb-3 animate-[fadeIn_0.2s]">
+                                <input autoFocus type="text" placeholder="Search Game or Type ID..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full bg-white dark:bg-void-800 p-2 rounded text-sm mb-2 focus:outline-none focus:ring-1 focus:ring-neon-blue text-gray-900 dark:text-white" />
+                                {type === 'map' && (<div className="flex items-center gap-2 mb-2"><span className="text-xs text-gray-500">Delay (ms):</span><input type="number" value={delayVal} onChange={(e) => setDelayVal(e.target.value)} className="bg-white dark:bg-void-800 p-1 rounded text-sm w-20 text-gray-900 dark:text-white" /></div>)}
+                                <div className="space-y-1 max-h-40 overflow-y-auto">
+                                    {filteredLibrary.map(g => (<div key={g.id} onClick={() => addItem(g)} className="flex items-center gap-2 p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded cursor-pointer"><img src={`/assets/icon?id=${g.id}`} className="w-6 h-6 rounded" /><div className="truncate text-xs"><div className="font-bold text-gray-800 dark:text-gray-200">{g.name}</div><div className="text-gray-500 font-mono">{g.id}</div></div></div>))}
+                                    {filteredLibrary.length === 0 && search && (<div onClick={addManual} className="p-2 text-xs text-neon-blue cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 rounded">Add "{search}" manually</div>)}
+                                </div>
+                            </div>
+                        )}
+                        {Object.keys(data).length === 0 && !isAdding && (<div className="text-center py-6 text-gray-500 text-xs italic">List is empty</div>)}
+                        {Object.keys(data).map(key => (
+                            <div key={key} className="flex justify-between items-center bg-black/5 dark:bg-white/5 p-2 px-3 rounded-lg group">
+                                <div className="flex items-center gap-3 overflow-hidden"><div className="font-mono text-xs text-neon-purple shrink-0">{key}</div><div className="text-sm text-gray-700 dark:text-gray-300 truncate">{getName(key)}</div></div>
+                                <div className="flex items-center gap-3">{type === 'map' && <span className="text-xs font-mono text-neon-yellow">{data[key]}ms</span>}<button onClick={()=>removeItem(key)} className="text-gray-400 hover:text-red-400 transition-colors"><i data-lucide="trash-2" className="w-4 h-4"></i></button></div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const Settings = ({ showToast, library }) => {
+            const { isDark, toggle } = useContext(ThemeContext);
+            const [config, setConfig] = useState({ Settings: {}, FanControl: {}, Sentinel: {}, SentinelWhitelist: {}, SentinelGames: {}, CustomPaths: {}, Blacklist: {} });
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => { 
+                fetch('/api/config_raw').then(r => r.text()).then(t => {
+                    const parsed = parseINI(t); ['Settings', 'FanControl', 'Sentinel', 'SentinelWhitelist', 'SentinelGames', 'CustomPaths', 'Blacklist'].forEach(s => { if (!parsed[s]) parsed[s] = {}; }); setConfig(parsed); setLoading(false);
+                }).catch(e => { setLoading(false); }); 
+            }, []);
+            
+            const updateConfig = (section, key, value) => { setConfig(prev => ({ ...prev, [section]: { ...prev[section], [key]: value.toString() } })); };
+            const updateListSection = (section, newData) => { setConfig(prev => ({ ...prev, [section]: newData })); };
+            const updateRawList = (section, value) => { const lines = value.split('\n').filter(l => l.trim() !== ''); const newSection = {}; lines.forEach(l => newSection[l.trim()] = ''); setConfig(prev => ({ ...prev, [section]: newSection })); };
+            const getRawListString = (section) => { if (!config[section]) return ''; return Object.keys(config[section]).join('\n'); };
+            const save = () => { fetch('/api/save_ini', { method: 'POST', body: stringifyINI(config) }).then(() => showToast("Configuration Saved")); };
+
+            const Toggle = ({ label, checked, onChange, icon }) => (
+                <div className="glass p-4 rounded-xl flex items-center justify-between cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors" onClick={() => { haptic(); onChange(!checked); }}>
+                    <div className="flex items-center gap-3">{icon && <i data-lucide={icon} className="w-5 h-5 text-gray-500"></i>}<span className="font-bold text-gray-700 dark:text-gray-300 text-sm">{label}</span></div>
+                    <div className={`w-10 h-5 rounded-full relative transition-colors duration-200 ${checked ? 'bg-neon-green' : 'bg-gray-300 dark:bg-gray-700'}`}><div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-200 ${checked ? 'left-6' : 'left-1'}`}></div></div>
+                </div>
+            );
+
+            if (loading) return <div className="p-10 text-center"><Skeleton className="h-96 w-full" /></div>;
+
+            return (
+                <div className="h-full flex flex-col pb-24 space-y-8 animate-in fade-in w-full">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white"><i data-lucide="settings" className="text-gray-400"></i> Settings</h2>
+                        <button onClick={save} className="bg-neon-purple text-white px-6 py-2 rounded-xl font-bold text-sm shadow-lg shadow-neon-purple/20 active:scale-95 transition-transform">Save Changes</button>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider ml-1">General</h3>
+                            <Toggle label="Dark Mode" checked={isDark} onChange={toggle} icon={isDark ? "moon" : "sun"} />
+                            <Toggle label="Web Server" checked={config.Settings?.EnableWebServer === 'true'} onChange={(v) => updateConfig('Settings', 'EnableWebServer', v)} icon="globe" />
+                            <Toggle label="Auto-Kill Prev. App" checked={config.Settings?.AutoKill === 'true'} onChange={(v) => updateConfig('Settings', 'AutoKill', v)} icon="x-circle" />
+                             <div className="glass p-4 rounded-xl flex items-center justify-between"><span className="font-bold text-gray-700 dark:text-gray-300 text-sm">Scan Interval (sec)</span><input type="number" value={config.Settings?.ScanInterval || 5} onChange={(e) => updateConfig('Settings', 'ScanInterval', e.target.value)} className="bg-gray-100 dark:bg-void-900 border border-gray-300 dark:border-white/10 rounded-lg p-2 w-20 text-center text-sm text-gray-900 dark:text-white" /></div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider ml-1">Fan Control</h3>
+                            <Toggle label="Enable Override" checked={config.FanControl?.Enabled === 'true'} onChange={(v) => updateConfig('FanControl', 'Enabled', v)} icon="wind" />
+                            <div className="glass p-6 rounded-xl space-y-4">
+                                <div className="flex justify-between font-bold text-gray-700 dark:text-gray-300 text-sm"><span>Target Temp</span><span className="text-neon-blue">{config.FanControl?.TargetTemp || 60}°C</span></div>
+                                <input type="range" min="40" max="80" step="1" value={config.FanControl?.TargetTemp || 60} onChange={(e) => updateConfig('FanControl', 'TargetTemp', e.target.value)} className="w-full accent-neon-blue h-2 bg-gray-200 dark:bg-void-900 rounded-lg appearance-none cursor-pointer" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 lg:col-span-2">
+                            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider ml-1">Sentinel Warden</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Toggle label="Enable Protection" checked={config.Sentinel?.EnableSentinel === 'true'} onChange={(v) => updateConfig('Sentinel', 'EnableSentinel', v)} icon="shield" />
+                                <Toggle label="Show Notifications" checked={config.Sentinel?.ShowDebugNotify === 'true'} onChange={(v) => updateConfig('Sentinel', 'ShowDebugNotify', v)} icon="bell" />
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-6 lg:col-span-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <ListEditor label="Sentinel Whitelist" section="SentinelWhitelist" data={config.SentinelWhitelist || {}} onChange={updateListSection} library={library} type="list" />
+                                <ListEditor label="Custom Delays" section="SentinelGames" data={config.SentinelGames || {}} onChange={updateListSection} library={library} type="map" />
+                            </div>
+                            <ListEditor label="Blacklist (Hidden Games)" section="Blacklist" data={config.Blacklist || {}} onChange={updateListSection} library={library} type="list" />
+                             <div className="space-y-2">
+                                <span className="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase ml-1">Custom Scan Paths (One per line)</span>
+                                <textarea defaultValue={getRawListString('CustomPaths')} onBlur={(e) => updateRawList('CustomPaths', e.target.value)} placeholder="/mnt/usb0/games..." className="w-full bg-gray-100 dark:bg-void-800 font-mono text-xs text-gray-700 dark:text-gray-300 p-4 rounded-xl border border-gray-300 dark:border-white/10 focus:border-neon-purple focus:outline-none resize-y min-h-[100px]" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Terminal = ({ showToast }) => {
+            const [logs, setLogs] = useState("Loading..."); const logRef = useRef(null);
+            useEffect(() => {
+                const int = setInterval(() => { fetch('/api/logs').then(r => r.text()).then(txt => { setLogs(txt); if(logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }).catch(() => {}); }, 2000);
+                return () => clearInterval(int);
+            }, []);
+            return (
+                <div className="h-full flex flex-col pb-24 w-full">
+                    <div className="flex justify-between items-center mb-4"><h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white"><i data-lucide="terminal" className="text-gray-400"></i> System Logs</h2><button onClick={() => { haptic(); fetch('/api/logs/clear', {method:'POST'}); showToast("Logs Cleared"); }} className="text-xs bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg font-bold hover:bg-red-500/30 transition-colors">Clear Logs</button></div>
+                    <div className="w-full flex-1 bg-gray-900 rounded-2xl border border-black/10 dark:border-white/10 p-4 overflow-hidden shadow-inner"><textarea ref={logRef} readOnly value={logs} className="w-full h-full bg-transparent font-mono text-xs text-green-400 focus:outline-none resize-none" /></div>
+                </div>
+            );
+        };
+
+        const Navigation = ({ tab, setTab, onAction }) => {
+            const [showMore, setShowMore] = useState(false); const { isDark, toggle } = useContext(ThemeContext);
+            const tabs = [ { id: 'dashboard', icon: 'layout-dashboard', label: 'Home' }, { id: 'pkg', icon: 'package', label: 'PKG' }, { id: 'payloads', icon: 'cpu', label: 'Payloads' }, { id: 'settings', icon: 'settings', label: 'Settings' } ];
+            const handleTab = (id) => { haptic(); setTab(id); setShowMore(false); };
+            const handleMore = () => { haptic(); setShowMore(!showMore); };
+
+            return (
+                <>
+                    <div className="hidden md:flex fixed left-0 top-0 h-full w-20 bg-white/80 dark:bg-void-800/80 backdrop-blur-xl border-r border-black/5 dark:border-white/5 flex-col items-center py-8 z-50">
+                        <div className="mb-8 text-neon-purple text-center">
+                            <i data-lucide="ghost" className="w-8 h-8 mx-auto"></i>
+                        </div>
+                        <div className="flex flex-col gap-2 w-full px-2 items-center">
+                            {tabs.map(t => ( <button key={t.id} onClick={() => handleTab(t.id)} className={`p-3 rounded-xl transition-all flex items-center justify-center ${tab === t.id ? 'bg-neon-purple text-white shadow-lg shadow-neon-purple/40' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10'}`} aria-label={t.label}><i data-lucide={t.icon} className="w-6 h-6"></i></button> ))}
+                            <button onClick={() => handleTab('logs')} className={`p-3 rounded-xl transition-all flex items-center justify-center ${tab === 'logs' ? 'bg-neon-purple text-white' : 'text-gray-500 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10'}`}><i data-lucide="terminal" className="w-6 h-6"></i></button>
+                        </div>
+                        <div className="mt-auto flex flex-col gap-4 items-center">
+                            <button onClick={toggle} className="p-3 text-gray-500 hover:text-neon-yellow transition-colors flex items-center justify-center"><i data-lucide={isDark ? "moon" : "sun"} className="w-5 h-5"></i></button>
+                            <button onClick={() => onAction('pause')} className="p-3 text-gray-500 hover:text-black dark:hover:text-white transition-colors flex items-center justify-center"><i data-lucide="pause-circle" className="w-5 h-5"></i></button>
+                            <button onClick={() => onAction('rescan')} className="p-3 text-gray-500 hover:text-neon-red transition-colors flex items-center justify-center"><i data-lucide="refresh-cw" className="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+                    <div className="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 dark:bg-void-800/90 backdrop-blur-xl border-t border-black/5 dark:border-white/10 flex items-center justify-around z-50 px-2 pb-safe">
+                        {tabs.map(t => ( <button key={t.id} onClick={() => handleTab(t.id)} className={`p-2 rounded-xl transition-all flex flex-col items-center gap-1 ${tab === t.id ? 'text-neon-purple' : 'text-gray-400'}`}><i data-lucide={t.icon} className="w-6 h-6"></i><span className="text-[10px] font-bold">{t.label}</span></button> ))}
+                        <button onClick={handleMore} className={`p-2 rounded-xl transition-all flex flex-col items-center gap-1 ${showMore ? 'text-neon-purple' : 'text-gray-400'}`}><i data-lucide="menu" className="w-6 h-6"></i><span className="text-[10px] font-bold">More</span></button>
+                    </div>
+                    {showMore && (
+                        <div className="md:hidden fixed inset-0 z-40" onClick={() => setShowMore(false)}>
+                            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-[fadeIn_0.2s]"></div>
+                            <div className="absolute bottom-16 left-0 w-full bg-white dark:bg-void-800 rounded-t-3xl p-6 animate-[slideUp_0.3s] shadow-2xl border-t border-black/5 dark:border-white/10" onClick={e => e.stopPropagation()}>
+                                <div className="w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-6"></div>
+                                <div className="grid grid-cols-4 gap-4 mb-6">
+                                    <button onClick={() => {onAction('pause'); setShowMore(false);}} className="flex flex-col items-center gap-2 text-gray-600 dark:text-gray-300"><div className="w-12 h-12 bg-gray-100 dark:bg-void-700 rounded-2xl flex items-center justify-center"><i data-lucide="pause-circle" className="w-6 h-6"></i></div><span className="text-xs">Pause</span></button>
+                                    <button onClick={() => {onAction('repair'); setShowMore(false);}} className="flex flex-col items-center gap-2 text-gray-600 dark:text-gray-300"><div className="w-12 h-12 bg-gray-100 dark:bg-void-700 rounded-2xl flex items-center justify-center"><i data-lucide="wrench" className="w-6 h-6"></i></div><span className="text-xs">Repair</span></button>
+                                    <button onClick={() => {onAction('rescan'); setShowMore(false);}} className="flex flex-col items-center gap-2 text-gray-600 dark:text-gray-300"><div className="w-12 h-12 bg-gray-100 dark:bg-void-700 rounded-2xl flex items-center justify-center"><i data-lucide="refresh-cw" className="w-6 h-6"></i></div><span className="text-xs">Rescan</span></button>
+                                    <button onClick={() => {handleTab('logs'); setShowMore(false);}} className="flex flex-col items-center gap-2 text-gray-600 dark:text-gray-300"><div className="w-12 h-12 bg-gray-100 dark:bg-void-700 rounded-2xl flex items-center justify-center"><i data-lucide="terminal" className="w-6 h-6"></i></div><span className="text-xs">Logs</span></button>
+                                </div>
+                                <button onClick={toggle} className="w-full glass p-4 rounded-xl flex items-center justify-between"><span className="font-bold text-gray-900 dark:text-white">Dark Mode</span><div className={`w-10 h-5 rounded-full relative transition-colors duration-200 ${isDark ? 'bg-neon-green' : 'bg-gray-400'}`}><div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-200 ${isDark ? 'left-6' : 'left-1'}`}></div></div></button>
+                            </div>
+                        </div>
+                    )}
+                </>
+            );
+        };
+        
+        const PKGManager = ({ showToast, uploading, uploadStats, processUpload }) => {
+            const [pkgs, setPkgs] = useState([]); const [installQueue, setInstallQueue] = useState([]); const [remoteUrl, setRemoteUrl] = useState(''); const fileInputRef = useRef(null); const folderInputRef = useRef(null); const PKG_SERVER = `http://${window.location.hostname}:9200`;
+            const loadPkgs = () => { fetch(`${PKG_SERVER}/list`, { mode: 'cors' }).then(r => r.json()).then(d => { setPkgs(d.files || []); }).catch(() => { setPkgs([]); }); };
+            useEffect(loadPkgs, []);
+            const installRemoteUrl = () => { if (!remoteUrl) return; haptic(); fetch(`${PKG_SERVER}/api/install_url`, { method: 'POST', body: remoteUrl, mode: 'cors' }).then(r => r.json()).then(d => { if (d.status === 'ok') showToast("Remote Install Started"); else showToast("Error: " + d.msg); }).catch(() => showToast("Connection Failed")); setRemoteUrl(''); };
+            const toggleQueue = (path) => { haptic(); if (installQueue.includes(path)) setInstallQueue(q => q.filter(p => p !== path)); else setInstallQueue(q => [...q, path]); };
+            const queueAll = () => { haptic(); setInstallQueue(pkgs.map(p => p.path)); showToast(`Queued ${pkgs.length} packages`); };
+            const startQueue = async () => { haptic(); if (installQueue.length === 0) return; showToast(`Installing ${installQueue.length} items...`); for (const path of installQueue) { try { await fetch(`${PKG_SERVER}/install_existing`, { method: 'POST', body: path, mode: 'cors' }); } catch(e) { console.error(e); } await new Promise(r => setTimeout(r, 1000)); } setInstallQueue([]); showToast("Installations Started"); };
+            const installSingle = (path) => { haptic(); fetch(`${PKG_SERVER}/install_existing`, { method: 'POST', body: path, mode: 'cors' }); showToast("Install Started"); };
+            const deletePkg = (path) => { haptic(); if(confirm("Delete PKG?")) fetch(`${PKG_SERVER}/delete`, { method: 'POST', body: path, mode: 'cors' }).then(() => { loadPkgs(); showToast("Package Deleted"); }); };
+
+            return (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 pb-24 w-full">
+                    <div className="flex justify-between items-center"><h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white"><i data-lucide="package" className="text-neon-blue"></i> Package Manager</h2><div className="flex gap-2">{installQueue.length > 0 && (<button onClick={startQueue} className="bg-neon-yellow text-black px-4 py-2 rounded-lg font-bold text-sm flex gap-2 animate-pulse hover:bg-yellow-400 transition-colors"><i data-lucide="play-circle" className="w-4 h-4"></i> Install {installQueue.length}</button>)}<button onClick={queueAll} className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 px-3 py-2 rounded-lg text-sm font-bold transition-colors text-gray-700 dark:text-white">Queue All</button><button onClick={() => {haptic(); loadPkgs();}} className="p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-full transition-colors"><i data-lucide="refresh-cw" className="w-5 h-5 text-neon-blue"></i></button></div></div>
+                    <div className="glass p-4 rounded-2xl border border-black/5 dark:border-white/10 flex flex-col md:flex-row gap-3 items-center"><div className="flex-1 w-full"><label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase ml-1 mb-1 block">Remote Install (URL)</label><div className="flex gap-2"><input type="text" value={remoteUrl} onChange={(e) => setRemoteUrl(e.target.value)} placeholder="http://192.168.1.X/game.pkg" className="flex-1 bg-white dark:bg-void-900 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm focus:border-neon-blue focus:outline-none font-mono text-gray-900 dark:text-white" /><button onClick={installRemoteUrl} className="bg-neon-blue hover:bg-neon-blue/80 text-white px-4 rounded-xl font-bold text-sm transition-colors flex items-center gap-2"><i data-lucide="download-cloud" className="w-4 h-4"></i> Install</button></div></div></div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <button onClick={() => { haptic(); !uploading && fileInputRef.current.click(); }} className={`glass border-2 border-dashed ${uploading ? 'border-neon-purple' : 'border-gray-300 dark:border-white/10 hover:border-neon-purple'} rounded-2xl p-6 text-center cursor-pointer transition-colors relative`}><input type="file" multiple accept=".pkg" ref={fileInputRef} className="hidden" onChange={(e) => processUpload(Array.from(e.target.files))} /><i data-lucide="file-plus" className="w-8 h-8 mx-auto text-gray-500 mb-2"></i><h3 className="font-bold text-gray-900 dark:text-white">Select Files</h3><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Upload multiple .pkg files</p></button>
+                        <button onClick={() => { haptic(); !uploading && folderInputRef.current.click(); }} className={`glass border-2 border-dashed ${uploading ? 'border-neon-purple' : 'border-gray-300 dark:border-white/10 hover:border-neon-purple'} rounded-2xl p-6 text-center cursor-pointer transition-colors relative`}><input type="file" multiple webkitdirectory="" directory="" ref={folderInputRef} className="hidden" onChange={(e) => processUpload(Array.from(e.target.files).filter(f => f.name.endsWith('.pkg')))} /><i data-lucide="folder-plus" className="w-8 h-8 mx-auto text-gray-500 mb-2"></i><h3 className="font-bold text-gray-900 dark:text-white">Select Folder</h3><p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Upload entire folders recursively</p></button>
+                    </div>
+
+                    {uploading && (
+                        <div className="mt-4 glass p-4 rounded-xl animate-[slideIn_0.3s_ease-out]">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold text-xs uppercase tracking-wider text-neon-purple animate-pulse">Uploading...</span>
+                                <div className="flex gap-4 font-mono text-xs text-gray-500 dark:text-gray-400">
+                                    <span>{uploadStats.speed}</span>
+                                    <span>{uploadStats.progress}%</span>
+                                </div>
+                            </div>
+                            <div className="font-bold text-sm truncate text-gray-900 dark:text-white mb-2">{uploadStats.currentFile}</div>
+                            <div className="w-full bg-gray-200 dark:bg-void-900 h-2 rounded-full overflow-hidden">
+                                <div className="bg-neon-purple h-full transition-all duration-300 ease-out" style={{width: `${uploadStats.progress}%`}}></div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs font-bold text-gray-500 uppercase px-2"><span>Available Packages ({pkgs.length})</span><span>Actions</span></div>
+                        {pkgs.map((pkg, i) => { const isQueued = installQueue.includes(pkg.path); return ( <div key={i} className={`glass p-3 rounded-xl flex items-center justify-between transition-colors ${isQueued ? 'border-neon-yellow/50 bg-neon-yellow/5' : 'hover:bg-black/5 dark:hover:bg-white/5'}`}><div className="flex items-center gap-3 overflow-hidden"><div className="bg-gray-200 dark:bg-void-900 p-2.5 rounded-lg"><i data-lucide="box" className="w-5 h-5 text-gray-500"></i></div><div className="truncate"><div className="font-bold truncate text-sm text-gray-900 dark:text-gray-200" title={pkg.name}>{pkg.name}</div><div className="text-[10px] text-gray-500 font-mono">{pkg.size}</div></div></div><div className="flex gap-2 shrink-0"><button onClick={() => toggleQueue(pkg.path)} className={`p-2 rounded-lg transition-colors ${isQueued ? 'bg-neon-yellow text-black' : 'bg-gray-200 dark:bg-void-900 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white border border-black/5 dark:border-white/10'}`} title="Add to Queue"><i data-lucide={isQueued ? "check" : "list-plus"} className="w-4 h-4"></i></button><button onClick={() => installSingle(pkg.path)} className="bg-neon-green/20 text-neon-green hover:bg-neon-green/30 px-3 py-1.5 rounded-lg font-bold text-xs transition-colors">Install</button><button onClick={() => deletePkg(pkg.path)} className="bg-neon-red/10 text-neon-red hover:bg-neon-red/20 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" className="w-4 h-4"></i></button></div></div> ); })}
+                        {pkgs.length === 0 && <div className="text-center text-gray-500 py-10 font-mono">No .pkg files found in scan paths.</div>}
+                    </div>
+                </div>
+            );
+        };
+
+        const Payloads = ({ showToast }) => {
+            const [payloads, setPayloads] = useState([]);
+            const [config, setConfig] = useState({ AutoPayloads: {} });
+
+            useEffect(() => {
+                const loadData = async () => {
+                    try {
+                        const [filesRes, configRes] = await Promise.all([fetch('/api/payloads'), fetch('/api/config_raw')]);
+                        const filesData = await filesRes.json();
+                        const configText = await configRes.text();
+                        const parsedConfig = parseINI(configText);
+                        
+                        if (!parsedConfig['AutoPayloads']) parsedConfig['AutoPayloads'] = {};
+                        setConfig(parsedConfig);
+
+                        const autoPayloads = parsedConfig['AutoPayloads'] || {};
+                        setPayloads((filesData.files || []).map(f => ({
+                            ...f,
+                            enabled: autoPayloads.hasOwnProperty(f.name),
+                            delay: autoPayloads[f.name] || "0"
+                        })));
+                    } catch(e) {}
+                };
+                loadData();
+            }, []);
+
+            const inject = (name) => {
+                haptic();
+                fetch('/api/send_payload', { method: 'POST', body: name }).then(() => showToast("Payload Injected"));
+            };
+
+            const toggleAuto = (index) => {
+                haptic();
+                setPayloads(current => {
+                    const next = [...current];
+                    next[index].enabled = !next[index].enabled;
+                    return next;
+                });
+            };
+
+            const updateDelay = (index, val) => {
+                setPayloads(current => {
+                    const next = [...current];
+                    next[index].delay = val;
+                    return next;
+                });
+            };
+
+            const saveConfig = () => {
+                haptic();
+                const newAutoPayloads = {};
+                payloads.forEach(p => {
+                    if (p.enabled) newAutoPayloads[p.name] = p.delay;
+                });
+                
+                const newConfig = { ...config, AutoPayloads: newAutoPayloads };
+                fetch('/api/save_ini', { method: 'POST', body: stringifyINI(newConfig) })
+                    .then(() => showToast("Auto-Run Config Saved"));
+            };
+
+            return (
+                <div className="space-y-6 pb-24 animate-in fade-in slide-in-from-bottom-4">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                            <i data-lucide="cpu" className="text-neon-pink"></i> Payload Manager
+                        </h2>
+                        <button onClick={saveConfig} className="bg-neon-pink text-white px-4 py-2 rounded-xl font-bold text-xs shadow-lg hover:bg-neon-pink/80 transition-colors">
+                            Save Config
+                        </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-3">
+                        {payloads.map((pl, i) => (
+                            <div key={pl.name} className="glass p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 transition-colors">
+                                <div className="flex items-center gap-4 w-full md:w-auto">
+                                    <div className="bg-gray-200 dark:bg-void-900 p-2 rounded-lg">
+                                        <i data-lucide="file-code" className="w-5 h-5 text-gray-500"></i>
+                                    </div>
+                                    <div className="font-mono text-sm font-bold truncate text-gray-900 dark:text-gray-200">{pl.name}</div>
+                                </div>
+                                
+                                <div className="flex items-center gap-4 w-full md:w-auto justify-end">
+                                    <div className="flex items-center gap-2 bg-gray-100 dark:bg-void-900 p-1.5 rounded-lg border border-black/5 dark:border-white/5">
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase px-1">Auto</span>
+                                        <button 
+                                            onClick={() => toggleAuto(i)}
+                                            className={`w-8 h-4 rounded-full relative transition-colors ${pl.enabled ? 'bg-neon-green' : 'bg-gray-400'}`}
+                                        >
+                                            <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${pl.enabled ? 'left-4.5' : 'left-0.5'}`}></div>
+                                        </button>
+                                    </div>
+
+                                    {/* Delay input is now always visible */}
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase">Delay(ms)</span>
+                                        <input 
+                                            type="number" 
+                                            value={pl.delay} 
+                                            onChange={(e) => updateDelay(i, e.target.value)}
+                                            className="w-16 bg-gray-100 dark:bg-void-900 border border-gray-300 dark:border-white/10 rounded px-2 py-1 text-xs text-center focus:outline-none focus:border-neon-pink text-gray-900 dark:text-white"
+                                        />
+                                    </div>
+
+                                    <button onClick={() => inject(pl.name)} className="bg-neon-blue/10 text-neon-blue hover:bg-neon-blue/20 px-4 py-2 rounded-lg font-bold text-xs flex gap-2 items-center transition-colors border border-neon-blue/20">
+                                        <i data-lucide="play" className="w-3 h-3"></i> Inject
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {payloads.length === 0 && <div className="text-center text-gray-500 py-10">No payloads found in /data/voidshell/payloads</div>}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [tab, setTab] = useState('dashboard');
+            const [stats, setStats] = useState({ cpu: 0, soc: 0, active_game: '', fan_active: false, total: 0, ps5: 0, ps4: 0 });
+            const [library, setLibrary] = useState(null); const [toast, setToast] = useState(null); const [online, setOnline] = useState(true);
+            const [uploading, setUploading] = useState(false); const [uploadStats, setUploadStats] = useState({ progress: 0, speed: '0 KB/s', currentFile: '' });
+
+            useEffect(() => {
+                let controller = new AbortController();
+                const fetchStats = async () => { try { const res = await fetch('/api/stats', { signal: controller.signal }); if(res.ok) { const data = await res.json(); setStats(data); setOnline(true); } else { setOnline(false); } } catch (e) { if(e.name !== 'AbortError') setOnline(false); } };
+                fetchStats(); const interval = setInterval(fetchStats, 3000); 
+                fetch('/api/library').then(r=>r.json()).then(d => setLibrary(d.games || [])).catch(() => setLibrary([]));
+                return () => { clearInterval(interval); controller.abort(); };
+            }, []);
+            
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); });
+            const launch = (id) => { fetch('/api/launch', { method: 'POST', body: id }); showToast(`Launching ${id}...`); };
+            const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
+            const handleAction = (action) => { haptic(); if(action === 'rescan') { fetch('/api/rescan', {method:'POST'}); showToast("Rescanning Library..."); } if(action === 'repair') { fetch('/api/repair', {method:'POST'}); showToast("Repairing Icons..."); } if(action === 'pause') { fetch('/api/pause', {method:'POST'}); showToast("Scanner Toggled"); } };
+            const processUpload = async (files) => {
+                if (files.length === 0) return; 
+                setUploading(true); 
+                const PKG_SERVER = `http://${window.location.hostname}:9200`; 
+                let startTime = Date.now();
+                let lastLoaded = 0;
+                let lastTime = startTime;
+                
+                for (let i = 0; i < files.length; i++) { 
+                    const file = files[i]; 
+                    setUploadStats(prev => ({ ...prev, currentFile: file.name, progress: 0, speed: "0 MB/s" })); 
+                    try { 
+                        await new Promise((resolve, reject) => { 
+                            const xhr = new XMLHttpRequest(); 
+                            xhr.open('POST', `${PKG_SERVER}/upload?name=${encodeURIComponent(file.name)}`); 
+                            
+                            xhr.upload.onprogress = (ev) => { 
+                                if (ev.lengthComputable) { 
+                                    const now = Date.now();
+                                    const diffTime = (now - lastTime) / 1000;
+                                    const loaded = ev.loaded;
+                                    
+                                    if (diffTime >= 0.5) {
+                                        const speed = (loaded - lastLoaded) / diffTime;
+                                        const speedMB = (speed / (1024 * 1024)).toFixed(1);
+                                        const pct = Math.round((ev.loaded / ev.total) * 100);
+                                        
+                                        setUploadStats({ 
+                                            progress: pct, 
+                                            speed: `${speedMB} MB/s`, 
+                                            currentFile: file.name 
+                                        });
+                                        
+                                        lastTime = now;
+                                        lastLoaded = loaded;
+                                    } else {
+                                         const pct = Math.round((ev.loaded / ev.total) * 100);
+                                         setUploadStats(prev => ({ ...prev, progress: pct }));
+                                    }
+                                } 
+                            }; 
+                            xhr.onload = () => { if(xhr.status < 300) resolve(); else reject(); }; 
+                            xhr.onerror = reject; 
+                            xhr.send(file); 
+                        }); 
+                    } catch(e) { showToast(`Failed: ${file.name}`); } 
+                } 
+                setUploading(false); 
+                showToast("Upload Complete");
+            };
+
+            const isGameRunning = stats.active_game && stats.active_game !== 'MENU' && stats.active_game !== '';
+
+            return (
+                <div className="flex flex-col md:flex-row h-screen">
+                    {toast && ( <div className="fixed top-4 right-4 z-[200] animate-[slideIn_0.3s_ease-out]"><div className="glass px-6 py-3 rounded-xl border-l-4 border-neon-purple shadow-2xl flex items-center gap-3"><i data-lucide="info" className="w-5 h-5 text-neon-purple"></i><span className="font-bold text-sm text-gray-900 dark:text-white">{toast}</span></div></div> )}
+                    {/* Global upload widget removed in favor of integrated PKG manager UI */}
+                    <Navigation tab={tab} setTab={setTab} onAction={handleAction} />
+
+                    <main className="flex-1 overflow-y-auto p-4 md:p-8 w-full md:ml-20">
+                        <div className="md:hidden flex justify-between items-center mb-6"><div className="text-neon-purple"><i data-lucide="ghost" className="w-6 h-6"></i></div><ConnectionBadge online={online} /></div>
+                        {tab === 'dashboard' && (
+                            <div className="w-full space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <Hero activeGame={stats.active_game} library={library} onLaunch={launch} />
+                                <Carousel games={library} onLaunch={launch} isGameRunning={isGameRunning} />
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                                    <TempWidget label="APU Temp" temp={stats.soc} icon="thermometer" isManual={stats.fan_active} />
+                                    <TempWidget label="CPU Temp" temp={stats.cpu} icon="cpu" isManual={stats.fan_active} />
+                                    <UptimeWidget uptime={stats.sys_uptime} />
+                                    <LibraryWidget total={stats.total} ps5={stats.ps5} ps4={stats.ps4} />
+                                </div>
+                                <LibraryGrid games={library} onLaunch={launch} showToast={showToast} />
+                            </div>
+                        )}
+                        {tab === 'pkg' && <PKGManager showToast={showToast} uploading={uploading} uploadStats={uploadStats} processUpload={processUpload} />}
+                        {tab === 'payloads' && <Payloads showToast={showToast} />}
+                        {tab === 'settings' && <Settings showToast={showToast} library={library} />}
+                        {tab === 'logs' && <Terminal showToast={showToast} />}
+                    </main>
+                </div>
+            );
+        };
+        const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<ThemeProvider><App /></ThemeProvider>);
+    </script>
+</body>
+</html>

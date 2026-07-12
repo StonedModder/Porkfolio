@@ -1,0 +1,71 @@
+<svg width="1280" height="320" viewBox="0 0 1280 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Porkfolio — All-in-One PS5 Utility">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#15101e"/>
+      <stop offset="0.55" stop-color="#121212"/>
+      <stop offset="1" stop-color="#181022"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(200 160) scale(260)">
+      <stop offset="0" stop-color="#BB86FC" stop-opacity="0.28"/>
+      <stop offset="0.6" stop-color="#BB86FC" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#BB86FC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1180 40) scale(300)">
+      <stop offset="0" stop-color="#9b66dc" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#9b66dc" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="head" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(230 120) scale(190)">
+      <stop offset="0" stop-color="#c9a2f7"/>
+      <stop offset="1" stop-color="#a678e8"/>
+    </radialGradient>
+    <linearGradient id="word" x1="360" y1="100" x2="900" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d7b8ff"/>
+      <stop offset="1" stop-color="#BB86FC"/>
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect width="1280" height="320" rx="16" fill="url(#bg)"/>
+  <rect width="1280" height="320" rx="16" fill="url(#glow)"/>
+  <rect width="1280" height="320" rx="16" fill="url(#glow2)"/>
+
+  <!-- faint dot grid, right side -->
+  <g fill="#BB86FC" opacity="0.10">
+    <g id="dotrow">
+      <circle cx="980" cy="250" r="2"/><circle cx="1010" cy="250" r="2"/><circle cx="1040" cy="250" r="2"/><circle cx="1070" cy="250" r="2"/><circle cx="1100" cy="250" r="2"/><circle cx="1130" cy="250" r="2"/><circle cx="1160" cy="250" r="2"/><circle cx="1190" cy="250" r="2"/><circle cx="1220" cy="250" r="2"/>
+    </g>
+    <use href="#dotrow" y="26"/>
+    <use href="#dotrow" y="-26"/>
+    <use href="#dotrow" y="-52"/>
+  </g>
+
+  <!-- pig -->
+  <g>
+    <!-- ears -->
+    <circle cx="140" cy="78" r="42" fill="#9d6fe0"/>
+    <circle cx="320" cy="78" r="42" fill="#9d6fe0"/>
+    <circle cx="143" cy="82" r="23" fill="#ecdcfd"/>
+    <circle cx="317" cy="82" r="23" fill="#ecdcfd"/>
+    <!-- head -->
+    <circle cx="230" cy="160" r="112" fill="url(#head)"/>
+    <!-- eyes -->
+    <circle cx="192" cy="146" r="14" fill="#1a1022"/>
+    <circle cx="268" cy="146" r="14" fill="#1a1022"/>
+    <circle cx="197" cy="141" r="4.5" fill="#ffffff"/>
+    <circle cx="273" cy="141" r="4.5" fill="#ffffff"/>
+    <!-- snout -->
+    <ellipse cx="230" cy="208" rx="56" ry="36" fill="#eeddfd"/>
+    <ellipse cx="209" cy="208" rx="11" ry="8" fill="#8a4fd0"/>
+    <ellipse cx="251" cy="208" rx="11" ry="8" fill="#8a4fd0"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="392" y="168" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="-2" fill="url(#word)">Porkfolio</text>
+  <text x="398" y="216" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="6" fill="#9e9e9e">ALL-IN-ONE PS5 UTILITY</text>
+
+  <!-- feature line -->
+  <text x="398" y="262" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="17" font-weight="500" fill="#6f6a78">Game Library&#160;&#160;•&#160;&#160;Backporks&#160;&#160;•&#160;&#160;FTP Transfers&#160;&#160;•&#160;&#160;Save Manager&#160;&#160;•&#160;&#160;Cheats&#160;&#160;•&#160;&#160;Payloads&#160;&#160;•&#160;&#160;Media</text>
+
+  <!-- accent baseline -->
+  <rect x="398" y="278" width="560" height="3" rx="1.5" fill="#BB86FC" opacity="0.55"/>
+</svg>

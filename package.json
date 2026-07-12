@@ -1,0 +1,73 @@
+{
+  "name": "porkfolio",
+  "version": "1.0.8",
+  "description": "All-in-one PS5 utility for FTP, backups, media, payloads, save tools, xAvatar, and conversion workflows.",
+  "author": "StonedModder",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "check:ids": "node scripts/check-ids.js && node scripts/check-ids2.js",
+    "check:syntax": "node scripts/check-syntax.js",
+    "test": "npm run check:ids && npm run check:syntax && node test/platform-capabilities.test.js && npm --prefix src/xavatarElectronModule test && npm --prefix src/ufs2ElectronModule test"
+  },
+  "dependencies": {
+    "basic-ftp": "^5.0.5",
+    "ws": "^8.18.0",
+    "electron-log": "^5.2.0",
+    "electron-store": "^8.2.0",
+    "ffmpeg-static": "^5.3.0",
+    "form-data": "^4.0.0",
+    "jszip": "^3.10.1",
+    "node-fetch": "^2.7.0",
+    "qrcode": "^1.5.4",
+    "sql.js": "^1.10.3"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.porkfolio.app",
+    "productName": "Porkfolio",
+    "icon": "build/icon",
+    "asar": true,
+    "asarUnpack": [
+      "build/garlic/**"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build-resources"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/.cache/**",
+      "!src/**/node_modules/**",
+      "!dist/**",
+      "!output/**",
+      "!.git/**",
+      "!.hermes/**",
+      "!.claude/**",
+      "!.cursor/**",
+      "!.codex/**",
+      "!.aider*",
+      "!.continue/**",
+      "!*.log",
+      "!**/*.log",
+      "!*.env",
+      "!*.env.*",
+      "!scripts/**",
+      "!**/test/**",
+      "!**/tests/**"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

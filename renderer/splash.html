@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:;"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #121212;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      user-select: none; -webkit-app-region: drag;
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+    }
+
+    .icon {
+      width: 72px; height: 72px; border-radius: 18px;
+      filter: drop-shadow(0 0 18px rgba(187,134,252,0.45));
+      animation: pop .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    h1 {
+      font-size: 20px; font-weight: 700;
+      color: #e0e0e0; letter-spacing: .04em;
+    }
+
+    .subtitle {
+      font-size: 11px; color: #757575;
+      margin-top: -10px; letter-spacing: .05em; text-transform: uppercase;
+    }
+
+    .bar-track {
+      width: 180px; height: 2px;
+      background: #2c2c2c; border-radius: 2px; overflow: hidden;
+      margin-top: 4px;
+    }
+    .bar-fill {
+      height: 100%; width: 35%;
+      background: linear-gradient(90deg, transparent, #BB86FC, transparent);
+      animation: shimmer 1.3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      from { transform: translateX(-200%); }
+      to   { transform: translateX(500%); }
+    }
+
+    #status {
+      font-size: 11px; color: #555;
+      min-height: 15px; transition: opacity .2s;
+    }
+  </style>
+</head>
+<body>
+  <img class="icon" src="../build/icon.png" alt=""/>
+  <h1>Porkfolio</h1>
+  <p class="subtitle">AIO PS5 Utility
+  <div class="bar-track"><div class="bar-fill"></div></div>
+  <p id="status">Starting up…</p>
+
+  <script>
+    // Allow main process to update the status line
+    if (typeof window !== 'undefined') {
+      window.setSplashStatus = (msg) => {
+        const el = document.getElementById('status');
+        if (el) el.textContent = msg;
+      };
+    }
+  </script>
+</body>
+</html>

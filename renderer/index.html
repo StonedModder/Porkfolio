@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' https://cdn.prosperopatches.com https://prosperopatches.com data: blob:; media-src pork-cache: blob:; frame-src http: https:;"/>
+  <title>Porkfolio</title>
+  <link rel="stylesheet" href="styles/base.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/features.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+
+  <!-- ── Title bar ── -->
+  <div id="titlebar">
+    <div id="titlebar-drag">
+      <button id="mobile-nav-toggle" title="Open navigation" aria-label="Open navigation">&#9776;</button>
+      <img src="../build/icon.png" class="titlebar-icon" alt=""/>
+      <span>Porkfolio</span>
+      <span class="titlebar-by">by StonedModder</span>
+    </div>
+    <a id="titlebar-x-link" href="#" title="Follow StonedModder on X for more tools">
+      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L2.012 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Follow for more tools
+    </a>
+    <div id="titlebar-controls">
+      <button id="btn-min" title="Minimize">&#8211;</button>
+      <button id="btn-max" title="Maximize">&#9633;</button>
+      <button id="btn-cls" title="Close">&#10005;</button>
+    </div>
+  </div>
+
+  <!-- ── App shell ── -->
+  <div id="app">
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <div class="sidebar-brand">
+        <img src="../build/icon.png" class="brand-icon" alt=""/>
+        <span>Porkfolio</span>
+      </div>
+
+      <ul class="nav-list">
+        <li><a class="nav-link active" data-page="dashboard">
+          <svg viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1" fill="currentColor"/><rect x="2" y="11" width="7" height="7" rx="1" fill="currentColor"/><rect x="11" y="11" width="7" height="7" rx="1" fill="currentColor"/></svg>
+          <span data-i18n="nav.dashboard">Dashboard</span>
+        </a></li>
+        <li><a class="nav-link" data-page="games">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 10h6M10 7v6" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span data-i18n="nav.games">Games</span>
+        </a></li>
+        <li><a class="nav-link" data-page="backporks">
+          <svg viewBox="0 0 20 20"><path d="M4 4h5v5H4zM11 4h5v5h-5zM4 11h5v5H4zM11 11h5v5h-5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.backporks">Backporks</span>
+        </a></li>
+        <li><a class="nav-link" data-page="backups">
+          <svg viewBox="0 0 20 20"><path d="M5 4h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 8v6M7 11l3 3 3-3" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span data-i18n="nav.backups">Backups</span>
+        </a></li>
+        <li><a class="nav-link" data-page="database">
+          <svg viewBox="0 0 20 20"><ellipse cx="10" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 6v4c0 1.657 3.134 3 7 3s7-1.343 7-3V6" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 10v4c0 1.657 3.134 3 7 3s7-1.343 7-3v-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <span data-i18n="nav.database">Database</span>
+        </a></li>
+        <li><a class="nav-link" data-page="jailbreak">
+          <svg viewBox="0 0 20 20"><path d="M10 2a4 4 0 014 4v1h1a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h1V6a4 4 0 014-4z" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="12" r="1.5" fill="currentColor"/></svg>
+          <span data-i18n="nav.jailbreak">Manage Jailbreak</span>
+        </a></li>
+        <li><a class="nav-link" data-page="psnotify">
+          <svg viewBox="0 0 20 20"><path d="M10 2a6 6 0 016 6c0 3.5 1.5 5 2 6H2c.5-1 2-2.5 2-6a6 6 0 016-6z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M8 14a2 2 0 004 0" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+          <span data-i18n="nav.psnotify">Notification Debug</span>
+        </a></li>
+        <li><a class="nav-link" data-page="xavatar">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="8" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M2 17c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.xavatar">XAvatar Management</span>
+        </a></li>
+        <li><a class="nav-link" data-page="system-view">
+          <svg viewBox="0 0 20 20">
+            <rect x="2" y="3" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M7 17h6M10 14v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span data-i18n="nav.systemView">System View</span>
+        </a></li>
+        <li><a class="nav-link" data-page="transfers">
+          <svg viewBox="0 0 20 20"><path d="M5 4v12M5 4L2 7M5 4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15 16V4M15 16l-3-3M15 16l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <span data-i18n="nav.transfers">Transfers</span>
+          <span id="nav-transfer-badge" class="nav-badge" hidden></span>
+        </a></li>
+        <li><a class="nav-link" data-page="media">
+          <svg viewBox="0 0 20 20">
+            <rect x="1" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.4" fill="none"/>
+            <path d="M15 8l4-2v8l-4-2V8z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" fill="none"/>
+          </svg>
+          <span data-i18n="nav.media">Media</span>
+          <span id="nav-media-badge" class="nav-badge" hidden></span>
+        </a></li>
+        <li><a class="nav-link" data-page="cheats">
+          <svg viewBox="0 0 20 20"><path d="M10 2l2.4 4.8 5.3.8-3.85 3.75.91 5.3L10 14.1l-4.76 2.55.91-5.3L2.3 7.6l5.3-.8z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.cheats">Cheats</span>
+          <span id="nav-cheats-badge" class="nav-badge" hidden></span>
+        </a></li>
+        <li><a class="nav-link" data-page="garlic">
+          <svg viewBox="0 0 20 20">
+            <path d="M10 17V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10 10C10 10 6.5 9 5.5 5c3.5 0 5.5 2 4.5 5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M10 13C10 13 13.5 12 14.5 8c-3.5.5-5.5 2-4.5 5z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+          <span data-i18n="nav.garlic">GarlicSaves</span>
+        </a></li>
+        <li><a class="nav-link" data-page="elf-arsenal">
+          <svg viewBox="0 0 20 20"><path d="M4 3h9l3 3v11H4z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M12 3v4h4M7 11l2 2-2 2M11 15h3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.elfArsenal">ELF Arsenal</span>
+        </a></li>
+        <li><a class="nav-link" data-page="pfs-ripper">
+          <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3 8h14M7 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.pfsRipper">PFS Ripper</span>
+        </a></li>
+        <li><a class="nav-link" data-page="savemgr">
+          <svg viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="9" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M7 17h6M10 13v4" stroke="currentColor" stroke-width="1.5"/><path d="M6 8h5M6 11h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.saveManager">Local Save Manager</span>
+        </a></li>
+        <li><a class="nav-link" data-page="settings">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.5"/></svg>
+          <span data-i18n="nav.settings">Settings</span>
+        </a></li>
+      </ul>
+
+      <button id="sidebar-donate" title="Support Porkfolio development">
+        <img src="../build/icon.png" class="donate-icon" alt=""/>
+        <span class="donate-label" data-i18n="nav.donate">Donate</span>
+      </button>
+
+      <div id="sidebar-conn">
+        <div id="conn-dot" class="dot red"></div>
+        <span id="conn-label">Disconnected</span>
+      </div>
+    </nav>
+    <div id="sidebar-scrim" hidden></div>
+
+    <!-- Main content -->
+    <main id="content">
+
+      <!-- ── Dashboard ── -->
+      <div id="page-dashboard" class="page active">
+        <div class="page-header">
+          <div>
+            <h1 data-i18n="page.dashboard">Dashboard</h1>
+            <p class="page-subtitle">A quick overview of your database &mdash; pin your favourite cards for quick and easy access.</p>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-num" id="s-total">—</div><div class="stat-lbl">Total Games</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-installed">—</div><div class="stat-lbl">Installed</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-backedup">—</div><div class="stat-lbl">Backed Up</div></div>
+          <div class="stat-card"><div class="stat-num" id="s-backups">—</div><div class="stat-lbl">Backup Files</div></div>
+        </div>
+
+        <!-- Pinned Cards -->
+        <div class="dash-pinned-section">
+          <div class="dash-pinned-header">
+            <span class="dash-pinned-label">Pinned</span>
+          </div>
+          <div id="dash-pinned-grid" class="dash-pinned-grid"></div>
+          <p id="dash-pinned-empty" class="dash-pinned-empty">No pinned cards &mdash; click &#128204; on any card to pin it here.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>FTP Connection</h3><span id="dash-conn-badge" class="badge badge-red">Offline</span></div>
+          <div class="form-row">
+            <label>Host<input id="d-host" type="text" placeholder="192.168.1.x"/></label>
+            <label>Ports<input id="d-ports" type="text" placeholder="1337, 2121, 21" style="width:160px" title="Comma-separated — tried in order"/></label>
+            <label>User<input id="d-user" type="text" placeholder="optional"/></label>
+            <label>Password<input id="d-pass" type="password" placeholder="optional"/></label>
+          </div>
+          <div class="btn-row">
+            <button id="btn-connect" class="btn btn-accent">Connect</button>
+            <button id="btn-disconnect" class="btn" disabled>Disconnect</button>
+            <button id="btn-scan" class="btn btn-teal" disabled>&#8635; Scan PS5</button>
+          </div>
+          <div id="scan-progress" class="progress-area" hidden></div>
+        </div>
+      </div>
+
+      <!-- ── Games ── -->
+      <div id="page-games" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.games">Games</h1>
+          <div class="header-tools">
+            <button id="btn-rescan-game-sources" class="btn btn-teal">&#8635; Rescan Source Folders</button>
+            <button id="btn-hash-all-games" class="btn btn-accent" title="SHA-256 hash all local game backups and add to the community hash database">&#9636; Hash All Games</button>
+            <div id="bulk-hash-progress" style="display:none;flex-direction:column;gap:3px;min-width:200px;max-width:340px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="hash-progress-bar" style="flex:1"><div id="bulk-hash-bar" class="hash-progress-fill" style="width:0%"></div></div>
+                <span id="bulk-hash-pct" style="font-size:11px;color:var(--teal);font-weight:600;min-width:32px;text-align:right">0%</span>
+              </div>
+              <div id="hash-all-games-status" style="font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+              <div id="bulk-hash-file-status" style="font-size:10px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.75"></div>
+            </div>
+            <input id="games-search" type="text" placeholder="Search title or ID…" class="search-input"/>
+            <div class="filter-btns">
+              <button class="fbtn active" data-filter="all">All</button>
+              <button class="fbtn" data-filter="installed">Installed</button>
+              <button class="fbtn" data-filter="backed_up">Backed Up</button>
+              <button class="fbtn" data-filter="not_backed">Not Backed Up</button>
+            </div>
+            <button class="btn-pin" data-pin-id="games" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+        <div id="firmware-filter-row" class="firmware-filter-row" hidden>
+          <span class="fw-filter-label">Firmware:</span>
+          <div id="firmware-filter-btns" class="filter-btns">
+            <button class="fwbtn active" data-fw="all">All</button>
+          </div>
+        </div>
+
+        <!-- ── Conversion Queue Panel ── -->
+        <div id="conv-queue-panel" class="conv-queue-panel" hidden>
+          <div class="conv-queue-header">
+            <span class="conv-queue-title">&#9881; Conversion Queue</span>
+            <span id="conv-queue-mode-badge" class="conv-mode-badge">Raw Dumps</span>
+            <div style="flex:1"></div>
+            <button id="btn-conv-start"        class="btn btn-sm btn-accent">&#9654; Start Queue</button>
+            <button id="btn-conv-clear-done"   class="btn btn-sm"          >&#10005; Clear Done</button>
+            <button id="btn-conv-cleanup-temp" class="btn btn-sm" title="Delete leftover temp folders and partial output files from failed conversions">&#129529; Clean Temp</button>
+            <button id="btn-conv-queue-toggle" class="btn btn-sm"  title="Collapse / expand the queue list">&#8595;</button>
+          </div>
+          <!-- Mode switcher -->
+          <div class="conv-mode-switcher">
+            <span class="conv-mode-switcher-label">Mode:</span>
+            <button class="conv-mode-btn" data-conv-mode="pfs"   title="Raw Dumps — direct FTP folder upload (no conversion)">Raw Dumps</button>
+            <button class="conv-mode-btn" data-conv-mode="ffpkg" title="FFPKG — convert via UFS2Tool (Windows only)">FFPKG <span class="badge-os">win</span></button>
+            <button class="conv-mode-btn" data-conv-mode="exfat" title="ExFAT — create mountable image (Windows only)">ExFAT <span class="badge-os">win</span></button>
+            <button class="conv-mode-btn" data-conv-mode="ffpfsc" title="FFPFSC — native compressed PFS image (all platforms, no admin)">FFPFSC</button>
+          </div>
+          <!-- Not-configured warning (shown when active mode needs setup) -->
+          <div id="conv-mode-warn" class="conv-mode-warn" hidden>
+            <span id="conv-mode-warn-text"></span>
+            <button id="btn-conv-goto-settings" class="btn btn-sm">&#9881; Open Settings</button>
+          </div>
+          <!-- Not-admin warning (shown when FFPKG/ExFAT selected but not elevated) -->
+          <div id="conv-admin-warn" class="conv-mode-warn conv-admin-warn" hidden>
+            <span>&#9888;&nbsp; Not running as Administrator &mdash; FFPKG&nbsp;/&nbsp;ExFAT conversions will fail. Close the app, and &rarr; <strong>Run&nbsp;as&nbsp;administrator</strong>.</span>
+          </div>
+          <div id="conv-queue-body">
+            <div id="conv-queue-list" class="conv-queue-list"></div>
+            <div id="conv-queue-empty" class="conv-queue-empty" hidden>No jobs in queue.</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="games-table">
+            <thead>
+              <tr>
+                <th data-col="title">Title <span class="sort-icon">⇅</span></th>
+                <th data-col="game_id">ID <span class="sort-icon">⇅</span></th>
+                <th data-col="version">Ver <span class="sort-icon">⇅</span></th>
+                <th data-col="backup_size">Size <span class="sort-icon">⇅</span></th>
+                <th>Backporks</th>
+                <th title="● PS5 installed  ■ Backed up  🔢 Backup count">Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="games-tbody"></tbody>
+          </table>
+          <div id="games-empty" class="empty-msg">No games found. Connect to PS5 and run a scan.</div>
+        </div>
+      </div>
+
+      <!-- ── Backporks ── -->
+      <div id="page-backporks" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.backporks">Backporks</h1>
+          <div class="header-tools">
+            <button id="btn-rescan-all-backporks" class="btn btn-teal">&#8635; Rescan All</button>
+            <button id="btn-hash-all-backporks" class="btn btn-accent" title="SHA-256 hash all backpork backup files">&#9636; Hash All Backporks</button>
+            <span id="hash-all-backporks-status" class="hint" style="font-size:11px"></span>
+            <button id="btn-create-fw-folder" class="btn">+ New Firmware Folder</button>
+            <button id="btn-add-backpork" class="btn btn-accent">Select Backpork Folder</button>
+          </div>
+        </div>
+        <p class="hint" style="color:var(--text-dim)">
+          Select your root backpork folder. Porkfolio will automatically scan all
+          firmware sub-folders inside it (e.g. <code>4.xx</code>, <code>7.xx</code>),
+          tag each game with its firmware label, and fetch metadata automatically.
+        </p>
+
+        <!-- ── Bulk Apply Progress Panel ── -->
+        <div id="pork-all-progress-panel" class="card" style="margin-bottom:18px;display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <strong id="pork-all-queue-label" style="font-size:13px">Applying backporks to PS5…</strong>
+            <span id="pork-all-queue-count" style="font-size:11px;color:var(--text-dim)"></span>
+          </div>
+          <!-- Overall queue bar -->
+          <div class="hash-progress-bar" style="margin-bottom:6px"><div class="hash-progress-fill" id="pork-all-queue-fill" style="width:0%"></div></div>
+          <!-- Current game label -->
+          <div id="pork-all-current-game" style="font-size:12px;color:var(--text-dim);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+          <!-- Per-file progress bar -->
+          <div class="hash-progress-bar" style="margin-bottom:4px"><div class="hash-progress-fill" id="pork-all-file-fill" style="width:0%;background:var(--accent)"></div></div>
+          <div id="pork-all-file-label" style="font-size:11px;color:var(--text-dim);margin-bottom:10px"></div>
+          <!-- Scrolling log -->
+          <div id="pork-all-log" style="
+            background:rgba(0,0,0,0.35);
+            border:1px solid rgba(255,255,255,0.07);
+            border-radius:6px;
+            padding:8px 10px;
+            font-family:monospace;
+            font-size:11px;
+            line-height:1.6;
+            max-height:180px;
+            overflow-y:auto;
+            color:var(--text-dim);
+            white-space:pre-wrap;
+            word-break:break-all;
+          "></div>
+        </div>
+
+        <!-- ── Auto-Generate Backporks ── -->
+        <div id="bpgen-panel" class="card bpgen-panel" style="margin-bottom:18px">
+          <div class="bpgen-summary">
+            <span class="bpgen-summary-icon">&#9881;</span>
+            <strong>Auto-Generate Backporks</strong>
+          </div>
+
+          <div class="bpgen-body">
+
+            <!-- SDK Pair -->
+            <div class="form-row bpgen-row">
+              <label class="bpgen-label">SDK Target</label>
+              <select id="bpgen-sdk-pair" class="filter-select" style="flex:1"></select>
+              <span class="hint" style="font-size:11px;white-space:nowrap">Pair 1-6 apply libc patch; 7-10 revert it</span>
+            </div>
+
+            <!-- Game selection mode -->
+            <div class="form-row bpgen-row">
+              <label class="bpgen-label">Games to Process</label>
+              <select id="bpgen-mode" class="filter-select">
+                <option value="all-missing">All games missing a backpork</option>
+                <option value="fw-missing">Games missing a specific firmware backpork</option>
+                <option value="specific">Select specific games…</option>
+              </select>
+            </div>
+
+            <!-- Firmware filter (shown only for fw-missing mode) -->
+            <div id="bpgen-fw-filter-row" class="form-row bpgen-row" hidden>
+              <label class="bpgen-label">Existing Firmware Label</label>
+              <input id="bpgen-fw-filter" type="text" placeholder="e.g. 4.xx" style="width:140px"/>
+              <span class="hint" style="font-size:11px">Games missing a backpork for this label will be processed</span>
+            </div>
+
+            <!-- Game picker (shown only for specific mode) -->
+            <div id="bpgen-game-picker" class="bpgen-game-picker" hidden>
+              <div class="bpgen-picker-header">
+                <span class="hint">Select games to process</span>
+                <button id="bpgen-select-all"  class="btn btn-sm">All</button>
+                <button id="bpgen-select-none" class="btn btn-sm">None</button>
+              </div>
+              <div id="bpgen-game-list" class="bpgen-game-list"></div>
+            </div>
+
+            <!-- Output folder -->
+            <div class="form-row bpgen-row">
+              <label class="bpgen-label">Output Folder</label>
+              <input id="bpgen-output-dir" type="text" placeholder="Root folder for backpork output…" readonly style="flex:1"/>
+              <button id="bpgen-btn-output" type="button" class="btn btn-sm" onclick="return window.bpgenBrowseOutput ? window.bpgenBrowseOutput() : false;">Browse…</button>
+            </div>
+
+            <!-- Firmware label for output -->
+            <div class="form-row bpgen-row">
+              <label class="bpgen-label">Firmware Label</label>
+              <input id="bpgen-fw-label" type="text" placeholder="e.g. 4.xx" readonly style="width:140px"/>
+            </div>
+
+            <!-- Fakelib folder (optional) -->
+            <div class="form-row bpgen-row">
+              <label class="bpgen-label">Fakelib Folder <span class="hint">(optional, or use manager below)</span></label>
+              <input id="bpgen-fakelib-dir" type="text" placeholder="Path to fakelib/ SPRX folder… (auto-set if Manager is configured)" readonly style="flex:1"/>
+              <button id="bpgen-btn-fakelib" type="button" class="btn btn-sm" onclick="return window.bpgenBrowseFakelib ? window.bpgenBrowseFakelib() : false;">Browse…</button>
+            </div>
+
+            <!-- ── Fakelib Manager ───────────────────────────────────────── -->
+            <div id="bpgen-fl-panel" class="bpgen-fl-panel">
+              <div class="bpgen-fl-summary">
+                Fakelib Manager
+                <span class="hint" style="font-size:11px;font-weight:normal"> — extract .sprx/.prx from decrypted PS5 firmware</span>
+                <span id="bpgen-fl-summary-status" class="bpgen-fl-badge"></span>
+              </div>
+              <div class="bpgen-fl-body">
+
+                <!-- Base dir -->
+                <div class="form-row bpgen-row" style="margin-top:8px">
+                  <label class="bpgen-label">Fakelib Base Dir</label>
+                  <input id="bpgen-fl-basedir" type="text" placeholder="Folder that will contain numbered subfolders 1–10…" readonly style="flex:1"/>
+                  <button id="bpgen-fl-btn-base" type="button" class="btn btn-sm" onclick="return window.bpgenBrowseBaseDir ? window.bpgenBrowseBaseDir() : false;">Browse…</button>
+                </div>
+
+                <!-- Per-pair status grid (rendered by JS) -->
+                <div id="bpgen-fl-grid" class="bpgen-fl-grid" hidden></div>
+
+                <!-- Import PUP form (shown after selecting a pair) -->
+                <div id="bpgen-fl-import-row" class="form-row bpgen-row" hidden style="margin-top:6px">
+                  <label class="bpgen-label">Import for Pair <span id="bpgen-fl-import-pair-label"></span></label>
+                  <input id="bpgen-fl-pup-path" type="text" placeholder="Select decrypted .PUP.dec file…" readonly style="flex:1"/>
+                  <button id="bpgen-fl-btn-pick-pup" type="button" class="btn btn-sm" onclick="return window.bpgenBrowsePup ? window.bpgenBrowsePup() : false;">Browse…</button>
+                  <button id="bpgen-fl-btn-extract" type="button" class="btn btn-accent btn-sm" onclick="return window._bpgenButtonClick ? window._bpgenButtonClick('extract') : false;">Extract</button>
+                </div>
+
+                <!-- Extraction progress -->
+                <div id="bpgen-fl-progress-wrap" hidden style="margin-top:8px">
+                  <div class="bpgen-progress-bar-wrap">
+                    <div id="bpgen-fl-progress-bar" class="bpgen-progress-bar" style="width:0%"></div>
+                  </div>
+                  <div id="bpgen-fl-progress-label" class="hint" style="font-size:11px;margin-top:3px"></div>
+                </div>
+
+                <p class="hint" style="font-size:11px;margin-top:8px;line-height:1.5">
+                  Fakelibs are .sprx/.prx system libraries from official PS5 firmware and cannot be distributed.
+                  Decrypt a firmware PUP on a jailbroken PS5 using
+                  <a href="https://github.com/zecoxao/ps5-pup-decrypt" class="external-link" data-url="https://github.com/zecoxao/ps5-pup-decrypt">ps5_pup_decrypt</a>
+                  to get a <code>.PUP.dec</code> file, then import it here.
+                  The tool <strong>ps5-pup-unpacker</strong> (by zecoxao) will be auto-downloaded to extract the libraries.
+                </p>
+              </div>
+            </div>
+
+            <!-- Options -->
+            <div class="form-row bpgen-row" style="gap:16px">
+              <label class="bpgen-label">Options</label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input id="bpgen-overwrite" type="checkbox"/>
+                Re-process games that already have output
+              </label>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="form-row bpgen-row" style="gap:8px;margin-top:4px">
+              <button id="bpgen-btn-run" type="button" class="btn btn-accent" onclick="return window._bpgenButtonClick ? window._bpgenButtonClick('run') : false;">&#9654; Generate Backporks</button>
+              <button id="bpgen-btn-cancel" type="button" class="btn" disabled onclick="return window._bpgenButtonClick ? window._bpgenButtonClick('cancel') : false;">&#9632; Cancel</button>
+              <span id="bpgen-status" class="hint bpgen-status"></span>
+            </div>
+
+            <!-- Progress -->
+            <div id="bpgen-progress-wrap" hidden style="margin-top:10px">
+              <div class="bpgen-progress-bar-wrap">
+                <div id="bpgen-progress-bar" class="bpgen-progress-bar" style="width:0%"></div>
+              </div>
+              <div id="bpgen-progress-label" class="hint" style="font-size:11px;margin-top:3px"></div>
+              <div id="bpgen-log" class="bpgen-log"></div>
+            </div>
+
+          </div><!-- /.bpgen-body -->
+        </div>
+
+        <div id="new-fw-form" hidden class="card" style="margin-bottom:14px">
+          <div class="card-header"><h3>Create New Firmware Folder</h3></div>
+          <p class="hint" style="margin-bottom:10px">Creates a new subfolder in a location you choose and registers it. Version must follow <code>x.x.x</code> format (e.g. <code>11.50.0</code>).</p>
+          <div class="form-row" style="gap:8px;align-items:center">
+            <input id="new-fw-name" type="text" placeholder="x.x.x" style="width:100px"/>
+            <input id="new-fw-parent" type="text" placeholder="Parent folder…" readonly style="flex:1"/>
+            <button id="btn-new-fw-browse" class="btn">Browse…</button>
+            <button id="btn-new-fw-create" class="btn btn-accent">Create</button>
+            <button id="btn-new-fw-cancel" class="btn">Cancel</button>
+          </div>
+        </div>
+
+        <div id="backpork-list" class="backpork-list"></div>
+        <div id="backpork-empty" class="empty-msg" style="display:none">
+          No firmware folders added yet. Click <strong>Select Backpork Folder</strong> to get started.
+        </div>
+
+      </div>
+
+      <!-- ── Backups ── -->
+      <div id="page-backups" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.backups">Backups</h1>
+          <div class="header-tools">
+            <input id="backups-search" type="text" placeholder="Search games…" class="search-input"/>
+            <select id="backups-region-filter" class="filter-select">
+              <option value="">All Regions</option>
+            </select>
+            <button id="btn-scan-local" class="btn btn-teal">&#8635; Scan Local Folder</button>
+            <button class="btn-pin" data-pin-id="backups" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+        <div id="backups-list"></div>
+        <div id="backups-empty" class="empty-msg" hidden>No backups found. Add a folder in Settings &rarr; Game Source Folders and scan.</div>
+      </div>
+
+      <!-- ── Media ── -->
+      <div id="page-media" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.media">Media</h1>
+          <div class="header-tools">
+            <input id="media-search" type="text" placeholder="Search game ID or filename…" class="search-input" style="width:220px"/>
+            <button id="btn-media-scan" class="btn btn-accent">&#8635; Scan via FTP</button>
+            <button id="btn-clip-thumbs" class="btn btn-sm" style="display:none" title="Generate thumbnails for all video clips that don't have one yet">&#127916; Fetch Clip Thumbnails</button>
+            <button class="btn-pin" data-pin-id="media" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+
+        <!-- Save folder row -->
+        <div class="media-save-bar">
+          <span class="media-save-label">Save to</span>
+          <input id="media-save-path" type="text" readonly placeholder="Select a folder for downloads…" class="path-input" style="flex:1"/>
+          <button id="btn-media-save-browse" class="btn btn-sm">Browse…</button>
+          <button id="btn-media-open-folder" class="btn btn-sm" title="Open folder in Explorer">📂 Open</button>
+        </div>
+
+        <!-- Scan status / progress line -->
+        <div id="media-scan-status" class="media-scan-status" hidden></div>
+        <!-- Thumbnail loading progress (shown while observer fetches previews) -->
+        <div id="media-thumb-status" class="media-thumb-status" hidden></div>
+
+        <!-- Filter tabs -->
+        <div class="filter-bar" style="margin-bottom:12px">
+          <button class="fbtn active" data-mfilter="all">All <span id="media-count-all" class="tab-badge"></span></button>
+          <button class="fbtn" data-mfilter="screenshot">Screenshots <span id="media-count-screenshots" class="tab-badge"></span></button>
+          <button class="fbtn" data-mfilter="clip">Video Clips <span id="media-count-clips" class="tab-badge"></span></button>
+          <select id="media-sort" class="media-sort-select" title="Sort order">
+            <option value="date-desc" selected>Newest first</option>
+            <option value="date-asc">Oldest first</option>
+            <option value="size-desc">Largest first</option>
+            <option value="name-asc">Name A–Z</option>
+          </select>
+        </div>
+
+        <div id="media-grid" class="media-grid"></div>
+        <div id="media-empty" class="empty-msg" hidden>No media found. Connect to your PS5 and click Scan via FTP.</div>
+      </div>
+
+      <!-- ── Cheats ── -->
+      <div id="page-cheats" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.cheats">Cheats</h1>
+          <div class="header-tools">
+            <input id="cheats-search" type="text" placeholder="Search by title or ID…" class="search-input" style="width:220px"/>
+            <button id="btn-cheats-download-all" class="btn btn-accent">&#8659; Cache All Cheats</button>
+            <button id="btn-cheats-ftp-install" class="btn btn-teal">&#8679; Install via FTP</button>
+            <button class="btn-pin" data-pin-id="cheats" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+
+        <!-- FTP install panel (hidden until active) -->
+        <div id="cheats-ftp-panel" hidden class="card" style="margin-bottom:14px">
+          <div class="card-header" style="justify-content:space-between">
+            <h3 id="cheats-ftp-title">Install Cheats via FTP</h3>
+            <button id="btn-cheats-ftp-close" class="btn btn-sm">✕ Close</button>
+          </div>
+          <div class="cheats-ftp-instructions">
+            <div id="cheats-ftp-no-path-warn" hidden style="background:rgba(255,160,0,.12);border:1px solid rgba(255,160,0,.4);border-radius:6px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#ffa040">
+              ⚠️ No cheats FTP path configured. Set one below or in <strong>Settings → Cheats Manager</strong>.
+            </div>
+            <div class="form-row" style="align-items:center;gap:8px;margin-bottom:12px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">PS5 Cheats Path</label>
+              <input id="cheats-ftp-path" type="text" placeholder="/data/etaHEN/cheats/" style="flex:1"/>
+              <button id="btn-cheats-ftp-browse" class="btn btn-sm">Browse…</button>
+            </div>
+            <p class="hint" style="margin-bottom:10px">Porkfolio will upload all cached cheat JSON files directly into this folder on your PS5.</p>
+            <button id="btn-cheats-ftp-go" class="btn btn-teal">&#8679; Install Now</button>
+          </div>
+          <div id="cheats-ftp-progress-wrap" hidden>
+            <div class="cheats-progress-bar-wrap">
+              <div id="cheats-ftp-bar" class="cheats-progress-bar" style="width:0%"></div>
+            </div>
+            <div class="cheats-dl-stats">
+              <span id="cheats-ftp-phase">Preparing…</span>
+              <span id="cheats-ftp-count"></span>
+              <span id="cheats-ftp-pct">0%</span>
+            </div>
+            <div class="cheats-dl-current" id="cheats-ftp-current"></div>
+          </div>
+        </div>
+
+        <!-- Download-all progress panel (hidden until active) -->
+        <div id="cheats-dl-panel" hidden class="card" style="margin-bottom:14px">
+          <div class="card-header" style="justify-content:space-between">
+            <h3 id="cheats-dl-title">Downloading cheat database…</h3>
+            <button id="btn-cheats-dl-cancel" class="btn btn-sm btn-danger">Cancel</button>
+          </div>
+          <div class="cheats-progress-bar-wrap">
+            <div id="cheats-dl-bar" class="cheats-progress-bar" style="width:0%"></div>
+          </div>
+          <div class="cheats-dl-stats">
+            <span id="cheats-dl-count">0 / 0</span>
+            <span id="cheats-dl-pct">0%</span>
+            <span id="cheats-dl-saved">Saved: 0</span>
+            <span id="cheats-dl-failed">Failed: 0</span>
+            <span id="cheats-dl-speed"></span>
+            <span id="cheats-dl-eta">ETA: —</span>
+          </div>
+          <div class="cheats-dl-current" id="cheats-dl-current"></div>
+        </div>
+
+        <!-- Cache stats bar -->
+        <div id="cheats-stats-bar" class="cheats-stats-bar">
+          <span id="cheats-stat-files">0 files cached</span>
+          <span id="cheats-stat-games">covering 0 games</span>
+        </div>
+
+        <!-- Results -->
+        <div id="cheats-list" class="cheats-list"></div>
+        <div id="cheats-empty" class="empty-msg" hidden>No cheats found. Try a different search or cache the database above.</div>
+
+        <!-- Unmatched cheats (collapsed by default) -->
+        <details id="cheats-unmatched-section" style="margin-top:18px" hidden>
+          <summary class="cheats-unmatched-summary">
+            Unmatched Cheats <span id="cheats-unmatched-count" class="tab-badge"></span>
+            <span style="opacity:.55;font-size:.8em;margin-left:8px">Files with no recognized game ID — assign one manually</span>
+          </summary>
+          <div id="cheats-unmatched-list" class="cheats-unmatched-list"></div>
+        </details>
+      </div>
+
+      <!-- ── Database ── -->
+      <div id="page-database" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.database">Database</h1>
+          <div class="header-tools">
+            <button class="btn btn-teal" id="btn-export-sql">Export SQL</button>
+            <button class="btn" id="btn-export-games-csv">Export Games CSV</button>
+            <button class="btn" id="btn-export-backups-csv">Export Backups CSV</button>
+            <button class="btn" id="btn-export-hashes" title="Export verified hashes to share with the community">Export Hash DB</button>
+            <button class="btn btn-danger" id="btn-clear-db">Clear Database</button>
+          </div>
+        </div>
+
+        <div class="db-tabs">
+          <button class="db-tab active" data-dbtab="games">Games Table</button>
+          <button class="db-tab" data-dbtab="backups">Backups Table</button>
+          <button class="db-tab" data-dbtab="hash-rows">Hashes Table</button>
+          <button class="db-tab" data-dbtab="query">SQL Query</button>
+          <button class="db-tab" data-dbtab="hashes">Hash Database</button>
+        </div>
+
+        <div id="dbtab-games" class="db-panel active">
+          <div class="db-row-toolbar" id="toolbar-games" hidden>
+            <span class="db-row-toolbar-count" id="toolbar-games-count">0 selected</span>
+            <button class="btn btn-danger btn-sm" id="btn-delete-games">&#128465; Delete Selected</button>
+            <button class="btn btn-sm" id="btn-select-all-games">Select All</button>
+            <button class="btn btn-sm" id="btn-deselect-all-games">Deselect All</button>
+          </div>
+          <div class="table-wrap"><table id="db-games-table"><thead></thead><tbody></tbody></table></div>
+        </div>
+
+        <div id="dbtab-backups" class="db-panel">
+          <div class="db-row-toolbar" id="toolbar-backups" hidden>
+            <span class="db-row-toolbar-count" id="toolbar-backups-count">0 selected</span>
+            <button class="btn btn-danger btn-sm" id="btn-delete-backups">&#128465; Delete Selected</button>
+            <button class="btn btn-sm" id="btn-select-all-backups">Select All</button>
+            <button class="btn btn-sm" id="btn-deselect-all-backups">Deselect All</button>
+          </div>
+          <div class="table-wrap"><table id="db-backups-table"><thead></thead><tbody></tbody></table></div>
+        </div>
+
+        <div id="dbtab-hash-rows" class="db-panel">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 0 8px">
+            <span class="hint" id="hash-rows-count" style="font-size:12px"></span>
+            <button id="btn-clear-hashes" class="btn btn-danger btn-sm" style="margin-left:auto">&#128465; Clear All Hashes</button>
+          </div>
+          <div class="db-row-toolbar" id="toolbar-hashes" hidden>
+            <span class="db-row-toolbar-count" id="toolbar-hashes-count">0 selected</span>
+            <button class="btn btn-danger btn-sm" id="btn-delete-hashes">&#128465; Delete Selected</button>
+            <button class="btn btn-sm" id="btn-select-all-hashes">Select All</button>
+            <button class="btn btn-sm" id="btn-deselect-all-hashes">Deselect All</button>
+          </div>
+          <div class="table-wrap"><table id="db-hash-rows-table"><thead></thead><tbody></tbody></table></div>
+        </div>
+
+        <div id="dbtab-query" class="db-panel">
+          <div class="query-area">
+            <textarea id="query-input" placeholder="SELECT * FROM games LIMIT 50;"></textarea>
+            <button id="btn-run-query" class="btn btn-accent">Run Query</button>
+          </div>
+          <div id="query-results"></div>
+        </div>
+
+        <div id="dbtab-hashes" class="db-panel">
+          <div class="hash-db-card">
+            <div class="hash-db-info-row">
+              <div>
+                <div class="hash-db-label">Community Hash List</div>
+                <div style="margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <span id="hdb-community-count" class="hash-badge hash-none">0 hashes</span>
+                  <span id="hdb-community-ver" class="hint" style="font-size:11px"></span>
+                  <span id="hdb-community-source" class="hint" style="font-size:11px"></span>
+                </div>
+                <p class="hint" style="margin-top:8px;font-size:11px">The community hash list contains SHA-256 hashes of known-good game files.<br>If your files match &mdash; verified clean. If the list has your game but hashes differ &mdash; <strong style="color:var(--red)">possible modification or brick code</strong>.</p>
+              </div>
+              <div>
+                <div class="hash-db-label">Your Verified Hashes</div>
+                <div style="margin-top:5px"><span id="hdb-local-count" class="hash-badge hash-none">—</span></div>
+              </div>
+            </div>
+            <div class="hash-db-actions">
+              <button id="btn-import-community-hashes" class="btn btn-teal" title="Load a community-maintained hash JSON file to enable verification">&#8659; Import Community Hash List</button>
+              <button id="btn-hdb-export" class="btn" title="Export your verified hashes to share with the community">&#8657; Export My Hashes</button>
+              <button id="btn-hdb-clear-hashes" class="btn btn-danger" title="Delete all stored hashes from the database">&#128465; Clear Hashes</button>
+            </div>
+          </div>
+          <div id="hdb-game-list"></div>
+        </div>
+      </div>
+
+      <!-- ── Manage Jailbreak ── -->
+      <div id="page-jailbreak" class="page">
+        <div class="page-header"><h1 data-i18n="page.jailbreak">Manage Jailbreak</h1></div>
+
+        <!-- Payload Update Checker -->
+        <div class="card jb-card" id="payload-update-card">
+          <div class="card-header">
+            <h3>Payload Update Checker</h3>
+            <button class="btn-pin" data-pin-id="payload-update" title="Pin to Dashboard">&#128204;</button>
+          </div>
+          <p class="hint">Check configured sources for new payload releases. Sources can be GitHub repos (<code>github.com/owner/repo</code>) or any hosted page containing <code>.bin</code>, <code>.js</code>, or <code>.elf</code> links. Configure sources in <strong>Settings &rarr; Payload Remote Sources</strong>. Downloads update your local copy; &#8593;&nbsp;PS5 pushes the file via FTP.</p>
+          <div class="jb-actions" style="margin-bottom:10px">
+            <button class="btn btn-teal" id="btn-payload-check-all">&#8635; Check All Sources</button>
+            <span id="payload-check-status" class="hint" style="margin-left:8px"></span>
+          </div>
+          <div id="payload-sources-check-list" class="payload-source-check-list"></div>
+        </div>
+
+        <!-- Payload Manager -->
+        <div class="card jb-card" id="payload-manager-card">
+          <div class="card-header">
+            <h3>Payload Manager</h3>
+            <button class="btn-icon-sm" id="btn-payload-settings" title="Payload Manager Settings" style="margin-left:auto">&#9881;</button>
+            <button class="btn-pin" data-pin-id="payload-mgr" title="Pin to Dashboard">&#128204;</button>
+          </div>
+
+          <!-- Local Payloads -->
+          <div class="jb-section">
+            <div class="jb-section-title">Local Payloads</div>
+            <p class="hint">Files saved to your configured local payloads folder. Click &#8593;&nbsp;FTP to push to PS5 via transfer queue.</p>
+            <div id="payload-local-list" class="payload-card-list"></div>
+            <div id="payload-local-empty" class="jb-list-placeholder" hidden>
+              No local payloads. Download from a source above or set a payloads folder in Settings.
+            </div>
+          </div>
+
+          <!-- PS5 Payload Sender -->
+          <div class="jb-section">
+            <div class="jb-section-title">PS5 Payload Sender</div>
+            <p class="hint">Send a payload directly to your PS5 over a raw TCP connection &mdash; no FTP needed. Uses the PS5 IP from your FTP settings. Match the port to whatever exploit host (e.g.&nbsp;bin-loader) is listening on the PS5.</p>
+            <div class="payload-sender-bar">
+              <label class="payload-sender-port-label">Port
+                <input type="number" id="payload-sender-port" value="9021" min="1" max="65535" class="payload-sender-port-input">
+              </label>
+              <span id="payload-sender-status" class="payload-sender-status hint"></span>
+            </div>
+            <div id="payload-sender-list" class="payload-card-list"></div>
+            <div id="payload-sender-empty" class="jb-list-placeholder" hidden>
+              No local payloads. Add some via the Local Payloads section above.
+            </div>
+          </div>
+
+          <!-- PS5 Autoloader -->
+          <div class="jb-section">
+            <div class="jb-section-title">
+              PS5 Autoloader
+              <span class="autoloader-path-hint">/data/ps5_autoloader</span>
+            </div>
+            <p class="hint">Build and upload the autoload sequence. Payloads run top-to-bottom on jailbreak; delay rows (<code>!ms</code>) pause between them for stability.</p>
+            <div class="autoloader-toolbar">
+              <button class="btn" id="btn-autoloader-refresh">&#8635; Refresh</button>
+              <button class="btn btn-teal" id="btn-autoloader-save" disabled>&#8679; Save to PS5</button>
+              <span id="autoloader-status" class="hint autoloader-status-text"></span>
+            </div>
+
+            <div class="autoloader-layout">
+
+              <!-- Left: available files in /data/ps5_autoloader -->
+              <div class="autoloader-available">
+                <div class="autoloader-col-header">Files on PS5</div>
+                <div id="autoloader-file-list" class="autoloader-file-list">
+                  <p class="hint autoloader-empty-hint">Click Refresh to load.</p>
+                </div>
+              </div>
+
+              <!-- Right: autoload.txt sequence editor -->
+              <div class="autoloader-editor">
+                <div class="autoloader-col-header">autoload.txt sequence</div>
+                <div id="autoloader-sequence" class="autoloader-sequence">
+                  <p class="hint autoloader-empty-hint">Click Refresh to load or build a sequence from the files on the left.</p>
+                </div>
+                <div class="autoloader-seq-footer">
+                  <button class="btn" id="btn-autoloader-add-delay">&#43; Add Delay</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Autoloader Snapshots -->
+          <div class="jb-section" id="autoloader-snapshots-section">
+            <div class="jb-section-title">
+              Autoloader Snapshots
+              <span class="autoloader-path-hint" style="font-size:11px">backup &amp; restore</span>
+            </div>
+            <p class="hint">Save a snapshot of all payload files and <code>autoload.txt</code> from the PS5 to your PC. If the payload environment gets corrupted, restore any snapshot to recover your full setup instantly.</p>
+            <div class="snapshot-toolbar">
+              <input id="snapshot-label" type="text" placeholder="Label (optional)" style="flex:1;max-width:260px"/>
+              <button class="btn btn-teal" id="btn-snapshot-take">&#128247; Take Snapshot</button>
+              <button class="btn" id="btn-snapshot-import" title="Import a .porksnap file">&#8599; Import</button>
+              <span id="snapshot-take-status" class="hint" style="font-size:12px"></span>
+            </div>
+            <div id="snapshot-list" class="snapshot-list">
+              <p class="hint autoloader-empty-hint">No snapshots yet. Take one above.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- System View mini-card -->
+        <div class="sv-mini-card" id="sv-mini-jailbreak">
+          <div class="sv-mini-header" id="sv-mini-jailbreak-hdr">
+            <span class="sv-mini-title">&#128250; System View</span>
+            <span class="sv-mini-chevron">&#9660;</span>
+          </div>
+          <div class="sv-mini-body">
+            <p class="hint" id="sv-mini-jailbreak-status">No capture device selected.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="btn-sv-mini-jailbreak-nav">Go to System View</button>
+              <button class="btn btn-teal" id="btn-sv-mini-jailbreak-popout">&#8599; Pop Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Notification Debug ── -->
+      <div id="page-psnotify" class="page">
+        <div class="page-header"><h1 data-i18n="page.psnotify">Notification Debug</h1></div>
+
+        <!-- Send custom notification -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Send Notification</h3>
+            <button class="btn-pin" data-pin-id="psnotify" title="Pin to Dashboard">&#128204;</button>
+          </div>
+          <p class="hint">Send a toast notification to your PS5. Uses the PS5's IP from your FTP settings.</p>
+          <div class="form-grid" style="margin-top:10px">
+            <label>Message
+              <input type="text" id="psn-message" placeholder="e.g. Build complete!" maxlength="120"/>
+            </label>
+            <label>Sub-message <span class="hint" style="display:inline">(optional)</span>
+              <input type="text" id="psn-submessage" placeholder="e.g. v2.1.0 is live" maxlength="120"/>
+            </label>
+          </div>
+          <div class="form-row" style="margin-top:12px;gap:10px">
+            <button class="btn btn-teal" id="btn-psn-send">&#128276; Send</button>
+            <button class="btn" id="btn-psn-test">Test Connection</button>
+            <span id="psn-status" class="hint"></span>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="card">
+          <div class="card-header"><h3>Settings</h3></div>
+          <p class="hint">PS Notify connects to your PS5 on TCP port 6969 (customPSNotify.js). The PS5 IP is shared with FTP settings.</p>
+          <div class="form-row" style="margin-top:10px;gap:16px;align-items:center">
+            <label style="flex-direction:row;align-items:center;gap:8px;font-size:13px">
+              <input type="checkbox" id="psn-enabled"/>
+              Enable auto-notifications
+            </label>
+            <label style="flex-direction:row;align-items:center;gap:8px;font-size:13px">
+              Port
+              <input type="text" id="psn-port" placeholder="6969" style="width:80px"/>
+            </label>
+            <button class="btn" id="btn-psn-save-settings">Save</button>
+          </div>
+        </div>
+
+        <!-- Push patched payload -->
+        <div class="card">
+          <div class="card-header"><h3>Install Custom PS Notification Payload</h3></div>
+          <p class="hint">Installs the custom notification payload onto your PS5, enabling Porkfolio to send debug notifications directly to your console. Add customPSNotify.js to autoloader.txt and restart your PS5 to use.</p>
+          <div class="form-row" style="margin-top:12px;gap:10px;align-items:center">
+            <button class="btn btn-teal" id="btn-psn-push-payload">Install Payload to PS5</button>
+            <span id="psn-push-status" class="hint"></span>
+          </div>
+        </div>
+
+        <!-- Color & Encoding Experiments -->
+        <div class="card">
+          <div class="card-header"><h3>Color &amp; Encoding Experiments</h3></div>
+          <p class="hint">Tests for what the PS5 notification system can render. Emoji squares below require the patched payload (above). HTML / ANSI tests probe whether <code>send_notification</code> interprets markup &mdash; report back what you see.</p>
+
+          <div style="margin-top:14px">
+            <p class="hint" style="margin-bottom:6px"><strong style="color:var(--text)">HTML markup</strong> &mdash; tests whether <code>send_notification</code> passes the string through a WebKit renderer</p>
+            <div class="form-row" style="gap:8px;flex-wrap:wrap">
+              <button class="btn btn-xs" id="btn-psn-exp-html-red">&lt;font color&gt; red</button>
+              <button class="btn btn-xs" id="btn-psn-exp-html-multi">multi-colour HTML</button>
+              <button class="btn btn-xs" id="btn-psn-exp-sony-tag">Sony $[color] tag</button>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <p class="hint" style="margin-bottom:6px"><strong style="color:var(--text)">Emoji colour squares</strong> &mdash; 4-byte UTF-8; garbled with stock payload, works after <code>TextDecoder</code> patch</p>
+            <div class="form-row" style="gap:8px;flex-wrap:wrap">
+              <button class="btn btn-xs" id="btn-psn-exp-sq-red">&#129509; Red</button>
+              <button class="btn btn-xs" id="btn-psn-exp-sq-green">&#129513; Green</button>
+              <button class="btn btn-xs" id="btn-psn-exp-sq-blue">&#129510; Blue</button>
+              <button class="btn btn-xs" id="btn-psn-exp-sq-yellow">&#129512; Yellow</button>
+              <button class="btn btn-xs" id="btn-psn-exp-sq-all">&#129509;&#129511;&#129512;&#129513;&#129510;&#129514; All</button>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <p class="hint" style="margin-bottom:6px"><strong style="color:var(--text)">
+            <div class="form-row" style="gap:8px;flex-wrap:wrap">
+              <button class="btn btn-xs" id="btn-psn-exp-ansi-red">ANSI \x1b[31m red</button>
+              <button class="btn btn-xs" id="btn-psn-exp-ansi-bold">ANSI \x1b[1m bold</button>
+            </div>
+          </div>
+
+          <div style="margin-top:8px">
+            <span id="psn-exp-status" class="hint"></span>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Notification Log</h3>
+            <button class="btn-icon-sm" id="btn-psn-refresh-history" title="Refresh" style="margin-left:auto">&#8635;</button>
+          </div>
+          <div id="psn-history" class="psn-history"></div>
+          <div id="psn-history-empty" class="jb-list-placeholder">No notifications sent yet.</div>
+        </div>
+      </div>
+
+      <!-- ── XAvatar Management ── -->
+      <div id="page-xavatar" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.xavatar">XAvatar Management</h1>
+        </div>
+
+        <div class="xavatar-lapy-notice">
+          <b>&#9888; Requires Lapy's Avatar Changer</b> &mdash; generated <code>.xavatar</code> files are installed via the
+          <a class="external-link" data-url="https://pkg-zone.com/details/LAPY20016">Lapy's Avatar Changer</a>
+          homebrew app on your PS5. You must have that installed first.
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Convert Image to .xavatar</h3>
+            <button class="btn-pin" data-pin-id="xavatar-convert" title="Pin to Dashboard">&#128204;</button>
+          </div>
+          <div class="card-body">
+            <p style="color:var(--text-dim);margin-bottom:14px;font-size:13px">Drop or select any image to generate a PS4/PS5-compatible <code>.xavatar</code> archive containing DXT5/BC3 compressed textures at 440, 260, 128, and 64 px.</p>
+
+            <div id="xavatar-drop-zone" class="xavatar-drop-zone">
+              <input type="file" id="xavatar-file-input" accept="image/*" style="display:none">
+              <svg viewBox="0 0 48 48" width="40" height="40" class="xavatar-drop-icon"><rect x="4" y="12" width="40" height="28" rx="4" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="24" cy="26" r="8" stroke="currentColor" stroke-width="2" fill="none"/><path d="M16 12l3-4h10l3 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+              <p class="xavatar-drop-label">Drop image here, paste from clipboard, or <button class="link-btn" id="btn-xavatar-browse">browse&hellip;</button></p>
+            </div>
+
+            <canvas id="xavatar-preview" class="xavatar-preview" hidden></canvas>
+
+            <div id="xavatar-conv-progress" class="xavatar-conv-progress" hidden>
+              <div id="xavatar-conv-bar" class="xavatar-conv-bar"></div>
+            </div>
+
+            <div class="xavatar-actions">
+              <button class="btn btn-teal" id="btn-xavatar-convert" disabled>Convert &amp; Download</button>
+              <button class="btn" id="btn-xavatar-send-ps5" disabled>&#8599; Send to PS5</button>
+              <label class="toggle-label" title="Send a PS5 system notification when the upload is queued" style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);cursor:pointer;">
+                <input type="checkbox" id="xavatar-notify-toggle" checked style="cursor:pointer;"> Notify PS5
+              </label>
+              <span id="xavatar-status" class="xavatar-status"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>PS5 Avatar Library <span style="font-size:11px;color:var(--text-dim);font-weight:400">/data/AVATARS</span></h3>
+            <button class="btn-icon-sm" id="btn-xavatar-refresh-lib" title="Refresh library">&#8635;</button>
+            <button class="btn-pin" data-pin-id="xavatar-library" title="Pin to Dashboard">&#128204;</button>
+          </div>
+          <div id="xavatar-library-list"></div>
+          <div id="xavatar-library-empty" class="jb-list-placeholder">Connect to your PS5 and click refresh to view saved avatars.</div>
+        </div>
+      </div>
+
+      <!-- ── System View ── -->
+      <div id="page-system-view" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.systemView">System View</h1>
+          <div class="header-tools">
+            <button id="btn-sv-refresh-devices" class="btn" title="Refresh device list">&#8635;</button>
+            <button id="btn-sv-mute" class="btn" disabled>&#128266; Mute</button>
+            <button id="btn-sv-popout" class="btn" disabled>&#8599; Pop Out</button>
+
+            <span class="sv-tool-sep"></span>
+
+            <!-- GIF recording -->
+            <select id="sv-gif-fps" class="filter-select" style="width:74px">
+              <option value="5">5 fps</option>
+              <option value="8" selected>8 fps</option>
+              <option value="10">10 fps</option>
+              <option value="15">15 fps</option>
+            </select>
+            <button id="btn-sv-record" class="btn" disabled>&#9210; GIF</button>
+            <span id="sv-rec-status" class="sv-rec-status" hidden>
+              <span class="sv-rec-dot"></span>GIF&nbsp;<span id="sv-rec-time">0:00</span>
+            </span>
+
+            <span class="sv-tool-sep"></span>
+
+            <!-- Video recording -->
+            <select id="sv-vid-quality" class="filter-select" style="width:88px" title="Recording quality">
+              <option value="4000000">Low</option>
+              <option value="8000000" selected>Standard</option>
+              <option value="12000000">High</option>
+              <option value="20000000">Ultra</option>
+            </select>
+            <button id="btn-sv-vid-rec"   class="btn btn-sv-vid-idle"  disabled>&#9210; Video</button>
+            <button id="btn-sv-vid-pause" class="btn btn-sv-vid-pause-btn" hidden>&#9208; Pause</button>
+            <button id="btn-sv-vid-stop"  class="btn btn-sv-vid-stop-btn"  hidden>&#9209; Stop &amp; Save</button>
+            <span id="sv-vid-rec-status" class="sv-vid-rec-status" hidden>
+              <span class="sv-rec-dot"></span>
+              <span id="sv-vid-rec-label">REC</span>&nbsp;<span id="sv-vid-rec-time">0:00</span>
+              <span id="sv-vid-rec-size" class="sv-vid-rec-size"></span>
+            </span>
+            <button class="btn-pin" data-pin-id="system-view" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+
+        <div class="sv-device-bar">
+          <div class="form-row" style="align-items:center;gap:12px">
+            <label class="sv-bar-label">Video</label>
+            <select id="sv-video-device" class="filter-select" style="flex:1">
+              <option value="">— Select capture card —</option>
+            </select>
+            <label class="sv-bar-label">Audio</label>
+            <select id="sv-audio-device" class="filter-select" style="flex:1">
+              <option value="">— No audio —</option>
+            </select>
+            <label class="sv-bar-label">Resolution</label>
+            <select id="sv-resolution" class="filter-select" style="width:110px">
+              <option value="">Auto</option>
+              <option value="1280x720">1280×720</option>
+              <option value="1920x1080">1920×1080</option>
+              <option value="2560x1440">2560×1440</option>
+              <option value="3840x2160">3840×2160</option>
+            </select>
+            <span class="sv-tool-sep"></span>
+            <label class="sv-bar-label" style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none">
+              <input type="checkbox" id="sv-auto-load" style="cursor:pointer;accent-color:var(--accent)">
+              Auto-load on launch
+            </label>
+          </div>
+        </div>
+
+        <div class="sv-viewer-wrap" id="sv-viewer-wrap">
+          <video id="sv-video" autoplay playsinline></video>
+          <div class="sv-overlay-controls">
+            <button id="btn-sv-fullscreen" class="sv-overlay-btn" title="Fullscreen (or double-click)">&#x26F6;</button>
+          </div>
+          <div class="sv-no-signal" id="sv-no-signal">
+            <img id="sv-no-signal-img" src="assets/no-signal/no-signal.png" alt="No signal"
+                 style="max-width:360px;opacity:.55;pointer-events:none"/>
+            <p id="sv-no-signal-msg">Select a video source above to begin</p>
+          </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="sv-status-bar">
+          <span id="sv-status-dot" class="sv-status-dot"></span>
+          <span id="sv-status-text">No device selected</span>
+          <span id="sv-status-res" style="color:var(--text-dim);font-size:10px"></span>
+          <span id="sv-status-codec" class="sv-status-codec"></span>
+        </div>
+      </div>
+
+      <!-- Right-click context menu for System View video area -->
+      <div class="sv-ctx-menu" id="sv-ctx-menu" hidden>
+        <button class="sv-ctx-item" id="sv-ctx-fs">&#x26F6;&nbsp; Fullscreen</button>
+        <div class="sv-ctx-sep"></div>
+        <button class="sv-ctx-item" id="sv-ctx-popout" disabled>&#8599;&nbsp; Pop Out</button>
+      </div>
+
+      <!-- ── Transfer Manager ── -->
+      <div id="page-transfers" class="page">
+        <div class="page-header">
+          <h1 data-i18n="page.transfers">Transfer Manager</h1>
+          <div class="header-tools">
+            <button id="btn-transfer-pause" class="btn">⏸ Pause All</button>
+            <button id="btn-transfer-clear" class="btn">✕ Clear Done</button>
+            <button class="btn-pin" data-pin-id="transfers" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+
+        <div class="transfer-stats-bar">
+          <div class="tstat-group">
+            <span class="tstat-label">Active</span>
+            <span class="tstat-value" id="tstat-active">0</span>
+          </div>
+          <div class="tstat-group">
+            <span class="tstat-label">Queued</span>
+            <span class="tstat-value" id="tstat-queued">0</span>
+          </div>
+          <div class="tstat-group">
+            <span class="tstat-label">Speed</span>
+            <span class="tstat-value" id="tstat-speed">—</span>
+          </div>
+          <div class="tstat-group tstat-concurrent">
+            <span class="tstat-label">Concurrent</span>
+            <input type="range" id="transfer-concurrent-slider" class="concurrent-slider" min="1" max="15" value="1"/>
+            <span class="tstat-value" id="tstat-concurrent">1</span>
+          </div>
+        </div>
+
+        <div id="transfers-list"></div>
+        <div id="transfers-empty" class="empty-msg" hidden>No transfers yet. Use Upload or Pork to PS5 in game details.</div>
+
+        <!-- System View mini-card -->
+        <div class="sv-mini-card" id="sv-mini-transfers">
+          <div class="sv-mini-header" id="sv-mini-transfers-hdr">
+            <span class="sv-mini-title">&#128250; System View</span>
+            <span class="sv-mini-chevron">&#9660;</span>
+          </div>
+          <div class="sv-mini-body">
+            <p class="hint" id="sv-mini-transfers-status">No capture device selected.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn" id="btn-sv-mini-transfers-nav">Go to System View</button>
+              <button class="btn btn-teal" id="btn-sv-mini-transfers-popout">&#8599; Pop Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ELF Arsenal (successor to Voidshell) — UI built by modules/elf-arsenal.js ── -->
+      <div id="page-elf-arsenal" class="page"></div>
+
+      <!-- ── PFS Ripper — UI built by modules/pfs-ripper.js ── -->
+      <div id="page-pfs-ripper" class="page"></div>
+
+      <!-- ── Voidshell (deprecated — no longer in nav; kept to avoid dead references) ── -->
+      <div id="page-voidshell" class="page">
+        <div class="voidshell-toolbar">
+          <div class="voidshell-controls">
+            <span class="embed-page-title">Voidshell</span>
+            <span style="font-size:11px;color:var(--text-dim)">PS5:</span>
+            <span id="vs-ip-display" style="font-size:11px;font-family:monospace;color:var(--text)">(not set)</span>
+            <label style="font-size:11px;color:var(--text-dim);margin-left:8px">Port</label>
+            <input id="vs-port" type="number" min="1" max="65535" value="7007" style="width:72px;font-family:monospace;font-size:12px"/>
+            <button id="btn-vs-save" class="btn btn-xs">Save</button>
+          </div>
+          <div class="voidshell-controls">
+            <button id="btn-vs-load" class="btn btn-xs">Reload</button>
+            <button id="btn-vs-refresh" class="btn btn-xs">&#8635;</button>
+            <button id="btn-vs-open-ext" class="btn btn-xs">&#8599; Browser</button>
+            <button id="btn-vs-pin-settings" class="btn btn-xs" title="Pin VoidShell stats to dashboard">&#9881; Pin</button>
+          </div>
+        </div>
+        <div id="vs-pin-panel" class="vs-pin-panel" hidden></div>
+        <!-- ── Native VoidShell UI ── -->
+        <div class="vs-body" id="vs-body">
+
+          <!-- Nav bar -->
+          <div class="vs-nav">
+            <div class="vs-nav-tabs">
+              <button class="vs-tab active" data-vs-tab="home">Home</button>
+              <button class="vs-tab" data-vs-tab="files">Files</button>
+              <button class="vs-tab" data-vs-tab="pkg">PKG</button>
+              <button class="vs-tab" data-vs-tab="payloads">Payloads</button>
+              <button class="vs-tab" data-vs-tab="settings">Settings</button>
+              <button class="vs-tab" data-vs-tab="logs">Logs</button>
+            </div>
+            <div class="vs-status-bar">
+              <img id="vs-avatar" class="vs-avatar" src="" alt="">
+              <span id="vs-username" class="vs-username">—</span>
+              <span class="vs-sep">•</span>
+              <span id="vs-active-game" class="vs-active-game">Not connected</span>
+              <span class="vs-sep">•</span>
+              <span class="vs-temp-lbl">APU</span><span id="vs-temp-soc">—</span>
+              <span class="vs-temp-lbl">CPU</span><span id="vs-temp-cpu">—</span>
+              <span class="vs-sep">•</span>
+              <span id="vs-uptime">—</span>
+            </div>
+          </div>
+
+          <!-- Home pane -->
+          <div class="vs-pane active" id="vs-pane-home">
+            <div class="vs-hero">
+              <div class="vs-hero-art-wrap"><img id="vs-hero-art" class="vs-hero-art" src="" alt=""></div>
+              <div class="vs-hero-info">
+                <div class="vs-hero-title" id="vs-hero-title">No game running</div>
+                <div class="vs-hero-id" id="vs-hero-id"></div>
+                <div class="vs-hero-btns">
+                  <button class="btn btn-sm btn-red" id="btn-vs-close-game" hidden>✕ Close Game</button>
+                </div>
+              </div>
+            </div>
+            <div class="vs-stat-row">
+              <div class="vs-stat-card">
+                <div class="vs-stat-lbl">APU Temp</div>
+                <div class="vs-stat-val" id="vs-stat-soc">—</div>
+              </div>
+              <div class="vs-stat-card">
+                <div class="vs-stat-lbl">CPU Temp</div>
+                <div class="vs-stat-val" id="vs-stat-cpu">—</div>
+              </div>
+              <div class="vs-stat-card">
+                <div class="vs-stat-lbl">Uptime</div>
+                <div class="vs-stat-val" id="vs-stat-uptime">—</div>
+              </div>
+              <div class="vs-stat-card">
+                <div class="vs-stat-lbl">Library</div>
+                <div class="vs-stat-val" id="vs-stat-lib">—</div>
+                <div class="vs-stat-sub" id="vs-stat-lib-sub"></div>
+              </div>
+            </div>
+            <div class="vs-lib-controls">
+              <input id="vs-search" class="vs-search-input" type="text" placeholder="Search games…">
+              <button class="btn btn-xs" id="btn-vs-favs-toggle">★ Favorites</button>
+              <select id="vs-sort" class="vs-sort-sel">
+                <option value="name">Name (A–Z)</option>
+                <option value="id">ID (A–Z)</option>
+              </select>
+              <button class="btn btn-xs" id="btn-vs-rescan">↺ Rescan</button>
+            </div>
+            <div class="vs-game-grid" id="vs-game-grid">
+              <div class="vs-empty-lib">Connect to PS5 to load library.</div>
+            </div>
+          </div>
+
+          <!-- Files pane -->
+          <div class="vs-pane" id="vs-pane-files">
+            <div class="vs-files-hdr">
+              <label class="vs-safety-lbl"><input type="checkbox" id="vs-safety-mode" checked> Safety Mode</label>
+              <div id="vs-fs-prog-wrap" class="vs-fs-prog-wrap" hidden>
+                <span class="vs-fs-prog-lbl" id="vs-fs-prog-lbl">—</span>
+                <div class="vs-fs-prog-track"><div class="vs-fs-prog-fill" id="vs-fs-prog-fill"></div></div>
+                <span class="vs-fs-prog-pct" id="vs-fs-prog-pct">0%</span>
+              </div>
+            </div>
+            <div class="vs-panels">
+              <div class="vs-panel">
+                <div class="vs-panel-hdr">
+                  <button class="btn btn-xs" id="btn-vs-up-left">↑</button>
+                  <span class="vs-path" id="vs-path-left">/mnt/usb0</span>
+                </div>
+                <div class="vs-panel-list" id="vs-list-left"><div class="vs-empty-msg">—</div></div>
+                <div class="vs-panel-ftr">
+                  <button class="btn btn-xs" id="btn-vs-copy-lr">Copy →</button>
+                  <button class="btn btn-xs" id="btn-vs-move-lr">Move →</button>
+                  <button class="btn btn-xs btn-red" id="btn-vs-del-left">Delete</button>
+                </div>
+              </div>
+              <div class="vs-panel">
+                <div class="vs-panel-hdr">
+                  <button class="btn btn-xs" id="btn-vs-up-right">↑</button>
+                  <span class="vs-path" id="vs-path-right">/data</span>
+                </div>
+                <div class="vs-panel-list" id="vs-list-right"><div class="vs-empty-msg">—</div></div>
+                <div class="vs-panel-ftr">
+                  <button class="btn btn-xs" id="btn-vs-copy-rl">← Copy</button>
+                  <button class="btn btn-xs" id="btn-vs-move-rl">← Move</button>
+                  <button class="btn btn-xs btn-red" id="btn-vs-del-right">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PKG pane -->
+          <div class="vs-pane vs-scroll-pane" id="vs-pane-pkg">
+            <div class="vs-card">
+              <div class="vs-card-title">Install from URL</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input id="vs-pkg-url" class="vs-text-input" type="text" placeholder="http://…/game.pkg" style="flex:1">
+                <button class="btn btn-accent" id="btn-vs-pkg-install-url">Install</button>
+              </div>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Upload Package</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-sm" id="btn-vs-pkg-select">Select PKG</button>
+                <span id="vs-pkg-selected" class="hint" style="flex:1">No file selected</span>
+                <button class="btn btn-sm btn-accent" id="btn-vs-pkg-upload" disabled>Upload</button>
+              </div>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title-row">
+                <span class="vs-card-title">Temp Files</span>
+                <button class="btn btn-xs btn-red" id="btn-vs-clear-temp">Clear All</button>
+              </div>
+              <div id="vs-pkg-temp-list" class="vs-list-box"><div class="vs-empty-msg">No temp files.</div></div>
+            </div>
+          </div>
+
+          <!-- Payloads pane -->
+          <div class="vs-pane" id="vs-pane-payloads">
+            <div id="vs-payload-list" class="vs-payload-list"><div class="vs-empty-msg">No payloads found.</div></div>
+            <div class="vs-payload-ftr">
+              <button class="btn btn-sm btn-accent" id="btn-vs-payload-save">Save Config</button>
+            </div>
+          </div>
+
+          <!-- Settings pane -->
+          <div class="vs-pane vs-scroll-pane" id="vs-pane-settings">
+            <div class="vs-card">
+              <div class="vs-card-title">General</div>
+              <div class="vs-setting"><label>Scan Interval (s)</label><input type="number" id="vs-cfg-scan" class="vs-num-input" min="1" max="60"></div>
+              <div class="vs-setting"><label>Stable Window (s)</label><input type="number" id="vs-cfg-stable" class="vs-num-input" min="1" max="60"></div>
+              <div class="vs-setting"><label>Enable Web Server</label><input type="checkbox" id="vs-cfg-webserver"></div>
+              <div class="vs-setting"><label>Auto-Delete PKGs</label><input type="checkbox" id="vs-cfg-autokill"></div>
+              <div class="vs-setting"><label>Enable DB Patch</label><input type="checkbox" id="vs-cfg-dbpatch"></div>
+              <div class="vs-setting"><label>Image Cache</label><button class="btn btn-xs" id="btn-vs-cache-clear">Clear Cache</button></div>
+              <div class="vs-setting"><label>Icons</label><button class="btn btn-xs" id="btn-vs-repair">Repair Icons</button></div>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Fan Control</div>
+              <div class="vs-setting"><label>Enable Override</label><input type="checkbox" id="vs-cfg-fan-en"></div>
+              <div class="vs-setting">
+                <label>Target Temp</label>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <input type="range" id="vs-cfg-fan-temp" min="40" max="80" step="1" style="width:140px">
+                  <span id="vs-cfg-fan-temp-val">60°C</span>
+                </div>
+              </div>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Sentinel Warden</div>
+              <div class="vs-setting"><label>Enable Protection</label><input type="checkbox" id="vs-cfg-sentinel"></div>
+              <div class="vs-setting"><label>Show Notifications</label><input type="checkbox" id="vs-cfg-sen-notify"></div>
+              <div class="vs-setting"><label>Default Delay (ms)</label><input type="number" id="vs-cfg-sen-delay" class="vs-num-input" min="0"></div>
+              <div class="vs-setting"><label>Resume Delay (ms)</label><input type="number" id="vs-cfg-resume-delay" class="vs-num-input" min="0"></div>
+              <div class="vs-setting"><label>Fast Resume</label><input type="checkbox" id="vs-cfg-fast-resume"></div>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Sentinel Whitelist</div>
+              <div class="hint" style="margin-bottom:6px">Game IDs that bypass Sentinel (one per line)</div>
+              <textarea id="vs-cfg-whitelist" class="vs-textarea" rows="4" placeholder="PPSA00000"></textarea>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Custom Delays</div>
+              <div class="hint" style="margin-bottom:6px">Format: GAME_ID=delayMs (one per line)</div>
+              <textarea id="vs-cfg-sen-games" class="vs-textarea" rows="4" placeholder="PPSA00000=5000"></textarea>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Blacklist / Hidden Games</div>
+              <div class="hint" style="margin-bottom:6px">Game IDs to hide (one per line)</div>
+              <textarea id="vs-cfg-blacklist" class="vs-textarea" rows="4" placeholder="PPSA00000"></textarea>
+            </div>
+            <div class="vs-card">
+              <div class="vs-card-title">Custom Scan Paths</div>
+              <div class="hint" style="margin-bottom:6px">Additional paths to scan (one per line)</div>
+              <textarea id="vs-cfg-custpaths" class="vs-textarea" rows="3" placeholder="/data/games"></textarea>
+            </div>
+            <div style="padding:4px 0 8px">
+              <button class="btn btn-accent" id="btn-vs-save-settings">Save Settings</button>
+            </div>
+          </div>
+
+          <!-- Logs pane -->
+          <div class="vs-pane" id="vs-pane-logs">
+            <div class="vs-logs-hdr">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px">
+                <input type="checkbox" id="vs-autoscroll" checked> Auto-Scroll
+              </label>
+              <button class="btn btn-xs btn-red" id="btn-vs-clear-logs">Clear Logs</button>
+            </div>
+            <div class="vs-log-terminal" id="vs-log-terminal"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Local Save Manager ── -->
+      <div id="page-savemgr" class="page">
+        <div class="voidshell-toolbar">
+          <div class="voidshell-controls">
+            <span class="embed-page-title">Local Save Manager</span>
+            <span style="font-size:11px;color:var(--text-dim)">PS5:</span>
+            <span id="sm-ip-display" style="font-size:11px;font-family:monospace;color:var(--text)">(not set)</span>
+            <label style="font-size:11px;color:var(--text-dim);margin-left:8px">Port</label>
+            <input id="sm-port" type="number" min="1" max="65535" value="8082" style="width:72px;font-family:monospace;font-size:12px"/>
+            <button id="btn-sm-save" class="btn btn-xs">Save</button>
+          </div>
+          <div class="voidshell-controls">
+            <button id="btn-sm-load" class="btn btn-xs">Reload</button>
+            <button id="btn-sm-refresh" class="btn btn-xs">&#8635;</button>
+            <button id="btn-sm-open-ext" class="btn btn-xs">&#8599; Browser</button>
+            <button class="btn-pin" data-pin-id="dash-savemgr" title="Pin to Dashboard">&#128204;</button>
+          </div>
+        </div>
+        <details class="install-accordion">
+          <summary>Install garlic-savemgr ELF to PS5</summary>
+          <div class="install-accordion-body">
+            <p>Uploads <code>garlic-savemgr.elf</code> to <code>/data/ps5_autoloader/</code> and appends it to <code>autoload.txt</code> (if not already present). Starts a web server on port 8082. Requires FTP connection &mdash; restart your PS5 after installing. See <a class="external-link" data-url="https://github.com/earthonion/garlic-savemgr">github.com/earthonion/garlic-savemgr</a>.</p>
+            <div style="display:flex;align-items:center;gap:10px">
+              <button class="btn btn-teal btn-sm" id="btn-sm-push-payload">&#8679; Install to PS5</button>
+              <span id="sm-push-status" class="hint"></span>
+            </div>
+          </div>
+        </details>
+        <!-- ── Native GarlicMgr UI (replaces iframe) ── -->
+        <div class="sm-body">
+
+          <!-- Sub-tab bar -->
+          <div class="sm-tabs">
+            <button class="sm-tab active" data-sm-tab="browse">Browse</button>
+            <button class="sm-tab" data-sm-tab="decrypt">Decrypt</button>
+            <button class="sm-tab" data-sm-tab="encrypt">Encrypt</button>
+            <button class="sm-tab" data-sm-tab="resign">Resign</button>
+          </div>
+
+          <!-- ── Browse pane ── -->
+          <div class="sm-pane" id="sm-pane-browse">
+            <div class="sm-layout">
+
+              <!-- Left: saves list -->
+              <div class="sm-left">
+                <div class="sm-section-label">Saves</div>
+                <div class="sm-saves" id="sm-saves-list">
+                  <div class="sm-empty-list">Configure PS5 IP in FTP Settings, then reload.</div>
+                </div>
+              </div>
+
+              <!-- Right: file browser -->
+              <div class="sm-right" id="sm-right-pane">
+                <div id="sm-empty-state" class="sm-empty">
+                  <p>Select a save to browse</p>
+                  <p class="hint">Drag &amp; drop files onto a mounted save to add or replace them</p>
+                </div>
+
+                <!-- Mounted save header -->
+                <div id="sm-save-header" class="sm-save-header" hidden>
+                  <img id="sm-game-icon" class="sm-game-icon" src="" alt="" hidden>
+                  <div class="sm-save-meta-block">
+                    <div class="sm-save-title-text" id="sm-save-title-text">Untitled</div>
+                    <div class="sm-save-meta-row">
+                      <span id="sm-save-title-id"></span>
+                      <span id="sm-save-account-id"></span>
+                    </div>
+                    <div class="sm-save-ftp-row" id="sm-save-ftp-row"></div>
+                  </div>
+                  <div class="sm-save-btns">
+                    <button class="btn btn-sm btn-accent" id="btn-sm-dl-zip">&#8595; Decrypted ZIP</button>
+                    <button class="btn btn-sm" id="btn-sm-dl-enc">&#8595; Encrypted</button>
+                    <button class="btn btn-sm" id="btn-sm-dump-usb">Dump to USB</button>
+                    <button class="btn btn-sm" id="btn-sm-upload">&#8593; Upload File</button>
+                    <button class="btn btn-sm btn-danger" id="btn-sm-unmount">Unmount</button>
+                  </div>
+                </div>
+
+                <!-- USB dump progress -->
+                <div id="sm-usb-progress" class="sm-progress" hidden>
+                  <div class="sm-progress-bar"><div class="sm-progress-fill" id="sm-usb-fill" style="width:0%"></div></div>
+                </div>
+
+                <!-- Upload progress -->
+                <div id="sm-upload-progress" class="sm-progress" hidden>
+                  <div class="sm-progress-bar"><div class="sm-progress-fill" id="sm-upload-fill" style="width:0%"></div></div>
+                  <div class="sm-progress-text" id="sm-upload-text"></div>
+                </div>
+
+                <!-- File tree -->
+                <div id="sm-filetree" class="sm-filetree" hidden></div>
+              </div>
+
+            </div>
+          </div><!-- /sm-pane-browse -->
+
+          <!-- ── Decrypt pane ── -->
+          <div class="sm-pane" id="sm-pane-decrypt" hidden>
+            <div class="sm-single">
+              <div class="sm-drop" id="sm-decrypt-drop">
+                <div class="sm-drop-label">Drag &amp; drop encrypted save file</div>
+                <button class="btn sm-browse-btn">Browse Files</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Encrypt pane ── -->
+          <div class="sm-pane" id="sm-pane-encrypt" hidden>
+            <div class="sm-single">
+              <div class="sm-field-row">
+                <label class="sm-field-label">Account ID</label>
+                <input id="sm-enc-aid" type="text" maxlength="16" placeholder="optional">
+              </div>
+              <div class="sm-drop" id="sm-encrypt-drop">
+                <div class="sm-drop-label">Drag &amp; drop a <strong>folder</strong> to encrypt into a save</div>
+                <button class="btn sm-browse-btn">Browse Folder</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Resign pane ── -->
+          <div class="sm-pane" id="sm-pane-resign" hidden>
+            <div class="sm-single">
+              <div class="sm-field-row">
+                <label class="sm-field-label">New Account ID</label>
+                <input id="sm-resign-aid" type="text" maxlength="16" placeholder="0000000000000000">
+              </div>
+              <div class="sm-drop" id="sm-resign-drop">
+                <div class="sm-drop-label">Drag &amp; drop encrypted save to resign</div>
+                <button class="btn sm-browse-btn">Browse Files</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terminal log -->
+          <div class="sm-terminal">
+            <div class="sm-terminal-header">Terminal</div>
+            <div class="sm-log" id="sm-log"></div>
+          </div>
+
+        </div><!-- /sm-body -->
+      </div>
+
+      <!-- ── Settings ── -->
+      <div id="page-settings" class="page">
+        <div class="page-header"><h1 data-i18n="page.settings">Settings</h1></div>
+
+        <!-- ── Language card ── -->
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.language">Language</h3></div>
+          <div class="form-row" style="align-items:center;gap:12px;flex-wrap:wrap">
+            <label style="display:flex;flex-direction:column;gap:4px;min-width:200px">
+              <span data-i18n="lang.displayLanguage" style="font-size:12px;color:var(--text-dim)">Display Language</span>
+              <select id="s-language" class="select-input" style="width:220px"></select>
+            </label>
+            <button id="btn-import-lang" class="btn btn-sm btn-accent" style="margin-top:18px" data-i18n="lang.import">↑ Import Language File…</button>
+            <button id="btn-export-lang" class="btn btn-sm" style="margin-top:18px" data-i18n="lang.exportBase">↓ Export English Base File…</button>
+          </div>
+          <p class="hint" style="margin-top:10px" data-i18n="lang.hint">Export the English base file, translate it, then import the translated JSON. Imported language files are stored in your user data folder and override bundled languages with the same code.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.ftpConnection">FTP Connection</h3></div>
+          <div class="form-grid">
+            <label>PS5 FTP Host<input id="s-host" type="text" placeholder="192.168.1.x"/></label>
+            <label>Username<input id="s-user" type="text" placeholder="optional"/></label>
+            <label>Password<input id="s-pass" type="password" placeholder="Leave blank if none"/></label>
+          </div>
+          <div class="ftp-ports-section">
+            <div class="ftp-ports-label">FTP Ports <span class="hint" style="font-weight:400;font-size:11px">&mdash; tried in order until one connects</span></div>
+            <div class="ftp-ports-presets" id="settings-ftp-presets">
+              <button class="btn btn-sm" type="button" data-add-port="1337">etaHEN 1337</button>
+              <button class="btn btn-sm" type="button" data-add-port="2121">2121</button>
+              <button class="btn btn-sm" type="button" data-add-port="21">21</button>
+              <button class="btn btn-sm" type="button" data-add-port="2126">2126</button>
+            </div>
+            <input id="s-ports" type="text" placeholder="1337, 2121, 21"/>
+          </div>
+          <label class="toggle-row">
+            <input type="checkbox" id="s-auto-connect"/>
+            <span class="toggle-label">Auto-connect on startup</span>
+            <span class="hint toggle-hint">Automatically connect to your PS5 when Porkfolio launches, using the credentials above.</span>
+          </label>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 data-i18n="settings.gameSourceFolders">Game Source Folders</h3>
+            <span class="hint" style="font-size:11px">Local drives / folders where game backups are stored</span>
+          </div>
+          <div id="settings-backup-paths-list"></div>
+          <div class="form-row" style="margin-top:10px">
+            <button id="btn-add-backup-path" class="btn btn-teal">+ Add Folder…</button>
+          </div>
+          <p class="hint" style="margin-top:6px">Porkfolio scans all listed folders for .pkg files, game folders, and ISOs. Add one entry per drive or root directory.</p>
+        </div>
+
+        <!-- ── Game Conversion Mode ── -->
+        <div class="card" id="settings-conversion-card">
+          <div class="card-header">
+            <h3 data-i18n="settings.conversionMode">Game Conversion Mode</h3>
+            <span class="badge badge-blue" style="font-size:10px;margin-left:8px">FFPKG &amp; ExFAT require Windows</span>
+          </div>
+          <p class="hint" style="margin-bottom:12px">
+            Choose how games are packaged when you click <strong>Convert/Install</strong> on the Games page.
+            <strong>Raw Dumps</strong> uploads the raw game folder directly to PS5 via FTP -
+            <strong>FFPKG</strong> and <strong>ExFAT</strong> mode first convert the game to an image file locally, then optionally upload  and delete the image to preserve space these 2 modes are <em>Windows only</em>.
+          </p>
+
+          <!-- Mode selector -->
+          <div class="form-row" style="gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">
+            <label class="radio-card" id="conv-mode-pfs-label">
+              <input type="radio" name="conv-mode" id="conv-mode-pfs" value="pfs"/>
+              <span class="radio-card-title">Raw Dumps</span>
+              <span class="radio-card-desc">Direct FTP folder upload (all platforms)</span>
+            </label>
+            <label class="radio-card" id="conv-mode-ffpkg-label">
+              <input type="radio" name="conv-mode" id="conv-mode-ffpkg" value="ffpkg"/>
+              <span class="radio-card-title">FFPKG Mode <span class="badge-os">Windows</span></span>
+              <span class="radio-card-desc">UFS2Tool → .ffpkg image</span>
+            </label>
+            <label class="radio-card" id="conv-mode-exfat-label">
+              <input type="radio" name="conv-mode" id="conv-mode-exfat" value="exfat"/>
+              <span class="radio-card-title">ExFAT Mode <span class="badge-os">Windows</span></span>
+              <span class="radio-card-desc">native OSFMount → .exfat image</span>
+            </label>
+            <label class="radio-card" id="conv-mode-ffpfsc-label">
+              <input type="radio" name="conv-mode" id="conv-mode-ffpfsc" value="ffpfsc"/>
+              <span class="radio-card-title">FFPFSC Mode</span>
+              <span class="radio-card-desc">native compressed PFS → .ffpfsc (all platforms, no admin)</span>
+            </label>
+          </div>
+
+          <!-- FFPKG-only fields -->
+          <div id="conv-ffpkg-fields" class="conv-mode-section" hidden>
+            <div class="form-row" style="align-items:center;gap:8px;margin-bottom:6px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">UFS2Tool.exe</label>
+              <input id="s-conv-ufs2-path" type="text" placeholder="Path to UFS2Tool.exe…" readonly style="flex:1"/>
+              <button id="btn-conv-ufs2-pick" class="btn">Browse…</button>
+            </div>
+            <p id="s-conv-ufs2-status" class="hint" style="margin-bottom:8px;color:var(--text-dim)">Not configured</p>
+            <div class="form-row" style="align-items:center;gap:16px;flex-wrap:wrap">
+              <label style="font-size:12px;color:var(--text-dim)">UFS2 Method:</label>
+              <label style="font-size:12px;display:flex;align-items:center;gap:6px">
+                <input type="radio" name="ufs2-method" id="ufs2-method-makefs" value="makefs"/>makefs (recommended)
+              </label>
+              <label style="font-size:12px;display:flex;align-items:center;gap:6px">
+                <input type="radio" name="ufs2-method" id="ufs2-method-newfs" value="newfs"/>newfs
+              </label>
+            </div>
+          </div>
+
+          <!-- ExFAT-only fields -->
+          <div id="conv-exfat-fields" class="conv-mode-section" hidden>
+            <div class="form-row" style="align-items:center;gap:8px;margin-bottom:6px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">OSFMount (osfmount.com)</label>
+              <input id="s-conv-exfat-path" type="text" placeholder="Auto-detected if OSFMount is installed…" readonly style="flex:1"/>
+              <button id="btn-conv-exfat-pick" class="btn">Browse…</button>
+            </div>
+            <p id="s-conv-exfat-status" class="hint" style="margin-bottom:8px;color:var(--text-dim)">Not configured</p>
+          </div>
+
+          <!-- Shared conversion fields (FFPKG + ExFAT) -->
+          <div id="conv-shared-fields" hidden>
+            <div class="form-row" style="align-items:center;gap:8px;margin-bottom:8px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Output Directory</label>
+              <input id="s-conv-output-dir" type="text" placeholder="Where .ffpkg / .exfat files are saved…" readonly style="flex:1"/>
+              <button id="btn-conv-output-pick" class="btn">Browse…</button>
+            </div>
+            <p class="hint" style="margin-bottom:8px">Converted image files are placed here. Leave blank to use &lt;Downloads&gt;/pork-converted.</p>
+            <div class="form-row" style="align-items:center;gap:8px;margin-bottom:8px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Temp / Worker Dir</label>
+              <input id="s-conv-temp-dir" type="text" placeholder="Scratch space — needs &gt;= game size free (default: system temp)…" readonly style="flex:1"/>
+              <button id="btn-conv-temp-pick" class="btn">Browse…</button>
+            </div>
+            <p class="hint" style="margin-bottom:10px">Used as staging while copying &amp; patching. Ideally on a fast drive with ample space.</p>
+
+            <label class="toggle-row" style="margin-bottom:6px">
+              <input type="checkbox" id="s-conv-ftp-upload"/>
+              <span class="toggle-label">Upload converted file to PS5 via FTP when done</span>
+              <span class="hint toggle-hint">Queues an FTP upload (to the path configured in the Convert/Install modal) immediately after conversion completes.</span>
+            </label>
+
+            <label class="toggle-row" id="conv-delete-after-row">
+              <input type="checkbox" id="s-conv-delete-after" disabled style="opacity:0.45"/>
+              <span class="toggle-label">Delete converted file after successful upload</span>
+              <span class="hint toggle-hint">Frees disk space automatically once the PS5 upload is confirmed. Only triggers if upload succeeds. Enable <em>Upload to PS5</em> above first.</span>
+            </label>
+          </div>
+
+          <!-- PS5 Notifications for conversions -->
+          <div id="conv-notify-fields" hidden>
+            <div class="card-header" style="padding:12px 0 6px;border-top:1px solid var(--border);margin-top:12px">
+              <h4 style="font-size:12px;font-weight:600;color:var(--text-dim)">PS5 Notifications (uses PSNotify settings above)</h4>
+            </div>
+            <label class="toggle-row" style="margin-bottom:4px">
+              <input type="checkbox" id="s-conv-psn-enabled"/>
+              <span class="toggle-label">Enable conversion notifications</span>
+            </label>
+            <div id="conv-psn-detail" class="conv-psn-checkboxes" hidden>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-conv-psn-queued"/> Game queued</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-conv-psn-batch"/>  Batch queued</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-conv-psn-copy"/>   Copy started</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-conv-psn-convert"/>Convert started</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-conv-psn-done"/>   Job done / failed</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="settings-remote-paths-card">
+          <div class="card-header">
+            <h3 data-i18n="settings.remoteGameLocations">Remote Game Locations</h3>
+            <span class="hint" style="font-size:11px">FTP paths on PS5 where game folders live</span>
+          </div>
+          <div id="settings-remote-paths-list"></div>
+          <div class="form-row" style="margin-top:12px;gap:8px">
+            <input id="new-remote-label" type="text" placeholder="Label (e.g. GoldHEN)" style="width:150px"/>
+            <input id="new-remote-path" type="text" placeholder="/mnt/sandbox/pfsmnt/" style="flex:1"/>
+            <button id="btn-browse-ftp" class="btn">&#128193; Browse FTP…</button>
+            <button id="btn-add-remote-path" class="btn btn-teal">+ Add</button>
+          </div>
+          <p class="hint" style="margin-top:6px">Used during Scan PS5 and as upload targets. If none configured, defaults to standard PS5 paths. Connect to FTP before browsing.</p>
+        </div>
+
+        <div class="card" id="settings-sources-card">
+          <div class="card-header">
+            <h3 data-i18n="settings.payloadRemoteSources">Payload Remote Sources</h3>
+            <span class="hint" style="font-size:11px">GitHub repos <em>or</em> hosted pages with .bin/.js/.elf releases</span>
+          </div>
+          <div id="settings-payload-sources"></div>
+          <div class="form-row" style="margin-top:12px;gap:8px">
+            <input id="new-source-name" type="text" placeholder="Name (e.g. GoldHEN)" style="width:140px"/>
+            <input id="new-source-url" type="text" placeholder="github.com/owner/repo or https://page.github.io/..." style="flex:1"/>
+            <button id="btn-add-payload-source" class="btn btn-teal">+ Add</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.payloadManager">Payload Manager</h3></div>
+          <div class="form-row" style="align-items:center">
+            <input id="s-payload-local" type="text" placeholder="Local payloads folder…" readonly style="flex:1"/>
+            <button id="btn-browse-payload-local" class="btn">Browse…</button>
+          </div>
+          <p class="hint">Files downloaded from GitHub sources are saved here.</p>
+          <div class="form-row" style="margin-top:10px;align-items:center;gap:10px">
+            <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">PS5 Payloads Path</label>
+            <input id="s-payload-remote" type="text" placeholder="/data/payloads/" style="flex:1"/>
+          </div>
+          <p class="hint">FTP path on PS5 where payloads are pushed to and deleted from.</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.cheatsManager">Cheats Manager</h3></div>
+          <div class="form-row" style="align-items:center;gap:8px">
+            <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">PS5 Cheats Path</label>
+            <input id="s-cheats-remote" type="text" placeholder="/data/etaHEN/cheats/" style="flex:1"/>
+            <button id="btn-browse-cheats-remote" class="btn">Browse…</button>
+          </div>
+          <p class="hint">FTP folder on PS5 where cheat JSON files are uploaded to. Must be connected to FTP before browsing.</p>
+        </div>
+
+        <!-- ── Voidshell ── -->
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.voidshell">Voidshell</h3></div>
+          <p class="hint">Port that Voidshell is served on from the PS5. Default is 7007.</p>
+          <div class="form-row" style="align-items:center;gap:8px">
+            <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Port</label>
+            <input id="s-voidshell-port" type="number" min="1" max="65535" placeholder="7007" style="width:100px;font-family:monospace"/>
+            <button id="btn-s-voidshell-save" class="btn btn-sm">Save</button>
+          </div>
+        </div>
+
+        <!-- ── Local Save Manager ── -->
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.saveManager">Local Save Manager</h3></div>
+          <p class="hint">Port that garlic-savemgr is served on from the PS5. Default is 8082.</p>
+          <div class="form-row" style="align-items:center;gap:8px">
+            <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Port</label>
+            <input id="s-savemgr-port" type="number" min="1" max="65535" placeholder="8082" style="width:100px;font-family:monospace"/>
+            <button id="btn-s-savemgr-save" class="btn btn-sm">Save</button>
+          </div>
+        </div>
+
+        <!-- ── Integrations ── -->
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.integrations">Integrations</h3></div>
+
+          <!-- Discord Webhook -->
+          <div class="integration-section">
+            <div class="integration-header">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color:#5865F2;flex-shrink:0">
+                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.05 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/>
+              </svg>
+              <span style="font-weight:600;font-size:13px">Discord Webhook</span>
+            </div>
+            <p class="hint" style="margin-bottom:8px">Paste a Discord channel webhook URL to share PS5 screenshots and video clips from the Media page. Screenshots are attached as images. Video clips are downloaded, converted to MP4 via ffmpeg, and uploaded to catbox.moe (free, no account needed) — a thumbnail is captured automatically during conversion.</p>
+            <div class="form-row" style="align-items:center;gap:8px">
+              <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Webhook URL</label>
+              <input id="s-discord-webhook" type="text" placeholder="https://discord.com/api/webhooks/..." style="flex:1;font-family:monospace;font-size:11px"/>
+            </div>
+            <label class="toggle-row" style="margin-top:8px;margin-bottom:4px">
+              <input type="checkbox" id="s-media-discord-notify" checked/>
+              <span class="toggle-label">Notify PS5 via <strong style="color:var(--text)">customPSNotify</strong> for media events</span>
+            </label>
+            <div id="media-discord-psn-detail" class="conv-psn-checkboxes">
+              <label class="toggle-row-sm"><input type="checkbox" id="s-media-psn-download" checked/> Clip downloaded from PS5</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-media-psn-convert"  checked/> WebM → MP4 conversion started</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-media-psn-upload"   checked/> Uploading to catbox</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-media-psn-done"     checked/> Clip sent to Discord ✓</label>
+              <label class="toggle-row-sm"><input type="checkbox" id="s-media-psn-error"    checked/> Error occurred</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.appearance">Appearance</h3></div>
+          <div class="color-picker-row">
+            <label style="font-size:12px;color:var(--text-dim);flex:none">Accent Color</label>
+            <div class="color-picker-wrap">
+              <div class="color-swatch" id="accent-swatch">
+                <input type="color" class="color-picker-input" id="s-accent-color" value="#BB86FC"/>
+              </div>
+              <input type="text" class="color-hex-label" id="s-accent-hex" value="#BB86FC" maxlength="7" spellcheck="false"/>
+            </div>
+            <button id="btn-reset-accent" class="btn btn-sm">Reset</button>
+            <span class="hint">Applies instantly across the entire app.</span>
+          </div>
+          <div class="form-row" style="align-items:center;gap:12px;margin-top:10px">
+            <label style="font-size:12px;color:var(--text-dim);white-space:nowrap">Time Format</label>
+            <select id="s-time-format" class="media-sort-select" style="margin-left:0">
+              <option value="12h" selected>12-hour (1:30 PM)</option>
+              <option value="24h">24-hour (13:30)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ── Performance ── -->
+        <div class="card">
+          <div class="card-header"><h3>Performance</h3></div>
+          <div class="form-row" style="align-items:center;gap:12px">
+            <label for="s-hash-concurrency" style="font-size:12px;color:var(--text-dim);white-space:nowrap">Hash Concurrency</label>
+            <input id="s-hash-concurrency" type="number" min="1" max="32" placeholder="8" style="width:70px;font-family:monospace"/>
+            <span class="hint">Files hashed in parallel per job. Higher = faster on fast drives; lower = less CPU/IO pressure. Default: 8.</span>
+          </div>
+        </div>
+
+        <!-- ── Web UI Server ── -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Web UI Server</h3>
+            <span id="webui-status-badge" class="badge badge-green" hidden>Running</span>
+          </div>
+          <p class="hint" style="margin-bottom:12px">
+            Serve Porkfolio as a web app on your local network so you can access it from any browser &mdash;
+            including the <strong>PS5 browser</strong> &mdash; or host it on a NAS or Windows Server.
+            The server runs on your machine and proxies all operations through the Porkfolio process.
+          </p>
+          <label class="toggle-row" style="margin-bottom:10px">
+            <input type="checkbox" id="s-webui-enabled"/>
+            <span class="toggle-label">Enable Web UI Server</span>
+            <span class="hint toggle-hint">Starts an HTTP server so the app is accessible at the URL below.</span>
+          </label>
+          <div class="form-row" style="align-items:center;gap:8px;margin-bottom:10px">
+            <label style="white-space:nowrap;font-size:12px;color:var(--text-dim)">Port</label>
+            <input id="s-webui-port" type="number" min="1024" max="65535" placeholder="6967" style="width:110px;font-family:monospace"/>
+            <button id="btn-webui-apply" class="btn btn-sm">Apply</button>
+          </div>
+          <div id="webui-url-row" style="display:flex;align-items:center;gap:10px;margin-bottom:8px" hidden>
+            <span style="font-size:12px;color:var(--text-dim)">Access at:</span>
+            <code id="webui-url" style="font-size:12px;color:var(--accent)"></code>
+            <button id="btn-webui-open" class="btn btn-sm btn-accent">&#127760; Open Web UI</button>
+          </div>
+          <p class="hint" style="margin-top:4px">
+            Browse buttons that open folder dialogs will open on the <strong>server machine</strong> when used from a remote browser.
+            Pre-configure all paths before enabling the server for best remote experience.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.metadata">Metadata</h3></div>
+          <p class="hint" style="margin-bottom:12px">Force re-fetch Prospero metadata for every game in the database. Clears all cached data and re-queues background fetches.</p>
+          <button id="btn-refresh-all-meta" class="btn btn-accent">&#8635; Refresh All Metadata</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3 data-i18n="settings.svHotkeys">System View Hotkeys</h3></div>
+          <p class="hint" style="margin-bottom:12px">Click a key field and press any key to rebind. Active when the System View page is open.</p>
+          <div class="hotkey-grid">
+            <span class="hotkey-label">Toggle Mute</span>
+            <input type="text" class="hotkey-input" id="hk-mute" readonly placeholder="—"/>
+            <span class="hotkey-label">Start / Stop GIF</span>
+            <input type="text" class="hotkey-input" id="hk-gif" readonly placeholder="—"/>
+            <span class="hotkey-label">Start / Stop Video</span>
+            <input type="text" class="hotkey-input" id="hk-video" readonly placeholder="—"/>
+            <span class="hotkey-label">Toggle Fullscreen</span>
+            <input type="text" class="hotkey-input" id="hk-fullscreen" readonly placeholder="—"/>
+            <span class="hotkey-label">Pop Out Window</span>
+            <input type="text" class="hotkey-input" id="hk-popout" readonly placeholder="—"/>
+          </div>
+        </div>
+
+        <p class="hint" style="margin-top:4px">&#10003; All changes are saved automatically.</p>
+      </div>
+
+      <!-- ── GarlicSaves ── -->
+      <div id="page-garlic" class="page">
+        <div class="page-header">
+          <div>
+            <h1 data-i18n="page.garlic">GarlicSaves</h1>
+            <p class="page-subtitle">Contribute worker time to the save community &mdash; completely optional.</p>
+          </div>
+          <button class="btn btn-sm" id="btn-garlic-site">&#127759; garlicsaves.com</button>
+        </div>
+
+        <!-- About -->
+        <div class="card">
+          <div class="card-header"><h3>What is GarlicSaves?</h3></div>
+          <p>GarlicSaves is a community-driven project that tracks gameplay statistics across jailbroken PS5 consoles. By enrolling, your console runs a background worker (<code>garlic-worker-ps5.elf</code>) that periodically polls for jobs</p>
+          <p style="margin-top:8px">Enrollment is <strong>completely optional</strong>. You can enable or disable the worker at any time from this page. </p>
+        </div>
+
+        <!-- Start Worker -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Start Contributing</h3>
+            <span id="garlic-status-badge" class="badge badge-green" hidden>Running</span>
+          </div>
+          <p class="hint">Make sure your PS5 is jailbroken and <strong>elfldr is loaded on port 9021</strong> before clicking Start. The worker will run until you restart your PS5.</p>
+
+          <div id="garlic-progress-area" class="garlic-progress-area" hidden>
+            <div class="garlic-progress-step" id="garlic-progress-text">Working…</div>
+            <div class="garlic-progress-bar-wrap"><div class="garlic-progress-bar" id="garlic-progress-bar" style="width:0%"></div></div>
+          </div>
+
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-teal" id="btn-garlic-start">&#9654; Start Working</button>
+          </div>
+        </div>
+
+        <!-- Confirm modal -->
+        <div id="garlic-confirm-overlay" class="garlic-confirm-overlay" hidden>
+          <div class="garlic-confirm-dialog">
+            <h3 class="garlic-confirm-title">Start GarlicSaves Worker?</h3>
+            <p>This will upload the config to your PS5 and send the worker payload immediately.</p>
+            <p style="margin-top:8px">&#9888;&nbsp;<strong>To stop the worker, restart your PS5.</strong> The worker runs in the background until then.</p>
+            <div class="garlic-confirm-btns">
+              <button class="btn" id="btn-garlic-confirm-cancel">Cancel</button>
+              <button class="btn btn-teal" id="btn-garlic-confirm-ok">Start Working</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="card">
+          <div class="card-header"><h3>Setup Tips</h3></div>
+          <ul class="garlic-tips">
+            <li>Your PS5 must be <strong>jailbroken</strong> and <strong>elfldr must be running on port 9021</strong> before clicking Start Working.</li>
+            <li>Porkfolio will upload your <code>config.ini</code> to <code>/data/garlic/</code> on your PS5 (overwriting any existing file), then send the ELF payload via TCP.</li>
+            <li>The worker runs <strong>in the background until you restart your PS5</strong>. No reboot is required to start &mdash; only to stop.</li>
+            <li>Go to <strong>Settings &rarr; Power Save Settings</strong> on your PS5 and disable automatic rest mode so the worker stays running.</li>
+            <li>View your stats and manage your account at <a href="#" class="garlic-link" id="garlic-contribute-link">garlicsaves.com/contribute</a>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── Destination picker ── -->
+      <div id="dest-picker-overlay" hidden>
+        <div id="dest-picker">
+          <div class="dest-picker-title">Select PS5 Install Location</div>
+          <p class="dest-picker-hint">Where should this game be installed on your PS5?<br>Your choice will be remembered for future uploads and porks.</p>
+          <div id="dest-picker-list"></div>
+          <div class="dest-picker-footer">
+            <button id="dest-picker-cancel" class="btn">Cancel</button>
+          </div>
+      <!-- ── FTP Browser modal ── -->
+      <div id="ftp-browser-overlay" hidden>
+        <div id="ftp-browser">
+          <div class="ftp-browser-titlebar">
+            <span>Browse FTP — Select a Folder</span>
+            <button id="ftp-browser-close" class="btn-icon-sm">&#10005;</button>
+          </div>
+          <div class="ftp-browser-pathbar">
+            <button id="ftp-browser-up" class="btn btn-sm">&#8593; Up</button>
+            <span id="ftp-browser-cwd" class="ftp-browser-cwd">/</span>
+          </div>
+          <div id="ftp-browser-body" class="ftp-browser-body">
+            <div class="ftp-browser-loading">Loading…</div>
+          </div>
+          <div class="ftp-browser-footer">
+            <button id="ftp-browser-cancel" class="btn">Cancel</button>
+            <button id="ftp-browser-select" class="btn btn-accent">&#10003; Select This Folder</button>
+          </div>
+        </div>
+      </div>
+
+
+    </main>
+  </div>
+
+  <!-- ── Selective Clear dialog ── -->
+  <div id="clear-select-overlay" hidden>
+    <div id="clear-select-dialog">
+      <h3 style="margin:0 0 6px;font-size:15px;color:var(--text)">Clear Database</h3>
+      <p style="margin:0 0 16px;font-size:13px;color:var(--text-dim)">Select which data to clear. This cannot be undone.</p>
+      <div id="clear-select-options" style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+        <label class="clear-opt"><input type="checkbox" value="games"><span class="clear-opt-label">Games</span><span class="clear-opt-hint">All scanned game entries</span></label>
+        <label class="clear-opt"><input type="checkbox" value="backups"><span class="clear-opt-label">Backups</span><span class="clear-opt-hint">Local backup records</span></label>
+        <label class="clear-opt"><input type="checkbox" value="backporks"><span class="clear-opt-label">Backporks</span><span class="clear-opt-hint">Backpork folders &amp; firmware labels</span></label>
+        <label class="clear-opt"><input type="checkbox" value="hashes"><span class="clear-opt-label">Hashes</span><span class="clear-opt-hint">All stored file hashes</span></label>
+        <label class="clear-opt"><input type="checkbox" value="payloads"><span class="clear-opt-label">Payloads</span><span class="clear-opt-hint">Payload sources &amp; downloaded files</span></label>
+        <label class="clear-opt"><input type="checkbox" value="cheats"><span class="clear-opt-label">Cheats</span><span class="clear-opt-hint">Cached cheat database</span></label>
+      </div>
+      <div class="confirm-buttons">
+        <button id="clear-select-cancel" class="btn">Cancel</button>
+        <button id="clear-select-all" class="btn btn-danger" style="margin-right:auto">Select All</button>
+        <button id="clear-select-ok" class="btn btn-danger" disabled>Clear Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Confirm dialog ── -->
+  <div id="confirm-overlay" hidden>
+    <div id="confirm-dialog">
+      <p id="confirm-message"></p>
+      <div class="confirm-buttons">
+        <button id="confirm-cancel" class="btn">Cancel</button>
+        <button id="confirm-ok" class="btn btn-accent">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Prompt (input) dialog ── -->
+  <div id="prompt-overlay" hidden>
+    <div id="prompt-dialog">
+      <p id="prompt-message"></p>
+      <input id="prompt-input" class="text-input" type="text" />
+      <div class="confirm-buttons">
+        <button id="prompt-cancel" class="btn">Cancel</button>
+        <button id="prompt-ok" class="btn btn-accent">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Admin required warning modal ── -->
+  <div id="admin-warn-overlay" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:9200;">
+    <div id="admin-warn-dialog">
+      <div class="admin-warn-icon">&#128737;</div>
+      <h3 class="admin-warn-title">Administrator Required</h3>
+      <p class="admin-warn-body">FFPKG and ExFAT conversions use low-level filesystem drivers (UFS2Tool / OSFMount) that require Windows Administrator privileges. The conversion will fail without elevation.</p>
+      <p class="admin-warn-hint">Close the app, right-click <strong>launch.bat</strong> &rarr; <strong>Run&nbsp;as&nbsp;administrator</strong>, then start the queue again.</p>
+      <button id="admin-warn-close" class="btn btn-accent" style="width:100%;margin-top:6px;">OK, Got It</button>
+    </div>
+  </div>
+
+  <!-- ── XAvatar thumbnail full-size modal ── -->
+  <div id="xavatar-thumb-modal" hidden style="position:fixed;top:var(--titlebar-h);left:0;right:0;bottom:var(--statusbar-h);background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:8800;cursor:pointer;">
+    <div class="xavatar-modal-box" onclick="event.stopPropagation()">
+      <img id="xavatar-modal-img" src="" alt="" class="xavatar-modal-img">
+      <p id="xavatar-modal-name" class="xavatar-modal-name"></p>
+      <div class="xavatar-modal-actions">
+        <button class="btn btn-sm" id="btn-xavatar-modal-download">&#8659; Download .xavatar</button>
+        <button class="btn btn-sm" id="btn-xavatar-modal-topng">&#8659; Save PNG</button>
+        <button class="btn btn-sm btn-teal" id="btn-xavatar-modal-send">&#8599; Send to PS5</button>
+        <button class="btn btn-sm" id="btn-xavatar-modal-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast notifications ── -->
+  <div id="toast-container"></div>
+
+  <!-- ── Status bar ── -->
+  <div id="statusbar">
+    <span id="sb-conn">⚫ Disconnected</span>
+    <span id="sb-sync">Never synced</span>
+    <span id="sb-msg"></span>
+  </div>
+
+  <!-- ── Game detail modal ── -->
+  <div id="modal-overlay" hidden>
+    <div id="modal">
+      <div id="modal-header">
+        <div id="modal-banner"></div>
+        <div id="modal-header-content">
+          <div style="display:flex;align-items:center;gap:14px">
+            <img id="modal-icon" src="" alt="" hidden
+                 style="width:64px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.7)"/>
+            <div>
+              <h2 id="modal-title">—</h2>
+              <div id="modal-subtitle"></div>
+            </div>
+          </div>
+          <button id="modal-close">&#10005;</button>
+        </div>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-mtab="info">Info</button>
+        <button class="modal-tab" data-mtab="patches">Updates <span id="mtab-patch-count" class="tab-badge"></span></button>
+        <button class="modal-tab" data-mtab="dlc">DLC <span id="mtab-dlc-count" class="tab-badge"></span></button>
+        <button class="modal-tab" data-mtab="regions">Regions <span id="mtab-regions-count" class="tab-badge"></span></button>
+        <button class="modal-tab" data-mtab="manage">Manage <span id="mtab-manage-count" class="tab-badge"></span></button>
+        <button class="modal-tab" data-mtab="cheats">Cheats <span id="mtab-cheats-count" class="tab-badge"></span></button>
+      </div>
+
+      <div id="modal-body">
+        <!-- Info panel -->
+        <div id="mpanel-info" class="modal-panel active">
+          <table class="detail-table" id="modal-info"></table>
+          <div id="modal-description" class="game-description" hidden></div>
+          <div id="modal-backup-section">
+            <h4 style="font-size:13px;color:var(--text-dim);font-weight:500;margin-bottom:10px">Backup Files</h4>
+            <ul id="modal-backup-list"></ul>
+          </div>
+
+          <!-- Hash Verification -->
+          <div id="modal-hash-section" hidden>
+            <div class="hash-section-header">
+              <h4>Hash Verification</h4>
+              <span id="modal-hash-community-badge" class="hash-badge hash-community" hidden>Community Verified</span>
+            </div>
+            <p class="hint" style="margin-bottom:10px">
+              Hashing a backup confirms it is working and adds it to the local database.
+              Hashes are shared periodically via app updates to help others avoid bad dumps.
+            </p>
+            <div id="modal-hash-list"></div>
+            <div id="modal-hash-progress" hidden>
+              <div class="hash-progress-bar"><div class="hash-progress-fill" id="hash-progress-fill"></div></div>
+              <div id="hash-progress-label" class="hash-progress-label">Hashing…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patches panel -->
+        <div id="mpanel-patches" class="modal-panel">
+          <div id="modal-patches-content" class="prospero-placeholder">Fetching patch data…</div>
+        </div>
+
+        <!-- DLC panel -->
+        <div id="mpanel-dlc" class="modal-panel">
+          <div id="modal-dlc-content" class="prospero-placeholder">Fetching DLC data…</div>
+        </div>
+
+        <!-- Regions panel -->
+        <div id="mpanel-regions" class="modal-panel">
+          <div id="modal-regions-content" class="prospero-placeholder">Fetching region data…</div>
+        </div>
+
+        <!-- Manage panel -->
+        <div id="mpanel-manage" class="modal-panel">
+
+          <div class="manage-section">
+            <h4 class="manage-section-title">Backup Files</h4>
+            <div id="manage-backup-list">
+              <div class="prospero-placeholder">No backup files recorded.</div>
+            </div>
+          </div>
+
+          <div class="manage-section">
+            <h4 class="manage-section-title">PS5 Transfer</h4>
+            <p class="hint" style="margin-bottom:10px">
+              Click <strong>Upload to PS5</strong> on a backup file above to pre-fill the remote path,
+              then confirm to push it via FTP.
+            </p>
+            <div class="form-row" style="align-items:center">
+              <input id="manage-remote-path" type="text" placeholder="Remote path on PS5…" style="flex:1" readonly/>
+              <button id="btn-manage-upload" class="btn btn-teal" disabled>Upload via FTP</button>
+            </div>
+            <div id="manage-upload-log" class="progress-area" hidden></div>
+          </div>
+
+          <div class="manage-section">
+            <h4 class="manage-section-title">Backup from PS5</h4>
+            <p class="hint" style="margin-bottom:10px">
+              Mirror the full game folder from your PS5 to your local backup folder.
+              Requires an active FTP connection and a remembered install location.
+            </p>
+            <button id="btn-manage-backup-ps5" class="btn btn-teal" disabled>&#8595; Backup Game from PS5</button>
+          </div>
+
+          <!-- Backpork versions section (shown when game has detected backports) -->
+          <div class="manage-section" id="manage-backpork-section" hidden>
+            <h4 class="manage-section-title">Backpork Versions</h4>
+            <div id="manage-porked-status"></div>
+            <div id="manage-backpork-list"></div>
+            <div id="manage-pork-progress" hidden>
+              <div class="hash-progress-bar"><div class="hash-progress-fill" id="pork-progress-fill"></div></div>
+              <div id="pork-progress-label" class="hash-progress-label">Uploading…</div>
+            </div>
+          </div>
+
+          <div class="manage-section">
+            <h4 class="manage-section-title">PS5 Install Location</h4>
+            <div id="manage-install-location" class="manage-install-loc" hidden>
+              <span class="manage-loc-path-wrap">
+                <span class="manage-loc-label">Remembered:</span>
+                <code id="manage-loc-path" class="manage-loc-path"></code>
+              </span>
+              <button id="btn-manage-forget-loc" class="btn btn-sm">Forget</button>
+            </div>
+            <div id="manage-no-location" class="hint" style="margin:4px 0 8px">No location remembered yet — one will be chosen when you upload or pork.</div>
+            <button id="btn-manage-delete-ps5" class="btn btn-danger" disabled>Delete from PS5</button>
+          </div>
+
+          <div class="manage-section">
+            <h4 class="manage-section-title">Game</h4>
+            <div class="btn-row">
+              <button id="btn-manage-toggle-backed" class="btn">Mark as Backed Up</button>
+              <button id="btn-manage-toggle-installed" class="btn">Mark as Installed</button>
+              <button id="btn-manage-refresh-meta" class="btn">&#8635; Refresh Metadata</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Cheats panel -->
+        <div id="mpanel-cheats" class="modal-panel">
+          <div id="modal-cheats-body">
+            <div class="prospero-placeholder">Loading cheats…</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="modal-footer">
+        <button id="btn-modal-backup" class="btn btn-teal" disabled title="Mirror the full game folder from PS5 to your local backup folder">&#8595; Backup from PS5</button>
+        <button id="btn-modal-install" class="btn btn-teal" disabled title="Upload a local backup to PS5">&#8679; Install to PS5</button>
+        <button id="btn-modal-mark" class="btn">Mark as Backed Up</button>
+        <button id="btn-modal-refresh" class="btn">&#8635; Refresh Metadata</button>
+        <button id="btn-modal-close2" class="btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Payload Manager Settings modal ── -->
+  <div id="payload-settings-overlay" class="jb-settings-overlay" hidden>
+    <div class="jb-settings-modal">
+      <div class="jb-settings-header">
+        <h3>Payload Manager Settings</h3>
+        <button class="btn-icon-sm" id="payload-settings-close">&#10005;</button>
+      </div>
+      <div class="jb-settings-body">
+        <label>Local Payloads Folder
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <input type="text" id="pm-local-path" placeholder="C:\Payloads" readonly style="flex:1"/>
+            <button class="btn" id="btn-pm-browse-local">Browse&hellip;</button>
+          </div>
+        </label>
+        <label>PS5 FTP Path
+          <input type="text" id="pm-remote-path" placeholder="/data/payloads/"/>
+        </label>
+      </div>
+      <div class="jb-settings-footer">
+        <button class="btn" id="btn-pm-settings-cancel">Cancel</button>
+        <button class="btn btn-teal" id="btn-pm-settings-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Install to PS5 modal ── -->
+  <div id="install-overlay" class="jb-settings-overlay" hidden>
+    <div class="jb-settings-modal" style="width:560px">
+      <div class="jb-settings-header">
+        <h3>Convert / Install to PS5</h3>
+        <span id="install-modal-game-label" class="hint" style="margin-left:8px;font-weight:400;font-size:13px"></span>
+        <button class="btn-icon-sm" id="install-close" style="margin-left:auto">&#10005;</button>
+      </div>
+      <div class="jb-settings-body">
+
+        <!-- Mode tabs -->
+        <div class="install-mode-tabs" style="display:flex;gap:4px;margin-bottom:14px">
+          <button class="btn btn-sm install-mode-tab active" data-install-mode="pfs">Raw Dumps</button>
+          <button class="btn btn-sm install-mode-tab" data-install-mode="ffpkg">FFPKG Mode <span class="badge-os" style="font-size:9px">Win</span></button>
+          <button class="btn btn-sm install-mode-tab" data-install-mode="exfat">ExFAT Mode <span class="badge-os" style="font-size:9px">Win</span></button>
+          <button class="btn btn-sm install-mode-tab" data-install-mode="ffpfsc">FFPFSC Mode</button>
+        </div>
+
+        <!-- ── PFS section (original behaviour) ── -->
+        <div id="install-pfs-section" class="install-mode-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+            <p id="install-backup-hint" class="hint" style="margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></p>
+            <button class="btn btn-sm" id="btn-install-browse-local" title="Choose a local folder to install from">Browse folder&hellip;</button>
+          </div>
+          <p id="install-no-path-warn" class="hint" style="color:#f4a261;margin-bottom:6px" hidden>
+            No Remote Game Paths configured. Go to <strong>Settings → Remote Game Paths</strong> to set your PS5 game folder, or type the path below.
+          </p>
+          <label>PS5 Install Path
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <input type="text" id="install-ftp-path" placeholder="/mnt/sandbox/pfsmnt/PPSA12345-app0" style="flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px"/>
+              <button class="btn" id="btn-install-browse-ftp">Browse&hellip;</button>
+            </div>
+          </label>
+          <label style="margin-top:12px;display:block">Apply a Backpork after install? <span class="hint">(optional &mdash; patches game files on top)</span>
+            <select id="install-backpork-select" style="margin-top:4px;width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px"></select>
+          </label>
+        </div>
+
+        <!-- ── FFPKG / ExFAT shared conversion section ── -->
+        <div id="install-conv-section" class="install-mode-section" hidden>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <p id="install-conv-backup-hint" class="hint" style="margin:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></p>
+            <button class="btn btn-sm" id="btn-install-conv-browse-local">Browse folder&hellip;</button>
+          </div>
+
+          <label style="display:block;margin-bottom:10px">Apply a Backpork Patch? <span class="hint">(optional)</span>
+            <select id="install-conv-backpork-select" style="margin-top:4px;width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px"></select>
+          </label>
+
+          <!-- FTP upload after conversion -->
+          <label class="toggle-row" style="margin-bottom:6px">
+            <input type="checkbox" id="install-conv-ftp-upload"/>
+            <span class="toggle-label">Upload to PS5 via FTP when conversion finishes</span>
+          </label>
+
+          <div id="install-conv-ftp-fields" style="display:none">
+            <label style="display:block;margin-top:8px">PS5 Install Path
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <input type="text" id="install-conv-ftp-path" placeholder="/data/ps4fs/" style="flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px"/>
+                <button class="btn btn-sm" id="btn-install-conv-browse-ftp">Browse&hellip;</button>
+              </div>
+            </label>
+            <label class="toggle-row" style="margin-top:8px">
+              <input type="checkbox" id="install-conv-delete-after"/>
+              <span class="toggle-label">Delete converted file after successful upload</span>
+              <span class="hint toggle-hint">Saves disk space — file is removed once FTP upload confirms success.</span>
+            </label>
+          </div>
+
+          <p id="install-conv-tool-warn" class="hint" style="color:#f4a261;margin-top:8px" hidden>
+            ⚠ Tool not configured. Go to <strong>Settings → Game Conversion</strong> to set up the required tool.
+          </p>
+          <p class="hint" style="color:var(--text-dim);margin-top:8px;font-size:11px">
+            &#9432; Conversion runs locally on your PC. Output is saved to the Output Directory in Settings. Large games may take several minutes.
+          </p>
+        </div>
+
+      </div>
+      <div class="jb-settings-footer">
+        <button class="btn" id="btn-install-cancel">Cancel</button>
+        <button class="btn btn-teal" id="btn-install-confirm">&#11014; Queue Install</button>
+      </div>
+    </div>
+  </div>
+
+      <!-- ── Media Lightbox ── -->
+  <div id="media-lightbox" class="media-lightbox" hidden>
+    <div class="media-lightbox-backdrop"></div>
+    <div class="media-lightbox-frame">
+      <button class="media-lightbox-close" id="btn-lightbox-close">&#10005;</button>
+      <div class="media-lightbox-meta" id="lightbox-meta"></div>
+      <img id="lightbox-img" class="media-lightbox-img" src="" alt=""/>
+      <div id="lightbox-spinner" class="media-lightbox-spinner" hidden>
+        <div class="lightbox-spin-ring"></div>
+        <span>Loading…</span>
+      </div>
+      <div class="media-lightbox-footer">
+        <button class="btn btn-sm" id="btn-lightbox-dl">&#8659; Save to PC</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.bpgenBrowseOutput = async function () {
+      try {
+        const folder = await window.pork.selectFolder();
+        if (folder) document.getElementById('bpgen-output-dir').value = folder;
+      } catch (err) {
+        const el = document.getElementById('bpgen-status');
+        if (el) el.textContent = `Output folder browse failed: ${err.message}`;
+      }
+      return false;
+    };
+
+    window.bpgenBrowseFakelib = async function () {
+      try {
+        const folder = await window.pork.selectFolder();
+        const input = document.getElementById('bpgen-fakelib-dir');
+        if (folder && input) {
+          input.value = folder;
+          input.dataset.autoDir = '';
+        }
+      } catch (err) {
+        const el = document.getElementById('bpgen-status');
+        if (el) el.textContent = `Fakelib folder browse failed: ${err.message}`;
+      }
+      return false;
+    };
+
+    window.bpgenBrowseBaseDir = async function () {
+      try {
+        const folder = await window.pork.selectFolder();
+        if (!folder) return false;
+        document.getElementById('bpgen-fl-basedir').value = folder;
+        if (window.pork.bpgenFakelibSetBasedir) {
+          await window.pork.bpgenFakelibSetBasedir(folder);
+        }
+      } catch (err) {
+        const el = document.getElementById('bpgen-status');
+        if (el) el.textContent = `Fakelib base dir browse failed: ${err.message}`;
+      }
+      return false;
+    };
+
+    window.bpgenBrowsePup = async function () {
+      try {
+        const file = await window.pork.bpgenFakelibPickPup();
+        if (file) document.getElementById('bpgen-fl-pup-path').value = file;
+      } catch (err) {
+        const el = document.getElementById('bpgen-status');
+        if (el) el.textContent = `PUP browse failed: ${err.message}`;
+      }
+      return false;
+    };
+  </script>
+
+  <script type="module" src="../src/xavatarElectronModule/renderer/xavatarRenderer.js"></script>
+  <!-- Shim: the web server replaces this comment with a real script tag.
+       In Electron the script is served from renderer/ and window.pork is
+       already set by preload.js, so the shim exits immediately. -->
+  <script src="pork-web-shim.js" onerror="void 0"></script>
+  <script src="gif-encoder.js"></script>
+  <!-- ── i18n engine — must load before all other modules ── -->
+  <script src="modules/i18n.js"></script>
+  <!-- ── Renderer modules (loaded in dependency order) ──────────────────────────── -->
+  <script src="modules/state.js"></script>
+  <script src="modules/psnotify.js"></script>
+  <script src="modules/voidshell.js"></script>
+  <script src="modules/elf-arsenal.js"></script>
+  <script src="modules/pfs-ripper.js"></script>
+  <script src="modules/savemgr.js"></script>
+  <script src="modules/transfers.js"></script>
+  <script src="modules/xavatar.js"></script>
+  <script src="modules/system-view.js"></script>
+  <script src="modules/connection.js"></script>
+  <script src="modules/games.js"></script>
+  <script src="modules/backups.js"></script>
+  <script src="modules/database.js"></script>
+  <script src="modules/settings.js"></script>
+  <script src="modules/ftpbrowser.js"></script>
+  <script src="modules/helpers.js"></script>
+  <script src="modules/backporks.js"></script>
+  <script src="modules/backpork-gen.js"></script>
+  <script src="modules/hash.js"></script>
+  <script src="modules/manage.js"></script>
+  <script src="modules/modal.js"></script>
+  <script src="modules/hotkeys.js"></script>
+  <script src="modules/payload.js"></script>
+  <script src="modules/autoloader.js"></script>
+  <script src="modules/media.js"></script>
+  <script src="modules/cheats.js"></script>
+  <script src="modules/dashboard-widgets.js"></script>
+  <script src="modules/init.js"></script>
+</body>
+</html>

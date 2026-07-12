@@ -1,0 +1,8 @@
+{
+  "name": "ps-notify-module",
+  "version": "1.0.0",
+  "description": "Send toast notifications to a jailbroken PS5 from Node.js or Electron",
+  "main": "index.js",
+  "keywords": ["ps5", "notify", "toast", "electron", "jailbreak"],
+  "license": "MIT"
+}

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:;"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #121212;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      user-select: none; -webkit-app-region: drag;
+      color: #e0e0e0;
+    }
+
+    body {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 28px 28px 20px;
+      gap: 0;
+    }
+
+    /* ── Icon ── */
+    .icon {
+      width: 64px; height: 64px; border-radius: 16px;
+      filter: drop-shadow(0 0 18px rgba(187,134,252,0.45));
+      animation: pop .35s cubic-bezier(.34,1.56,.64,1) both;
+      margin-bottom: 14px;
+    }
+    @keyframes pop {
+      from { opacity: 0; transform: scale(.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* ── Heading ── */
+    h1 {
+      font-size: 17px; font-weight: 700;
+      color: #e0e0e0; letter-spacing: .03em;
+      text-align: center; margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 11px; color: #757575;
+      letter-spacing: .05em; text-transform: uppercase;
+      text-align: center; margin-bottom: 16px;
+    }
+
+    /* ── Body text ── */
+    .body-text {
+      font-size: 12px; color: #9e9e9e; text-align: center;
+      line-height: 1.6; margin-bottom: 18px;
+      max-width: 320px;
+    }
+    .body-text a {
+      color: #BB86FC; text-decoration: none;
+      -webkit-app-region: no-drag; cursor: pointer;
+    }
+    .body-text a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    .divider {
+      width: 100%; height: 1px; background: #2c2c2c;
+      margin-bottom: 16px; flex-shrink: 0;
+    }
+
+    /* ── QR + BTC row ── */
+    .btc-row {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 16px; width: 100%;
+    }
+    .qr-wrap {
+      flex-shrink: 0; width: 80px; height: 80px;
+      border-radius: 8px; overflow: hidden; background: #1e1e1e;
+      border: 1px solid #333;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qr-wrap img { width: 80px; height: 80px; display: block; }
+    .qr-placeholder {
+      font-size: 9px; color: #555; text-align: center; padding: 6px;
+      line-height: 1.4;
+    }
+    .btc-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .btc-label {
+      font-size: 10px; color: #757575; text-transform: uppercase;
+      letter-spacing: .06em; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btc-label svg { flex-shrink: 0; }
+    .btc-addr {
+      font-size: 10px; color: #BB86FC; font-family: 'Courier New', monospace;
+      word-break: break-all; line-height: 1.4;
+      background: #1e1e1e; border: 1px solid #333;
+      border-radius: 6px; padding: 6px 8px;
+      -webkit-app-region: no-drag; cursor: text; user-select: text;
+    }
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #252525; border: 1px solid #333; border-radius: 6px;
+      padding: 4px 10px; font-size: 10px; color: #9e9e9e; cursor: pointer;
+      transition: background .15s, color .15s; -webkit-app-region: no-drag;
+      align-self: flex-start;
+    }
+    .copy-btn:hover { background: #2c2c2c; color: #e0e0e0; }
+    .copy-btn.copied { color: #4CAF50; border-color: #4CAF50; }
+
+    /* ── Action buttons ── */
+    .actions {
+      display: flex; flex-direction: column; gap: 8px;
+      width: 100%;
+    }
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 9px 0; border-radius: 8px; font-size: 12px; font-weight: 600;
+      cursor: pointer; border: none; transition: opacity .15s, filter .15s;
+      -webkit-app-region: no-drag; width: 100%;
+    }
+    .btn:hover { filter: brightness(1.12); }
+    .btn:active { filter: brightness(.9); }
+    .btn-revolut { background: #222; border: 1px solid #444; color: #e0e0e0; }
+    .btn-x       { background: #1a1a1a; border: 1px solid #333; color: #9e9e9e; }
+    .btn-close   { background: transparent; border: 1px solid #333; color: #555;
+                   font-size: 11px; padding: 7px 0; margin-top: 2px; }
+    .btn-close:hover { color: #9e9e9e; border-color: #555; }
+
+    /* ── Revolut branding ── */
+    .revolut-logo {
+      font-size: 11px; font-weight: 900; letter-spacing: -.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <img class="icon" src="../build/icon.png" alt="Porkfolio"/>
+
+  <h1>Did you enjoy Porkfolio?</h1>
+  <p class="subtitle">AIO PS5 Utility &middot; by StonedModder</p>
+
+  <p class="body-text">
+    Please consider
+    <a id="x-link" href="#">following on X</a>
+    for more projects, or donating to support future development and get rid of this message.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- Bitcoin -->
+  <div class="btc-row">
+    <div class="qr-wrap">
+      <!-- QR SVG injected by script -->
+    </div>
+    <div class="btc-info">
+      <div class="btc-label">
+        <!-- Bitcoin "₿" icon -->
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="#F7931A"><path d="M23.638 14.904c-1.602 6.425-8.113 10.343-14.542 8.74C2.67 22.044-1.244 15.525.362 9.105 1.96 2.68 8.475-1.243 14.9.358c6.43 1.605 10.342 8.115 8.738 14.546zM17.239 10.65c.277-1.85-.977-2.845-2.641-3.508l.54-2.164-1.317-.33-.526 2.108c-.347-.086-.704-.167-1.058-.247l.53-2.12-1.317-.33-.54 2.162c-.287-.066-.569-.13-.843-.2l.002-.006-1.817-.454-.35 1.404s.977.224.956.237c.533.133.63.486.613.766l-.615 2.464c.037.01.085.022.137.043l-.139-.035-.862 3.455c-.065.162-.231.405-.605.313.014.02-.957-.239-.957-.239l-.654 1.503 1.714.428c.319.08.63.163.937.242l-.547 2.19 1.316.33.54-2.167c.36.098.71.188 1.05.272l-.538 2.154 1.317.33.547-2.186c2.257.427 3.954.255 4.668-1.787.576-1.643-.029-2.591-1.217-3.21.865-.199 1.516-.768 1.69-1.942zm-3.025 4.242c-.41 1.643-3.182.755-4.08.531l.728-2.917c.898.224 3.782.668 3.352 2.386zm.41-4.264c-.374 1.496-2.686.736-3.438.55l.66-2.647c.752.187 3.169.537 2.778 2.097z"/></svg>
+        Bitcoin
+      </div>
+      <div class="btc-addr" id="btc-addr" title="Click to select all"></div>
+      <button class="copy-btn" id="copy-btn">
+        <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="6" width="10" height="12" rx="2"/><path d="M4 14H3a2 2 0 01-2-2V3a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Address
+      </button>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-revolut" id="revolut-btn">
+      <svg width="16" height="16" viewBox="0 0 92 92" fill="none"><rect width="92" height="92" rx="46" fill="#191C1F"/><path d="M28 20h22c10 0 18 8 18 17.5S60 55 50 55H42l12 17H37L24 54.5a2 2 0 01.4-2.8l7.6-5.7H50c5 0 8-3.6 8-8.5S55 29 50 29H42v43H28V20z" fill="#fff"/></svg>
+      <span>Donate via Revolut</span>
+    </button>
+
+    <button class="btn btn-x" id="x-btn">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L2.012 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Follow on X for more tools
+    </button>
+
+    <button class="btn btn-close" id="close-btn">Close Porkfolio</button>
+  </div>
+
+  <script>
+    // ── Determine exit mode from URL (safe — no window.donate needed) ──────────
+    const _mode = new URLSearchParams(location.search).get('mode');
+
+    // ── Wire up ALL buttons FIRST so they always work ──────────────────────────
+    // These run synchronously before any async/IPC calls that could fail.
+    document.getElementById('close-btn').addEventListener('click', () => {
+      if (_mode === 'exit') window.donate.exitApp();
+      else window.donate.dismiss();
+    });
+    document.getElementById('x-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.donate.openX();
+    });
+    document.getElementById('x-btn').addEventListener('click', () => window.donate.openX());
+    document.getElementById('revolut-btn').addEventListener('click', () => window.donate.openRevolut());
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      const addr = document.getElementById('btc-addr').textContent;
+      navigator.clipboard.writeText(addr).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,10 8,15 17,6"/></svg> Copied!`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="6" width="10" height="12" rx="2"/><path d="M4 14H3a2 2 0 01-2-2V3a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Address`;
+        }, 2000);
+      });
+    });
+    document.getElementById('btc-addr').addEventListener('click', function () {
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(this);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    // ── Populate dynamic content after listeners are attached ──────────────────
+    (async () => {
+      try {
+        // Bitcoin address text
+        const addr = window.donate.btcAddress();
+        document.getElementById('btc-addr').textContent = addr;
+      } catch (_) {}
+
+      try {
+        // QR code — returned as { ok, svg } from main process
+        const result = await window.donate.genQR();
+        const qrWrap = document.querySelector('.qr-wrap');
+        if (result && result.ok && result.svg) {
+          // Inject SVG directly so colours render correctly
+          qrWrap.innerHTML = result.svg;
+          const svgEl = qrWrap.querySelector('svg');
+          if (svgEl) {
+            svgEl.style.width  = '80px';
+            svgEl.style.height = '80px';
+          }
+        } else {
+          qrWrap.innerHTML = '<div class="qr-placeholder">QR unavailable</div>';
+        }
+      } catch (_) {
+        document.querySelector('.qr-wrap').innerHTML = '<div class="qr-placeholder">QR unavailable</div>';
+      }
+    })();
+  </script>
+</body>
+</html>

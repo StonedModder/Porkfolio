@@ -1,0 +1,38 @@
+{
+  "name": "ufs2-electron-module",
+  "version": "1.0.0",
+  "description": "Drop-in Electron/Node.js module — single and batch UFS1/UFS2 filesystem image creation, extraction, and management via UFS2Tool.exe.",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./preload": "./preload.js",
+    "./renderer": "./renderer/ufs2Renderer.js"
+  },
+  "keywords": ["ps5", "ufs2", "ufs1", "ffpkg", "filesystem", "electron", "module", "batch"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^29.0.0"
+  },
+  "peerDependencies": {
+    "electron": ">=25.0.0"
+  },
+  "peerDependenciesMeta": {
+    "electron": { "optional": true }
+  },
+  "scripts": {
+    "test": "node test-smoke.js",
+    "test:integration": "node test.js"
+  },
+  "files": [
+    "index.js",
+    "preload.js",
+    "src/",
+    "renderer/",
+    "test-smoke.js",
+    "README.md"
+  ]
+}

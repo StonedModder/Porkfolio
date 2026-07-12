@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>Shadowbatch - StonedModder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- Titlebar -->
+  <div class="titlebar">
+    <span class="title">SHADOWBATCH &mdash; StonedModder</span>
+    <a class="x-follow-link" id="x-follow-link" href="#" title="Follow on X for more tools">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L2.012 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Follow for more tools
+    </a>
+    <span class="tool-badge err" id="tool-badge">UFS2Tool: checking…</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" data-tab="settings">Settings</div>
+    <div class="tab" data-tab="games">Games <span class="badge" id="games-count">0</span></div>
+    <div class="tab" data-tab="firmware">Backpork Patches <span class="badge" id="fw-count">0</span></div>
+    <div class="tab" data-tab="queue">Queue <span class="badge" id="queue-badge">0</span></div>
+  </div>
+
+  <!-- Panels -->
+  <div class="panels">
+
+    <!-- ═══ SETTINGS ════════════════════════════════════════════════════════ -->
+    <div class="panel active" id="panel-settings">
+
+      <div class="section">
+        <div class="section-header"><span>UFS2Tool Executable (FFPKG mode)</span></div>
+        <div class="section-body">
+          <p class="about-text" style="margin-bottom:8px;">
+            Point to <code>UFS2Tool.exe</code> on your system. Requires <strong>Administrator elevation</strong> to run.
+            You can update or swap it at any time without reinstalling the app.
+          </p>
+          <div class="path-row">
+            <input type="text" id="s-tool" placeholder="C:\Tools\UFS2Tool\UFS2Tool.exe" readonly>
+            <button id="s-tool-pick" class="primary">Browse…</button>
+            <span id="s-tool-status" style="font-size:11px;margin-left:4px;"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="s-exfat-section">
+        <div class="section-header"><span>ExFAT Tool Folder</span></div>
+        <div class="section-body">
+          <p class="about-text" style="margin-bottom:8px;">
+            Select the <strong>folder</strong> containing both <code>make_image.bat</code> and <code>New-OsfExfatImage.ps1</code>.
+            Requires <a href="https://www.osforensics.com/tools/mount-disk-images.html" style="color:var(--accent);">OSFMount</a>
+            installed and <strong>Administrator elevation</strong> to run.
+          </p>
+          <div class="path-row">
+            <input type="text" id="s-exfat-tool" placeholder="C:\Tools\UFS2imageexfatTools" readonly>
+            <button id="s-exfat-tool-pick" class="primary">Browse Folder…</button>
+            <span id="s-exfat-tool-status" style="font-size:11px;margin-left:4px;"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span>Directories</span></div>
+        <div class="section-body" style="display:flex;flex-direction:column;gap:12px;">
+
+          <label class="field">
+            <span class="label">Temp Worker Folder (scratch space — needs plenty of free space)</span>
+            <div class="path-row">
+              <input type="text" id="s-temp" placeholder="e.g. D:\ufs2_temp" readonly>
+              <button id="s-temp-pick">Browse…</button>
+              <button id="s-temp-open" title="Open in Explorer">Open</button>
+            </div>
+          </label>
+
+          <label class="field">
+            <span class="label">Output Folder (where .ffpkg / .exfat files are saved)</span>
+            <div class="path-row">
+              <input type="text" id="s-output" placeholder="e.g. E:\ufs2-output" readonly>
+              <button id="s-output-pick">Browse…</button>
+              <button id="s-output-open" title="Open in Explorer">Open</button>
+            </div>
+          </label>
+
+          <label class="field" id="s-method-row">
+            <span class="label">UFS2 Convert Method <span style="color:var(--muted);font-size:11px;">(FFPKG mode only)</span></span>
+            <select id="s-method">
+              <option value="makefs">makefs (PS5 preset — recommended)</option>
+              <option value="newfs">newfs (PS5 preset)</option>
+            </select>
+          </label>
+
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span>Game Source Folders</span>
+          <button id="s-add-game-source" class="primary">+ Add Folder</button>
+        </div>
+        <div class="section-body">
+          <p class="about-text" style="margin-bottom:8px;">
+            Folders containing game directories named with a PS5 title ID (PPSA/CUSA + 5 digits).
+          </p>
+          <div id="settings-sources"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span>Backpork Root Folders</span>
+          <button id="s-add-bp-root" class="primary">+ Add Root</button>
+          <button id="s-add-bp-folder" style="margin-left:4px;">+ Add Single Patch Folder</button>
+        </div>
+        <div class="section-body">
+          <p class="about-text" style="margin-bottom:8px;">
+            Root folders whose subfolders are named after backpork patch versions (e.g. <code>11.50.0</code>).
+            Each subfolder is scanned for PPSA/CUSA game directories.
+          </p>
+          <div id="settings-roots"></div>
+        </div>
+      </div>
+
+      <!-- ═══ NOTIFICATIONS ═════════════════════════════════════════════ -->
+      <div class="section">
+        <div class="section-header"><span>Notifications (CustomPSNotify)</span></div>
+        <div class="section-body" style="display:flex;flex-direction:column;gap:12px;">
+          <p class="about-text" style="margin-bottom:4px;">
+            Send native PS5 toast notifications via
+            <a href="https://github.com/ItsDeidara/CustomPSNotify" style="color:var(--accent);">CustomPSNotify</a>.
+            Load the <code>customPSNotify.js</code> payload on your PS5 it listens on port&nbsp;6969 by default.
+          </p>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;">
+            <input type="checkbox" id="s-notify-enabled" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+            <span style="font-size:13px;font-weight:600;">Enable PS5 Notifications</span>
+          </label>
+
+          <div id="s-notify-config" style="display:none;flex-direction:column;gap:10px;padding-left:22px;">
+            <!-- Connection row -->
+            <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+              <label class="field" style="flex:1;min-width:180px;">
+                <span class="label">PS5 IP Address</span>
+                <input type="text" id="s-notify-ip" placeholder="192.168.1.xxx" autocomplete="off" spellcheck="false" style="font-family:monospace;">
+              </label>
+              <label class="field" style="width:90px;">
+                <span class="label">Port</span>
+                <input type="number" id="s-notify-port" value="6969" min="1" max="65535" style="font-family:monospace;">
+              </label>
+              <button id="s-notify-test" style="margin-bottom:1px;">Test</button>
+              <span id="s-notify-test-result" style="font-size:11px;margin-left:4px;"></span>
+            </div>
+
+            <!-- Per-event toggles -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <span class="label" style="margin-bottom:2px;">Notify on:</span>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="s-notify-game-queued" style="accent-color:var(--accent);">
+                Single game added to queue &mdash; <em>e.g. &ldquo;PPSA01234 added to queue&rdquo;</em>
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="s-notify-batch-queued" style="accent-color:var(--accent);">
+                Multiple games added to queue &mdash; <em>e.g. &ldquo;6 items added to queue&rdquo;</em>
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="s-notify-copy-start" style="accent-color:var(--accent);">
+                Game started copying
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="s-notify-convert-start" style="accent-color:var(--accent);">
+                Game started converting (to .ffpkg / .exfat)
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="s-notify-job-done" style="accent-color:var(--accent);">
+                Game finished (done or failed)
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span>About</span></div>
+        <div class="section-body">
+          <p class="about-text">
+            UFS2 Patcher applies backpork patches to PS5 game folders and converts them to a backup image.<br><br>
+            <strong>Workflow (both modes):</strong><br>
+            1. Copy game directory &rarr; temp worker folder<br>
+            2. Overlay backpork patch files onto the copy<br>
+            3a. <strong>FFPKG mode:</strong> Run <code>UFS2Tool makefs</code> (or <code>newfs</code>) &rarr; <code>.ffpkg</code> image<br>
+            3b. <strong>ExFAT mode:</strong> Run <code>make_image.bat</code> (OSFMount) &rarr; <code>.exfat</code> image<br>
+            4. Clean up the temp worker directory<br><br>
+            <strong>ExFAT mode requirements:</strong><br>
+            &bull; <a href="https://www.osforensics.com/tools/mount-disk-images.html" style="color:var(--accent);">OSFMount</a> must be installed<br>
+            &bull; <code>make_image.bat</code> and <code>New-OsfExfatImage.ps1</code> must be in the <strong>same folder</strong><br>
+            &bull; The game source folder <strong>must contain <code>eboot.bin</code></strong> at its root<br>
+            &bull; Image is auto-sized to fit content; source is formatted &amp; copied into image root<br><br>
+            Both modes require <strong>Administrator elevation</strong>. Run this app as Administrator.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ GAMES ════════════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-games">
+      <div class="toolbar">
+        <button id="games-scan" class="primary">Scan Source Folders</button>
+        <button id="games-add-src">+ Add Source Folder</button>
+        <span class="spacer"></span>
+        <span id="games-sel-count" style="color:var(--muted);font-size:12px;"></span>
+        <button id="games-select-all">Select All</button>
+        <button id="games-deselect-all">Deselect All</button>
+      </div>
+
+      <div class="section" id="games-table-section">
+        <div class="section-header">
+          <span>Discovered Games</span>
+          <span style="color:var(--muted);font-size:11px;" id="games-sub"></span>
+        </div>
+        <div id="filter-notice">
+          <span id="filter-notice-text"></span>
+          <span class="fn-clear" id="filter-clear">clear filter</span>
+        </div>
+        <div id="game-table-wrap">
+          <div class="empty" id="games-empty">
+            <div class="icon">[ ]</div>
+            <div>No games found. Add a source folder and hit Scan.</div>
+          </div>
+          <div class="table-wrap" id="games-table-outer" style="display:none;">
+            <table>
+              <thead>
+                <tr>
+                  <th class="check"><input type="checkbox" id="games-check-all"></th>
+                  <th>Title ID</th>
+                  <th>Folder Name</th>
+                  <th>Size</th>
+                  <th>Patches</th>
+                  <th>Source</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="games-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pork selection panel -->
+      <div class="section" id="pork-selection-panel">
+        <div class="section-header"><span>Pork Selected Games</span></div>
+        <div class="section-body" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+          <div class="field" style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;">
+              <input type="checkbox" id="pork-skip-porking" style="width:14px;height:14px;accent-color:var(--accent);cursor:pointer;">
+              <span style="font-size:13px;font-weight:600;">Skip Porking</span>
+            </label>
+            <span style="font-size:11px;color:var(--muted);">Convert without applying any patch</span>
+          </div>
+          <div class="field" id="pork-fw-field" style="display:flex;flex-direction:column;gap:4px;">
+            <span class="label">Backpork Patch Version <span style="color:var(--muted);font-size:11px;">(optional)</span></span>
+            <select id="pork-fw-select">
+              <option value="">— no patch / convert only —</option>
+              <option value="__none__">— Convert only (no patch) —</option>
+            </select>
+          </div>
+          <label class="field" style="min-width:200px;">
+            <span class="label">Output Mode</span>
+            <select id="pork-mode-select">
+              <option value="ffpkg">FFPKG — UFS2Tool (.ffpkg)</option>
+              <option value="exfat">ExFAT — OSFMount (.exfat)</option>
+            </select>
+          </label>
+          <div style="display:flex;gap:6px;">
+            <button class="primary" id="pork-queue-btn">Add to Queue</button>
+          </div>
+        </div>
+        <div id="pork-match-info" style="padding:8px 12px 4px;font-size:11px;color:var(--muted);"></div>
+      </div>
+    </div>
+
+    <!-- ═══ BACKPORK PATCHES ══════════════════════════════════════════════ -->
+    <div class="panel" id="panel-firmware">
+      <div class="toolbar">
+        <button id="fw-add-root" class="primary">+ Add Root Folder</button>
+        <button id="fw-add-folder">+ Add Single Patch</button>
+        <button id="fw-refresh">Refresh</button>
+        <span class="spacer"></span>
+        <span id="fw-total-games" style="color:var(--muted);font-size:12px;"></span>
+      </div>
+
+      <div id="fw-empty" class="empty">
+        <div class="icon">[ ]</div>
+        <div>No backpork patch folders configured. Add a root folder or single patch folder.</div>
+      </div>
+      <div class="firmware-list" id="firmware-list"></div>
+    </div>
+
+    <!-- ═══ QUEUE ════════════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-queue">
+      <div class="toolbar">
+        <button id="queue-go" class="success" disabled style="font-size:13px;font-weight:700;padding:6px 18px;letter-spacing:.04em;">▶ Go!!</button>
+        <span id="queue-paused-hint" style="font-size:11px;color:var(--muted);">Add games then hit Go!!</span>
+        <span class="spacer"></span>
+        <span id="queue-summary" style="color:var(--muted);font-size:12px;">No jobs.</span>
+        <span class="spacer"></span>
+        <button id="queue-clear-done">Clear Completed</button>
+        <button id="queue-cleanup-temp" title="Delete leftover temp folders and partial output files from failed conversions">🧹 Clean Temp</button>
+      </div>
+
+      <div id="queue-empty" class="empty" style="display:none;">
+        <div class="icon">[ ]</div>
+        <div>Queue is empty. Select games in the Games tab and add them.</div>
+      </div>
+      <div class="job-list" id="job-list"></div>
+    </div>
+
+  </div><!-- /panels -->
+</div><!-- /app -->
+
+<script src="app.js"></script>
+</body>
+</html>

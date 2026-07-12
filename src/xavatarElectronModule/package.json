@@ -1,0 +1,42 @@
+{
+  "name": "xavatar-electron-module",
+  "version": "1.0.0",
+  "description": "Drop-in Electron module — converts any image to a PS4/PS5-compatible .xavatar archive (PNG + DXT5 DDS + online.json in a ZIP).",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./preload": "./preload.js",
+    "./renderer": "./renderer/xavatarRenderer.js"
+  },
+  "keywords": ["ps4", "ps5", "xavatar", "avatar", "dxt5", "dds", "electron", "module"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  },
+  "optionalDependencies": {
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0"
+  },
+  "peerDependencies": {
+    "electron": ">=25.0.0"
+  },
+  "peerDependenciesMeta": {
+    "electron": { "optional": true }
+  },
+  "scripts": {
+    "test": "node test/basic.js",
+    "example": "node examples/basic-usage.js"
+  },
+  "files": [
+    "index.js",
+    "preload.js",
+    "src/",
+    "renderer/",
+    "README.md"
+  ]
+}

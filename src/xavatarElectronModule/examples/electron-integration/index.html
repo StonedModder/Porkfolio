@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>xavatar-electron-module — Integration Example</title>
+  <style>
+    :root { --accent: #00f0ff; --bg: #030617; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: var(--bg); color: #e6f7ff;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 18px; padding: 32px;
+    }
+    h1 { margin: 0; font-size: 22px; color: var(--accent); }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 20px; display: flex; flex-direction: column;
+      align-items: center; gap: 12px; width: 320px;
+    }
+    label.drop {
+      width: 100%; padding: 24px 12px; border-radius: 10px;
+      border: 2px dashed rgba(0,240,255,0.2); text-align: center;
+      cursor: pointer; font-size: 13px; color: rgba(255,255,255,0.6);
+      transition: border-color .2s;
+    }
+    label.drop:hover { border-color: var(--accent); }
+    input[type=file] { display: none; }
+    canvas#preview { width: 120px; height: 120px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
+    .btn {
+      padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
+      font-weight: 600; font-size: 14px; background: var(--accent); color: #04101a;
+      transition: opacity .2s;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .status { font-size: 13px; color: rgba(255,255,255,0.7); min-height: 20px; text-align: center; }
+    #url-row { display: flex; gap: 6px; width: 100%; }
+    #url-row input {
+      flex: 1; padding: 8px 12px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04);
+      color: #e6f7ff; font-size: 13px;
+    }
+    #url-row button { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <h1>xavatar Electron Module — Demo</h1>
+
+  <div class="row">
+    <div class="card">
+      <label class="drop" id="drop-zone">
+        📂 Click to upload or drag an image here<br>
+        <small>(or paste with Ctrl/Cmd+V)</small>
+        <input type="file" id="file-input" accept="image/*" />
+      </label>
+
+      <div id="url-row">
+        <input type="url" id="url-input" placeholder="https://example.com/avatar.png" />
+        <button class="btn" id="load-url-btn" style="padding:8px 12px;font-size:13px">Load</button>
+      </div>
+
+      <canvas id="preview" width="440" height="440"></canvas>
+
+      <button class="btn" id="convert-btn" disabled>Convert &amp; Save .xavatar</button>
+      <div class="status" id="status">No image loaded</div>
+    </div>
+  </div>
+
+  <script type="module">
+    /**
+     * Renderer script — integration example
+     * Uses window.xavatarAPI (injected by preload.js) via XavatarClient.
+     *
+     * In a real project you'd import from 'xavatar-electron-module/renderer'
+     * Here we inline the essential bits so the example is fully self-contained.
+     */
+
+    // ——— Inline minimal XavatarClient (real projects: import from module) ———
+    class XavatarClient {
+      constructor() {
+        this._api    = window.xavatarAPI;
+        this._canvas = null;
+        this._name   = 'avatar';
+      }
+      async loadFile(file) {
+        this._name = file.name.replace(/\.[^.]+$/, '') || 'avatar';
+        const url  = URL.createObjectURL(file);
+        await this._drawFromURL(url);
+        URL.revokeObjectURL(url);
+      }
+      async loadURL(url) {
+        this._name = url.split('/').pop().replace(/\.[^.]+$/, '') || 'avatar';
+        await this._drawFromURL(url);
+      }
+      _drawFromURL(src) {
+        return new Promise((resolve, reject) => {
+          const img  = new Image(); img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const c = Object.assign(document.createElement('canvas'), { width: 440, height: 440 });
+            c.getContext('2d').drawImage(img, 0, 0, 440, 440);
+            this._canvas = c; resolve();
+          };
+          img.onerror = reject; img.src = src;
+        });
+      }
+      async convert() {
+        if (!this._canvas) throw new Error('No image loaded');
+        return this._api.convertFromCanvas(this._canvas, { filename: this._name });
+      }
+    }
+    // ——— end inline ———
+
+    const client     = new XavatarClient();
+    const fileInput  = document.getElementById('file-input');
+    const dropZone   = document.getElementById('drop-zone');
+    const urlInput   = document.getElementById('url-input');
+    const loadUrlBtn = document.getElementById('load-url-btn');
+    const convertBtn = document.getElementById('convert-btn');
+    const preview    = document.getElementById('preview');
+    const statusEl   = document.getElementById('status');
+
+    function setStatus(msg, isError = false) {
+      statusEl.textContent = msg;
+      statusEl.style.color = isError ? '#ff6b6b' : 'rgba(255,255,255,0.7)';
+    }
+
+    function afterLoad(canvas) {
+      const ctx = preview.getContext('2d');
+      ctx.clearRect(0, 0, 440, 440);
+      ctx.drawImage(canvas, 0, 0, 440, 440);
+      convertBtn.disabled = false;
+      setStatus('Image ready — click Convert to build .xavatar');
+    }
+
+    // File input
+    fileInput.addEventListener('change', async () => {
+      const f = fileInput.files[0]; if (!f) return;
+      await client.loadFile(f);
+      afterLoad(client._canvas);
+    });
+
+    // Drop zone
+    dropZone.addEventListener('dragover', (e) => e.preventDefault());
+    dropZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      const f = e.dataTransfer?.files?.[0]; if (!f) return;
+      await client.loadFile(f);
+      afterLoad(client._canvas);
+    });
+
+    // Paste
+    document.addEventListener('paste', async (ev) => {
+      for (const item of (ev.clipboardData?.items || [])) {
+        if (item.type.startsWith('image')) {
+          const f = item.getAsFile(); if (!f) return;
+          await client.loadFile(f);
+          afterLoad(client._canvas);
+          return;
+        }
+      }
+    });
+
+    // URL load
+    loadUrlBtn.addEventListener('click', async () => {
+      const url = urlInput.value.trim(); if (!url) return;
+      setStatus('Loading URL…');
+      try {
+        await client.loadURL(url);
+        afterLoad(client._canvas);
+      } catch (e) { setStatus('Failed to load URL: ' + e.message, true); }
+    });
+
+    // Convert + save (uses native save dialog via xavatar:save-dialog)
+    convertBtn.addEventListener('click', async () => {
+      convertBtn.disabled = true;
+      setStatus('Converting…');
+      try {
+        const { buffer, filename } = await client.convert();
+
+        // Ask main process to show a save dialog and write the file
+        const res = await window.xavatarAPI.version
+          ? await (async () => {
+              // Use IPC save dialog if exposed, otherwise trigger browser download
+              try {
+                const r = await ipcRenderer?.invoke('xavatar:save-dialog', { buffer, filename });
+                return r;
+              } catch {
+                return null;
+              }
+            })()
+          : null;
+
+        if (!res || !res.ok) {
+          // Fallback: browser download
+          window.xavatarAPI.download(buffer, filename);
+          setStatus(`Downloaded ${filename}`);
+        } else {
+          setStatus(`Saved to ${res.savedTo}`);
+        }
+      } catch (err) {
+        setStatus('Error: ' + err.message, true);
+      } finally {
+        convertBtn.disabled = false;
+      }
+    });
+
+    // Show version info on load
+    window.addEventListener('DOMContentLoaded', async () => {});
+    const info = await window.xavatarAPI.version();
+    setStatus(`Module v${info.version} · sharp: ${info.sharpAvailable ? '✓' : '✗ (RGBA path only)'}`);
+  </script>
+</body>
+</html>

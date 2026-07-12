@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' ws:;"/>
+  <title>System View — Porkfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #121212;
+      --surface:  #1e1e1e;
+      --border:   #2c2c2c;
+      --text:     #e0e0e0;
+      --text-dim: #9e9e9e;
+      --accent:   #BB86FC;
+      --radius:   8px;
+    }
+
+    html, body { height: 100%; background: #000; color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px; overflow: hidden; user-select: none; }
+
+    /* ── Controls bar ─────────────────────────────────────────────────────────── */
+    #controls {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px; background: var(--surface);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+      position: relative; z-index: 10; flex-wrap: wrap;
+    }
+
+    .ctrl-label { font-size: 11px; color: var(--text-dim); white-space: nowrap; flex-shrink: 0; }
+
+    select {
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      border-radius: 5px; padding: 3px 6px; font-size: 12px; outline: none; cursor: pointer;
+    }
+    select:focus { border-color: var(--accent); }
+    .sel-video { flex: 2; min-width: 120px; }
+    .sel-audio { flex: 2; min-width: 100px; }
+    .sel-res   { width: 100px; }
+    .sel-fps   { width: 68px; }
+
+    button {
+      background: var(--surface); color: var(--text); border: 1px solid var(--border);
+      border-radius: 5px; padding: 3px 10px; font-size: 12px; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0; transition: background 0.15s;
+    }
+    button:hover:not(:disabled) { background: #2c2c2c; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Recording indicator ──────────────────────────────────────────────────── */
+    #rec-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; color: #ff5252; font-weight: 500; flex-shrink: 0;
+    }
+    #rec-status.hidden { display: none; }
+    .rec-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #ff5252; flex-shrink: 0;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
+
+    /* ── Video area ───────────────────────────────────────────────────────────── */
+    #shell { display: flex; flex-direction: column; height: 100%; }
+
+    #viewer {
+      flex: 1; position: relative; display: flex;
+      align-items: center; justify-content: center; background: #000; overflow: hidden;
+    }
+
+    #sv-video { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+    /* ── No-signal overlay ────────────────────────────────────────────────────── */
+    #no-signal {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      color: var(--text-dim); font-size: 13px; pointer-events: none;
+    }
+    #no-signal.hidden { display: none; }
+    #no-signal img { max-width: 280px; opacity: 0.55; }
+
+    /* ── Fullscreen button ────────────────────────────────────────────────────── */
+    #btn-fs {
+      position: absolute; bottom: 14px; right: 14px; z-index: 20;
+      background: rgba(18,18,18,.85); border: 1px solid #555; border-radius: 6px;
+      padding: 6px 10px; font-size: 16px; cursor: pointer; color: var(--text);
+      opacity: 0; transition: opacity 0.2s, background 0.15s; pointer-events: none;
+    }
+    #viewer:hover #btn-fs { opacity: 1; pointer-events: auto; }
+    #btn-fs:hover { background: rgba(50,50,50,.95); }
+
+    /* ── In-app fullscreen — CSS-based, reliable in Electron ─────────────────── */
+    body.sv-fullscreen #controls { display: none; }
+    body.sv-fullscreen #viewer   { position: fixed; inset: 0; z-index: 9000; }
+    /* Always show the exit button when fullscreen */
+    body.sv-fullscreen #btn-fs   { opacity: 1; pointer-events: auto; }
+  </style>
+</head>
+<body>
+<div id="shell">
+  <div id="controls">
+    <span class="ctrl-label">Video</span>
+    <select id="video-select" class="sel-video"><option value="">— Select source —</option></select>
+    <span class="ctrl-label">Audio</span>
+    <select id="audio-select" class="sel-audio"><option value="">— No audio —</option></select>
+    <span class="ctrl-label">Res</span>
+    <select id="res-select" class="sel-res">
+      <option value="">Auto</option>
+      <option value="1280x720">1280×720</option>
+      <option value="1920x1080">1920×1080</option>
+      <option value="2560x1440">2560×1440</option>
+      <option value="3840x2160">3840×2160</option>
+    </select>
+    <button id="btn-mute" disabled>&#128266; Mute</button>
+    <select id="fps-select" class="sel-fps">
+      <option value="5">5 fps</option>
+      <option value="10" selected>10 fps</option>
+      <option value="15">15 fps</option>
+      <option value="25">25 fps</option>
+      <option value="30">30 fps</option>
+      <option value="60">60 fps</option>
+    </select>
+    <button id="btn-record" disabled>&#9210; Record GIF</button>
+    <span id="rec-status" class="hidden">
+      <span class="rec-dot"></span>REC <span id="rec-time">0:00</span>
+    </span>
+  </div>
+
+  <div id="viewer">
+    <video id="sv-video" autoplay playsinline muted></video>
+    <div id="no-signal">
+      <img src="assets/no-signal/no-signal.png" alt="No signal"/>
+      <p id="no-signal-msg">Select a video source above to begin</p>
+    </div>
+    <button id="btn-fs" title="Fullscreen (or double-click)">&#x26F6;</button>
+  </div>
+</div>
+
+<script src="gif-encoder.js"></script>
+<script>
+'use strict';
+
+// ── URL params ─────────────────────────────────────────────────────────────────
+const params         = new URLSearchParams(window.location.search);
+const initVideoId    = params.get('videoId')    || '';
+const initAudioId    = params.get('audioId')    || '';
+const initResolution = params.get('resolution') || '';
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let stream      = null;
+let muted       = false;
+let recording   = false;
+let recFrames   = [];
+let recInterval = null;
+let recTimer    = null;
+let recStart    = 0;
+let recCanvas   = null;
+let recCtx      = null;
+
+// AudioContext for low-latency audio — avoids Chromium's video-clock sync buffering
+let audioCtx  = null;
+let audioGain = null;
+
+const GIF_W = 640, GIF_H = 360;
+
+// ── Element refs ───────────────────────────────────────────────────────────────
+const videoEl    = document.getElementById('sv-video');
+const videoSel   = document.getElementById('video-select');
+const audioSel   = document.getElementById('audio-select');
+const resSel     = document.getElementById('res-select');
+const fpsSel     = document.getElementById('fps-select');
+const btnMute    = document.getElementById('btn-mute');
+const btnRecord  = document.getElementById('btn-record');
+const btnFs      = document.getElementById('btn-fs');
+const noSignal   = document.getElementById('no-signal');
+const noSignalMsg= document.getElementById('no-signal-msg');
+const controls   = document.getElementById('controls');
+const recStatus  = document.getElementById('rec-status');
+const recTimeEl  = document.getElementById('rec-time');
+
+// ── Audio helpers ──────────────────────────────────────────────────────────────
+function audioStop() {
+  if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; }
+  audioGain = null;
+}
+
+// ── Device enumeration ─────────────────────────────────────────────────────────
+async function enumerateDevices() {
+  try {
+    if (!stream) {
+      try {
+        const tmp = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        tmp.getTracks().forEach(t => t.stop());
+      } catch (_) {}
+    }
+    const devices = await navigator.mediaDevices.enumerateDevices();
+
+    const prevVideo = videoSel.value, prevAudio = audioSel.value;
+
+    while (videoSel.options.length > 1) videoSel.remove(1);
+    devices.filter(d => d.kind === 'videoinput').forEach(d =>
+      videoSel.add(new Option(d.label || `Camera ${d.deviceId.slice(0,8)}`, d.deviceId)));
+
+    while (audioSel.options.length > 1) audioSel.remove(1);
+    devices.filter(d => d.kind === 'audioinput').forEach(d =>
+      audioSel.add(new Option(d.label || `Mic ${d.deviceId.slice(0,8)}`, d.deviceId)));
+
+    const tV = prevVideo || initVideoId, tA = prevAudio || initAudioId;
+    if (tV && [...videoSel.options].some(o => o.value === tV)) videoSel.value = tV;
+    if (tA && [...audioSel.options].some(o => o.value === tA)) audioSel.value = tA;
+  } catch (e) {
+    console.error('enumerateDevices failed:', e);
+  }
+}
+
+// ── Stream management ──────────────────────────────────────────────────────────
+async function startStream() {
+  if (recording) stopRecording();
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  audioStop();
+  videoEl.srcObject = null;
+
+  const videoId = videoSel.value;
+  if (!videoId) {
+    noSignalMsg.textContent = 'Select a video source above to begin';
+    noSignal.classList.remove('hidden');
+    btnMute.disabled = true;
+    btnRecord.disabled = true;
+    return;
+  }
+
+  noSignalMsg.textContent = 'Starting stream…';
+
+  const audioId = audioSel.value;
+  const res = resSel.value;
+  const [rW, rH] = res ? res.split('x').map(Number) : [];
+
+  const _buildConstraints = (exactRes) => {
+    const vc = { deviceId: { exact: videoId } };
+    if (rW) {
+      vc.width  = exactRes ? { exact: rW } : { ideal: rW };
+      vc.height = exactRes ? { exact: rH } : { ideal: rH };
+    }
+    return {
+      video: vc,
+      audio: audioId ? {
+        deviceId:         { exact: audioId },
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl:  false,
+        channelCount:     2,
+      } : false,
+    };
+  };
+
+  try {
+    // First try exact resolution; fall back to ideal if the device can't match
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(_buildConstraints(true));
+    } catch (exactErr) {
+      if (rW && exactErr.name === 'OverconstrainedError') {
+        console.warn(`[SysView] Exact ${rW}×${rH} not supported, falling back to ideal`);
+        stream = await navigator.mediaDevices.getUserMedia(_buildConstraints(false));
+      } else {
+        throw exactErr;
+      }
+    }
+
+    // Feed only video tracks to the video element.  Chromium syncs audio to
+    // the video clock which adds ~150-300 ms of buffering / choppiness.
+    // Routing audio separately via AudioContext drops this to ~20-40 ms.
+    videoEl.srcObject = new MediaStream(stream.getVideoTracks());
+    videoEl.muted = true; // always; audio is handled by AudioContext below
+
+    const audioTracks = stream.getAudioTracks();
+    if (audioId && audioTracks.length) {
+      audioCtx  = new AudioContext({ latencyHint: 'interactive' });
+      audioGain = audioCtx.createGain();
+      audioGain.gain.value = muted ? 0 : 1;
+      audioCtx.createMediaStreamSource(new MediaStream(audioTracks))
+        .connect(audioGain)
+        .connect(audioCtx.destination);
+    }
+
+    noSignal.classList.add('hidden');
+    btnMute.disabled = false;
+    btnRecord.disabled = false;
+    updateMuteBtn();
+  } catch (e) {
+    noSignalMsg.textContent = `Error: ${e.message}`;
+    noSignal.classList.remove('hidden');
+    btnMute.disabled = true;
+    btnRecord.disabled = true;
+  }
+}
+
+function updateMuteBtn() {
+  btnMute.textContent = muted ? '🔇 Unmute' : '🔊 Mute';
+}
+
+// ── GIF Recording ──────────────────────────────────────────────────────────────
+function getRecCtx() {
+  const w = videoEl.videoWidth  || GIF_W;
+  const h = videoEl.videoHeight || GIF_H;
+  if (!recCanvas || recCanvas.width !== w || recCanvas.height !== h) {
+    recCanvas = document.createElement('canvas');
+    recCanvas.width = w; recCanvas.height = h;
+    recCtx = recCanvas.getContext('2d');
+  }
+  return recCtx;
+}
+
+function startRecording() {
+  if (recording || !stream) return;
+  const fps = parseInt(fpsSel.value) || 10;
+  recording = true; recFrames = []; recStart = Date.now();
+  btnRecord.textContent = '⏹ Stop & Save';
+  recStatus.classList.remove('hidden');
+  const ctx = getRecCtx();
+  const gifW = recCanvas.width, gifH = recCanvas.height;
+  recInterval = setInterval(() => {
+    ctx.drawImage(videoEl, 0, 0, gifW, gifH);
+    recFrames.push(new Uint8ClampedArray(ctx.getImageData(0, 0, gifW, gifH).data.buffer));
+  }, Math.round(1000 / fps));
+  recTimer = setInterval(() => {
+    const s = Math.floor((Date.now() - recStart) / 1000);
+    recTimeEl.textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  }, 500);
+}
+
+function stopRecording() {
+  if (!recording) return;
+  clearInterval(recInterval); clearInterval(recTimer);
+  recording = false;
+  btnRecord.textContent = '⏺ Record GIF';
+  recStatus.classList.add('hidden');
+  recTimeEl.textContent = '0:00';
+  if (!recFrames.length) return;
+  const fps = parseInt(fpsSel.value) || 10;
+  const gifW = recCanvas?.width  || GIF_W;
+  const gifH = recCanvas?.height || GIF_H;
+  const enc = new GifEncoder(gifW, gifH, { fps });
+  for (const f of recFrames) enc.addFrame(f);
+  recFrames = [];
+  const bytes = enc.encode();
+  const url = URL.createObjectURL(new Blob([bytes], { type: 'image/gif' }));
+  const a = Object.assign(document.createElement('a'), {
+    href: url, download: `porkfolio-${Date.now()}.gif`,
+  });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+// ── In-app fullscreen (CSS-based — requestFullscreen unreliable in Electron) ───
+function toggleFullscreen() {
+  const entering = !document.body.classList.contains('sv-fullscreen');
+  document.body.classList.toggle('sv-fullscreen', entering);
+  btnFs.innerHTML = entering ? '&#x2715;' : '&#x26F6;';
+  btnFs.title     = entering ? 'Exit Fullscreen (Esc)' : 'Fullscreen (or double-click)';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.body.classList.contains('sv-fullscreen')) {
+    toggleFullscreen();
+  }
+});
+
+// ── Event handlers ─────────────────────────────────────────────────────────────
+videoSel.addEventListener('change', startStream);
+audioSel.addEventListener('change', startStream);
+resSel.addEventListener('change', () => { if (videoSel.value) startStream(); });
+
+btnMute.addEventListener('click', () => {
+  muted = !muted;
+  if (audioGain) audioGain.gain.value = muted ? 0 : 1;
+  updateMuteBtn();
+});
+btnRecord.addEventListener('click', () => { recording ? stopRecording() : startRecording(); });
+btnFs.addEventListener('click', toggleFullscreen);
+document.getElementById('viewer').addEventListener('dblclick', toggleFullscreen);
+navigator.mediaDevices.addEventListener('devicechange', () => enumerateDevices().catch(() => {}));
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
+(async () => {
+  // If device IDs were passed via URL query (auto-launch path), skip the
+  // getUserMedia label-unlock inside enumerateDevices and start the stream
+  // immediately.  Enumeration runs in the background after the stream opens —
+  // by then the stream itself has already unlocked device labels.
+  if (initVideoId) {
+    // Pre-populate the selects with the saved IDs so startStream can read them
+    // even before enumerateDevices has filled the <option> list.
+    if (!videoSel.value) videoSel.add(new Option(initVideoId, initVideoId));
+    videoSel.value = initVideoId;
+    if (initAudioId) {
+      if (![...audioSel.options].some(o => o.value === initAudioId))
+        audioSel.add(new Option(initAudioId, initAudioId));
+      audioSel.value = initAudioId;
+    }
+    if (initResolution && [...resSel.options].some(o => o.value === initResolution))
+      resSel.value = initResolution;
+
+    // Start stream right away — don't wait for enumeration.
+    await startStream();
+
+    // Enumerate in the background now that the stream has unlocked labels;
+    // this refreshes the dropdown with proper device names.
+    enumerateDevices().catch(() => {});
+  } else {
+    // No device pre-selected — enumerate first so the user can pick one.
+    await enumerateDevices();
+    if (initResolution && [...resSel.options].some(o => o.value === initResolution))
+      resSel.value = initResolution;
+    if (videoSel.value) await startStream();
+  }
+})();
+</script>
+</body>
+</html>
