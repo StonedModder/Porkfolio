@@ -236,7 +236,7 @@ FFPKG/UFS2 and ExFAT image creation use Windows-only tooling. The Linux app leav
 <details>
 <summary><b>Where is my data stored?</b></summary>
 
-Porkfolio stores its local settings and database in Electron's per-user app-data directory. Keep credentials, save keys, and webhook URLs private; they should never be committed to git.
+Porkfolio stores its local settings and database in Electron's per-user app-data directory
 </details>
 
 <br>
