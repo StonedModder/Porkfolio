@@ -69,21 +69,30 @@ Porkfolio is organized around a shared local library, a single transfer queue, a
 
 | Page | What it does |
 |---|---|
-| **Dashboard** | Shows database/connection status, quick FTP connect, recent activity, and pinned tools. |
-| **Games** | Scans configured PS5 game locations, enriches metadata, and opens per-game management for updates, DLC, backups, paths, hashes, and transfers. |
-| **Backups** | Scans and associates local game backups, calculates size, and supports hash verification. |
-| **Backporks** | Indexes firmware-labelled patch folders and queues a selected match for FTP deployment. |
-| **Transfers** | Monitors the global upload/download/deployment queue with pause, resume, cancel, progress, and error details. |
-| **Media** | Browses remote screenshots/clips, generates thumbnails, downloads media, and optionally shares to Discord. |
-| **Cheats** | Finds compatible cheat files, downloads them locally, and installs selected files through FTP. |
-| **Database** | Browses local library data, runs SQL queries, and exports CSV/SQL data. |
-| **Manage Jailbreak** | Manages configured payload sources, autoloader snapshots, and related update/deployment helpers. |
-| **PS Notify** | Tests a compatible notification endpoint and displays notification delivery history. |
-| **xAvatar Management** | Converts images to `.xavatar`, previews/extracts avatars, and uploads them through FTP. |
-| **System View** | Uses a local capture card for preview, recording, GIF export, popout, fullscreen, and hotkeys. |
-| **GarlicSaves / Local Save Manager** | Provides optional payload-backed save workflows; preserve originals and keep keys private. |
-| **ELF Arsenal / PFS Ripper** | Provides ELF catalog management plus local PFS image discovery/extraction workflows. |
-| **Settings** | Configures connections, local/remote paths, media/webhooks, notifications, conversion behavior, capture preferences, and appearance. |
+| [**Dashboard**](docs/obsidian/Porkfolio/Dashboard.md) | Shows database/connection status, quick FTP connect, recent activity, and pinned tools. |
+| [**Games**](docs/obsidian/Porkfolio/Games.md) | Scans configured PS5 game locations, enriches metadata, and opens per-game management for updates, DLC, backups, paths, hashes, and transfers. |
+| [**Backups**](docs/obsidian/Porkfolio/Backups.md) | Scans and associates local game backups, calculates size, and supports hash verification. |
+| [**Backporks**](docs/obsidian/Porkfolio/Backporks.md) | Indexes firmware-labelled patch folders and queues a selected match for FTP deployment. |
+| [**Transfers**](docs/obsidian/Porkfolio/Transfers.md) | Monitors the global upload/download/deployment queue with pause, resume, cancel, progress, and error details. |
+| [**Media**](docs/obsidian/Porkfolio/Media.md) | Browses remote screenshots/clips, generates thumbnails, downloads media, and optionally shares to Discord. |
+| [**Cheats**](docs/obsidian/Porkfolio/Cheats.md) | Finds compatible cheat files, downloads them locally, and installs selected files through FTP. |
+| [**Database**](docs/obsidian/Porkfolio/Database.md) | Browses local library data, runs SQL queries, and exports CSV/SQL data. |
+| [**Manage Jailbreak**](docs/obsidian/Porkfolio/Manage%20Jailbreak.md) | Manages configured payload sources, autoloader snapshots, and related update/deployment helpers. |
+| [**PS Notify**](docs/obsidian/Porkfolio/PS%20Notify.md) | Tests a compatible notification endpoint and displays notification delivery history. |
+| [**xAvatar Management**](docs/obsidian/Porkfolio/xAvatar%20Management.md) | Converts images to `.xavatar`, previews/extracts avatars, and uploads them through FTP. |
+| [**System View**](docs/obsidian/Porkfolio/System%20View.md) | Uses a local capture card for preview, recording, GIF export, popout, fullscreen, and hotkeys. |
+| [**GarlicSaves**](docs/obsidian/Porkfolio/GarlicSaves.md) / [**Local Save Manager**](docs/obsidian/Porkfolio/Local%20Save%20Manager.md) | Provides optional payload-backed save workflows; preserve originals and keep keys private. |
+| [**ELF Arsenal**](docs/obsidian/Porkfolio/ELF%20Arsenal.md) / [**PFS Ripper**](docs/obsidian/Porkfolio/PFS%20Ripper.md) | Provides ELF catalog management plus local PFS image discovery/extraction workflows. |
+| [**Settings**](docs/obsidian/Porkfolio/Settings%20Reference.md) | Configures connections, local/remote paths, media/webhooks, notifications, conversion behavior, capture preferences, and appearance. |
+
+### Reference and build notes
+
+- [Page index and workflow order](docs/obsidian/Porkfolio/Pages%20and%20Workflows.md)
+- [Platform support: Windows, macOS, and Linux](docs/obsidian/Porkfolio/Platform%20Support.md)
+- [Linux build and validation record](docs/obsidian/Porkfolio/Linux%20Build%20and%20Test.md)
+- [Linux feature matrix](docs/obsidian/Porkfolio/Linux%20Feature%20Matrix.md)
+- [Architecture and safety overview](docs/obsidian/Porkfolio/Overview.md)
+- [Contributor guide](docs/obsidian/Porkfolio/Contributing.md)
 
 > Every page, prerequisite, safety boundary, and cross-page workflow is documented in [`docs/obsidian/Porkfolio/`](docs/obsidian/Porkfolio/Home.md). Open `docs/obsidian` directly as an Obsidian vault.
 
