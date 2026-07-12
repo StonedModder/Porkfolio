@@ -14,7 +14,9 @@ Porkfolio is an Electron desktop application that centralizes PS5 homebrew-manag
 | Inventory and metadata | `src/database.js`, `src/prospero.js` | Local SQL-backed game, backup, and metadata records. |
 | Console transport | `src/ftp.js`, `src/transfers.js` | FTP connection and queued uploads/downloads. |
 | Media | `src/ipc/media.js`, `renderer/modules/media.js` | Screenshot/clip handling and local encoding. |
-| Payload tools | `renderer/modules/payload.js`, `renderer/modules/y2jb-generator.js`, `build/garlic/`, `build/y2jb-template/` | Payload/autoloader workflows plus local Y2JB update-archive generation. |
+| Payload tools | `renderer/modules/payload.js`, `renderer/modules/y2jb-generator.js`, `renderer/modules/bdjb-generator.js`, `src/bdjb-generator.js`, `build/garlic/`, `build/y2jb-template/`, `build/bdjb-template/` | Payload/autoloader workflows, validated local Y2JB archives, and BD-J autoloader ISO workspace/build integration. |
+| System state | `src/ipc/system-state.js`, `src/system-state-client.js`, `renderer/modules/system-state.js` | Bundled SystemStateManager deployment, service checks, and typed-confirmation control requests. |
+| ELF Arsenal | `renderer/modules/elf-arsenal.js`, `src/ipc/elf-arsenal.js` | Connectivity probe and direct embed of the WebUI served by a running ELF Arsenal payload. |
 | Save and avatar tools | `src/ipc/garlic-saves.js`, `src/xavatarElectronModule/` | Payload-dependent save workflows and local xAvatar conversion. |
 | Conversion | `src/ipc/conversion.js`, `src/pfs/`, `src/exfat/` | Cross-platform PFS paths plus Windows-only image formats. |
 | Optional web bridge | `src/web-server.js`, `renderer/pork-web-shim.js` | Local web-facing bridge for supported actions. |

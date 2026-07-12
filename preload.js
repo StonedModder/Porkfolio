@@ -108,6 +108,11 @@ contextBridge.exposeInMainWorld('pork', {
   y2jbApply: () => ipcRenderer.invoke('y2jb:apply'),
   y2jbGenSelectPayloads: () => ipcRenderer.invoke('y2jbgen:select-payloads'),
   y2jbGenBuild: (o) => ipcRenderer.invoke('y2jbgen:build', o),
+  systemStateStatus: () => ipcRenderer.invoke('system-state:status'),
+  systemStateDeploy: () => ipcRenderer.invoke('system-state:deploy'),
+  systemStateCommand: (o) => ipcRenderer.invoke('system-state:command', o),
+  bdjbGenSelectPayloads: () => ipcRenderer.invoke('bdjbgen:select-payloads'),
+  bdjbGenBuild: (o) => ipcRenderer.invoke('bdjbgen:build', o),
 
   // Transfer Manager
   transferState:        ()   => ipcRenderer.invoke('transfer:state'),
@@ -213,7 +218,8 @@ contextBridge.exposeInMainWorld('pork', {
   garlicStart: () => ipcRenderer.invoke('garlic:start'),
 
   // ELF Arsenal (PS5 web API on :6969 — successor to VoidShell)
-  eaVersion:   ()                      => ipcRenderer.invoke('ea:version'),
+  eaVersion:    ()                    => ipcRenderer.invoke('ea:version'),
+  eaEmbedUrl:   ()                    => ipcRenderer.invoke('ea:embed-url'),
   eaList:      (path)                  => ipcRenderer.invoke('ea:list',   { path }),
   eaStat:      (path)                  => ipcRenderer.invoke('ea:stat',   { path }),
   eaUsb:       ()                      => ipcRenderer.invoke('ea:usb'),

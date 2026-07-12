@@ -26,6 +26,8 @@ Open `docs/obsidian` as an Obsidian vault. This documentation lives with the sou
 
 - [[Manage Jailbreak]]
 - [[Y2JB Update Generator]]
+- [[BDJB Genny]]
+- [[System State Controls]]
 - [[PS Notify]]
 - [[xAvatar Management]]
 - [[System View]]

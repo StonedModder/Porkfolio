@@ -1,0 +1,4 @@
+!5000
+ps5_killdiscplayer.elf
+!3000
+sonic-loader.elf

@@ -832,6 +832,48 @@
           <p class="hint" style="margin-top:10px">Payload names are case-sensitive. Delays are milliseconds. The build validates the template, payload references, forward-slash ZIP paths, and archive structure before saving.</p>
         </div>
 
+        <!-- BDJB Genny -->
+        <div class="card jb-card" id="bdjb-generator-card">
+          <div class="card-header"><h3>BDJB Genny</h3></div>
+          <p class="hint">Create a Cyberpunk-themed Blu-ray Disc Java autoloader ISO from the upstream Themed BD-UN-JB Poops Autoloader template. The build stages selected ELF/BIN payloads into <code>ps5_autoloader</code>, writes <code>autoload.txt</code>, compiles the BD-J payload, and validates the resulting ISO locally.</p>
+          <label style="display:block;margin-top:10px">Disc title <input id="bdjbgen-title" value="Porkfolio BDJB" maxlength="80"></label>
+          <div class="form-row" style="margin-top:12px;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn" id="btn-bdjbgen-add-payloads">Add ELF or BIN Payloads</button>
+            <button class="btn btn-teal" id="btn-bdjbgen-build">Build BDJB ISO</button>
+          </div>
+          <div id="bdjbgen-list" class="autoloader-sequence" style="margin-top:12px"><p class="hint autoloader-empty-hint">No entries yet. Add payload files, then adjust their autoload order and delays.</p></div>
+          <div class="form-row" style="margin-top:8px"><button class="btn btn-sm" id="btn-bdjbgen-add-delay">Add Delay</button></div>
+          <div style="margin-top:12px"><progress id="bdjbgen-progress" value="0" max="100" style="width:100%"></progress><span id="bdjbgen-status" class="hint"></span><pre id="bdjbgen-log" style="max-height:180px;overflow:auto;white-space:pre-wrap;margin-top:8px"></pre></div>
+        </div>
+
+        <!-- System State Controls -->
+        <div class="card jb-card" id="system-state-card">
+          <div class="card-header"><h3>System State Controls</h3></div>
+          <p class="hint">Controls require the bundled SystemStateManager payload to be running on TCP port 9112. Each system action requires an explicit confirmation phrase; no action is sent from a single click.</p>
+          <div class="form-row" style="margin-top:12px;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btn-system-state-deploy">Deploy SystemStateManager</button>
+            <button class="btn" id="btn-system-state-status">Check Service</button>
+            <span id="system-state-status" class="hint"></span>
+          </div>
+          <div class="form-row" style="margin-top:10px;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-red system-state-action" data-system-action="shutdown">Shutdown</button>
+            <button class="btn btn-red system-state-action" data-system-action="reboot">Reboot</button>
+            <button class="btn system-state-action" data-system-action="restmode">Enter Rest Mode</button>
+            <button class="btn system-state-action" data-system-action="eject">Eject Disc</button>
+          </div>
+          <div id="system-state-confirm" hidden style="margin-top:12px;padding:12px;border:1px solid var(--red);border-radius:6px">
+            <strong id="system-state-confirm-title">Confirm system action</strong>
+            <p id="system-state-confirm-copy" class="hint" style="margin:8px 0"></p>
+            <label>Type the required confirmation exactly
+              <input id="system-state-confirm-input" type="text" autocomplete="off" spellcheck="false" style="margin-top:5px">
+            </label>
+            <div class="form-row" style="margin-top:10px;gap:8px">
+              <button class="btn btn-red" id="btn-system-state-confirm" disabled>Confirm Action</button>
+              <button class="btn" id="btn-system-state-cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+
         <!-- System View mini-card -->
         <div class="sv-mini-card" id="sv-mini-jailbreak">
           <div class="sv-mini-header" id="sv-mini-jailbreak-hdr">
@@ -2438,6 +2480,8 @@
   <script src="modules/hotkeys.js"></script>
   <script src="modules/payload.js"></script>
   <script src="modules/y2jb-generator.js"></script>
+  <script src="modules/bdjb-generator.js"></script>
+  <script src="modules/system-state.js"></script>
   <script src="modules/autoloader.js"></script>
   <script src="modules/media.js"></script>
   <script src="modules/cheats.js"></script>

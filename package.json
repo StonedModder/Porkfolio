@@ -9,7 +9,7 @@
     "build": "electron-builder",
     "check:ids": "node scripts/check-ids.js && node scripts/check-ids2.js",
     "check:syntax": "node scripts/check-syntax.js",
-    "test": "npm run check:ids && npm run check:syntax && node test/platform-capabilities.test.js && node test/y2jb-generator.test.js && npm --prefix src/xavatarElectronModule test && npm --prefix src/ufs2ElectronModule test"
+    "test": "npm run check:ids && npm run check:syntax && node test/platform-capabilities.test.js && node test/y2jb-generator.test.js && node test/bdjb-generator.test.js && node test/system-state-client.test.js && npm --prefix src/xavatarElectronModule test && npm --prefix src/ufs2ElectronModule test"
   },
   "dependencies": {
     "basic-ftp": "^5.0.5",

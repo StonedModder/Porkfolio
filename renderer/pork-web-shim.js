@@ -234,6 +234,11 @@
     y2jbApply: () => invoke('y2jb:apply'),
     y2jbGenSelectPayloads: () => invoke('y2jbgen:select-payloads'),
     y2jbGenBuild: (o) => invoke('y2jbgen:build', o),
+    systemStateStatus: () => invoke('system-state:status'),
+    systemStateDeploy: () => invoke('system-state:deploy'),
+    systemStateCommand: (o) => invoke('system-state:command', o),
+    bdjbGenSelectPayloads: () => invoke('bdjbgen:select-payloads'),
+    bdjbGenBuild: (o) => invoke('bdjbgen:build', o),
 
     // Transfer Manager
     transferState:         ()   => invoke('transfer:state'),
@@ -332,7 +337,8 @@
     garlicStart: () => invoke('garlic:start'),
 
     // ELF Arsenal (successor to VoidShell)
-    eaVersion:   ()                      => invoke('ea:version'),
+    eaVersion:    ()                  => invoke('ea:version'),
+    eaEmbedUrl:   ()                  => invoke('ea:embed-url'),
     eaList:      (path)                  => invoke('ea:list',   { path }),
     eaStat:      (path)                  => invoke('ea:stat',   { path }),
     eaUsb:       ()                      => invoke('ea:usb'),

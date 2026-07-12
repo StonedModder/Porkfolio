@@ -75,6 +75,19 @@ module.exports = function register(ipcMain, { win, store, log, path, fs, dialog,
     return { entries, safety_lock: data.safety_lock === true || data.safety_lock === 'true' };
   }
 
+  // ── Embed URL / connectivity ───────────────────────────────────────────────
+  ipcMain.handle('ea:embed-url', async () => {
+    try {
+      const base = eaBase();
+      const r = await eaFetch('/version', { timeoutMs: 5000 });
+      if (!r.ok) return { connected: false, error: `ELF Arsenal responded with HTTP ${r.status}.` };
+      const version = await r.json().catch(() => ({}));
+      return { connected: true, url: `${base}/`, version: version.tag || version.version || '' };
+    } catch (error) {
+      return { connected: false, error: error.message };
+    }
+  });
+
   // ── Connectivity / version ─────────────────────────────────────────────────
   ipcMain.handle('ea:version', async () => {
     try {
