@@ -1,6 +1,14 @@
 ﻿'use strict';
 
 const { app, BrowserWindow, ipcMain, shell, dialog, net: eNet, protocol } = require('electron');
+const { getConversionCapabilities } = require('./src/platform-capabilities');
+
+// The SteamOS/Wayland validation host repeatedly rejected Electron's GPU child
+// process (error 1002), which makes Chromium terminate after its retry limit.
+// Software compositing is the portable fallback; Windows keeps its normal GPU path.
+if (getConversionCapabilities().disableHardwareAcceleration) {
+  app.disableHardwareAcceleration();
+}
 
 // Register pork-cache as a privileged scheme before app is ready so that
 // <video src="pork-cache://..."> is treated as a secure, standard origin and

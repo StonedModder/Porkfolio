@@ -41,7 +41,7 @@ The validation suite passed:
 - xAvatar module smoke test
 - UFS2 module smoke test
 
-The unpacked Linux application was launched in a Wayland desktop session. Electron main, GPU, network, renderer, and audio processes started; the local Porkfolio database initialized and the app registered ELF Arsenal and PFS Ripper IPC handlers without startup errors.
+The unpacked Linux application was launched in a Wayland desktop session with Electron hardware acceleration disabled on non-Windows hosts. It remained alive for a 10-second unattended smoke window without the prior `GPU process isn't usable` fatal. Electron main, GPU, network, renderer, and audio processes started; the local Porkfolio database initialized and the app registered ELF Arsenal and PFS Ripper IPC handlers without startup errors.
 
 ## Manual smoke checklist
 

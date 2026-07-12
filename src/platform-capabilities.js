@@ -7,12 +7,13 @@
  */
 function getConversionCapabilities(platform = process.platform) {
   if (platform === 'win32') {
-    return { ufs2: true, exfat: true, reason: '' };
+    return { ufs2: true, exfat: true, disableHardwareAcceleration: false, reason: '' };
   }
 
   return {
     ufs2: false,
     exfat: false,
+    disableHardwareAcceleration: true,
     reason: 'FFPKG/UFS2 and ExFAT image conversion require Windows-only tooling.',
   };
 }
